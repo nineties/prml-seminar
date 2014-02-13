@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg4728"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="新規ドキュメント 16"
+   inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\pattern-recognition1.png"
+   inkscape:export-xdpi="95.32"
+   inkscape:export-ydpi="95.32">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="339.99223"
+     inkscape:cy="773.42636"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="746"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <defs
+     id="defs4730" />
+  <metadata
+     id="metadata4733">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect4738"
+       width="527.29962"
+       height="263.64981"
+       x="116.16754"
+       y="80.595436" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 116.16754,228.07771 c 0,0 76.7716,-2.02031 125.25892,-41.41626 48.48732,-39.39595 69.70052,-107.076169 69.70052,-107.076169"
+       id="path5248"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 238.396,187.6716 78.7919,155.5635"
+       id="path5250"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 467.70063,80.595434 c 0,0 -25.25382,105.055866 -17.17259,151.522886 8.08122,46.46701 50.50762,112.12693 50.50762,112.12693"
+       id="path5252"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:32.00044632px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="138.59944"
+       y="150.20094"
+       id="text5254"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan5256"
+         x="138.59944"
+         y="150.20094">クラス1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:32.00044632px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="141.02383"
+       y="295.05872"
+       id="text5258"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan5260"
+         x="141.02383"
+         y="295.05872">クラス2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:32.00044632px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="310.73026"
+       y="237.48003"
+       id="text5262"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan5264"
+         x="310.73026"
+         y="237.48003">クラス3</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:32.00044632px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="499.42722"
+       y="201.11551"
+       id="text5266"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan5268"
+         x="499.42722"
+         y="201.11551">クラス4</tspan></text>
+    <path
+       style="fill:#ff0000;fill-opacity:0.19607843000000000;stroke:#ff0000;stroke-width:1.01015258000000000;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 117.35461,154.57382 0,-72.819773 95.95032,0 95.95031,0 -2.12255,5.808378 c -1.16739,3.194607 -5.01305,11.870483 -8.54589,19.279725 -17.45164,36.60042 -36.35155,61.73657 -61.16504,81.3471 -9.93968,7.8555 -26.95159,16.95146 -42.96358,22.97182 -16.66335,6.26527 -45.34417,12.92151 -62.45636,14.49485 -3.88908,0.35758 -8.7757,0.89484 -10.85914,1.1939 l -3.78807,0.54378 0,-72.81978 z"
+       id="path5272"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#0000ff;fill-opacity:0.19607843;stroke:#0000ff;stroke-width:1.01015258;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 117.35461,286.37183 0,-57.01172 4.29315,-0.52276 c 2.36123,-0.28751 8.61155,-1.01568 13.8896,-1.61815 35.69159,-4.07406 72.31302,-16.26496 95.43321,-31.76873 6.4672,-4.33673 7.14091,-4.57734 8.31621,-2.97002 1.5076,2.06178 76.05773,149.36085 76.05773,150.27786 0,0.34389 -44.54773,0.62525 -98.99495,0.62525 l -98.99495,0 0,-57.01173 z"
+       id="path5274"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#008000;fill-opacity:0.19607843000000000;stroke:#008000;stroke-width:1.01015258000000000;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 290.55409,288.0777 c -15.38288,-30.41821 -33.00283,-65.13131 -39.15544,-77.1402 l -11.18658,-21.83435 3.97865,-3.33531 c 6.33153,-5.30773 20.23005,-19.77969 25.01229,-26.04426 14.45485,-18.93539 29.35267,-45.13852 38.15569,-67.110393 l 4.3507,-10.85914 77.07392,0 c 66.92893,0 77.07392,0.194296 77.07392,1.476111 0,0.811861 -0.89586,5.318206 -1.9908,10.014101 -12.62532,54.146541 -18.71385,116.544401 -13.80205,141.449421 4.58916,23.26906 20.46219,59.9967 41.40758,95.81043 l 7.53246,12.87945 -90.24074,0 -90.24073,0 -27.96887,-55.30586 0,0 z"
+       id="path5276"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#ffff00;fill-opacity:0.19607843000000000;stroke:#ffff00;stroke-width:1.01015258000000000;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 494.27002,331.00919 c -17.04987,-28.63604 -35.2135,-68.8103 -40.53656,-89.65869 -5.41706,-21.21651 -4.81899,-47.802 2.11321,-93.93654 2.14678,-14.28705 11.69208,-63.284344 12.6216,-64.788335 0.29626,-0.479368 39.60474,-0.871578 87.35217,-0.871578 l 86.8135,0 0,130.814753 0,130.81476 -70.49812,0 -70.49811,0 -7.36769,-12.37437 0,0 z"
+       id="path5278"
+       inkscape:connector-curvature="0" />
+    <g
+       id="equation_00"
+       style="fill:#000000"
+       title="$\Omega$"
+       transform="matrix(4.9189525,0,0,4.9189525,-241.53931,-235.42782)">
+      <defs
+         id="defs5302">
+        <path
+           d="M 6.77,-1.62 H 6.52 c -0.05,0.26 -0.09,0.49 -0.18,0.73 -0.05,0.16 -0.08,0.24 -0.66,0.24 h -0.8 c 0.13,-0.56 0.44,-1.04 0.89,-1.7 0.47,-0.71 0.88,-1.4 0.88,-2.19 0,-1.39 -1.35,-2.51 -3.04,-2.51 -1.72,0 -3.05,1.14 -3.05,2.51 0,0.79 0.41,1.48 0.88,2.19 0.44,0.66 0.76,1.14 0.89,1.7 H 1.53 C 0.95,-0.65 0.92,-0.73 0.87,-0.88 0.79,-1.11 0.74,-1.37 0.69,-1.62 H 0.44 L 0.77,0 h 1.6 c 0.22,0 0.25,0 0.25,-0.21 0,-0.7 -0.31,-1.58 -0.54,-2.22 -0.21,-0.58 -0.49,-1.37 -0.49,-2.12 0,-1.6 1.1,-2.28 2.01,-2.28 0.96,0 2.02,0.72 2.02,2.28 0,0.75 -0.27,1.51 -0.56,2.33 C 4.91,-1.8 4.59,-0.9 4.59,-0.21 4.59,0 4.62,0 4.85,0 h 1.59 l 0.33,-1.62 z"
+           id="equation_00_00"
+           inkscape:connector-curvature="0" />
+      </defs>
+      <g
+         id="equation_00_g">
+        <use
+           x="77"
+           xlink:href="#equation_00_00"
+           y="63"
+           id="use5306"
+           width="744.09448"
+           height="1052.3622" />
+      </g>
+    </g>
+  </g>
+</svg>

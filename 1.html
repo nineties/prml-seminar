@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第1回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+
+      .reveal .block h4 {
+        position: absolute;
+        top: -0.5em;
+        margin: 0 auto;
+        background: #111111;
+        font-weight: bold;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第1回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年2月13日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 自己紹介 </h3>
+        <ul>
+          <li> 中村晃一</li>
+          <li> 東京大学 大学院 情報理工学系研究科<br>
+               コンピュータ科学専攻 後期博士課程 2年</li>
+          <li> プログラム最適化・言語処理系の実装技術・人間と言語の関係等に興味があります.</li>
+          <li> twitter: <a href="http://twitter.com/9_ties">@9_ties</a></li>
+        </ul>
+        </section>
+
+        <section>
+        <h2> はじめに </h2>
+        </section>
+
+        <section>
+        <h3> この会について </h3>
+        <ul>
+          <li> パターン認識・機械学習の基礎を勉強します. </li>
+          <li> 基本的な微積分・線形代数・確率統計の知識を前提とします. </li>
+          <li> 資料中のサンプルコードは主にPythonで書きます.ライブラリはNumPy, SciPy, Matplotlibを利用します.</li>
+        </ul>
+        </section>
+
+        <section>
+        <h2> 数式の記法について </h2>
+        <ul>
+          <li>
+          列ベクトル・行列はボールド体の小文字・大文字で表します.
+          \[\text{列ベクトル}: \mathbf{a},\quad\text{行列}: \mathbf{A} \] 
+          </li>
+          <li class="fragment">
+          行ベクトルは列ベクトルの転置によって表します.
+          \[\text{行ベクトル}: \mathbf{a}^T \]
+          </li>
+          <li class="fragment">
+          成分は対応する非ボールド体の文字に添字を付けて表します.
+          \[\text{$\mathbf{a}$ の第 $i$ 成分}: a_i,\quad\text{行列の$(i,j)$成分}: A_{ij}\]
+          添字は $0$-originの場合も $1$-originの場合もあります.
+          </li>
+          <li class="fragment">
+          零ベクトルは $\mathbf{0}$, 零行列は $\mathbf{O}$, 単位行列は $\mathbf{I}$ と表します.
+          </li>
+        </ul>
+        </section>
+
+        <section>
+        <h3> 第1回の内容</h3>
+        <p>
+        パターン認識・機械学習とは一体どのような技術であるのか, イントロダクションを行います.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> パターン認識とは </h2>
+        </section>
+
+        <section>
+        <p>
+        <strong> パターン認識 (Pattern recognition)</strong> とは広い意味では人間が行っているような認知を機械に行わせる事を指します.
+        </p>
+        <p class="fragment" data-fragment-index="1"> パターン認識の技術は身近な所で利用されています. </p>
+        <ul class="fragment" data-fragment-index="1">
+          <li> 画像: デジカメの顔認識, 郵便の自動仕分け, 画像検索, $\ldots$ </li>
+          <li> 音声: スマートフォンの音声入力, コールセンターの自動応答, $\ldots$ </li>
+          <li> 文章: メールフィルタリング, テキスト検索, テキスト分類, $\ldots$ </li>
+          <li> モーション: タッチパネル, ゲーム機のインタフェース, $\ldots$ </li>
+        </ul>
+        </section>
+
+        <section>
+        <p>
+        最も基本的なパターン認識の形は, データをそれが表す物の属すクラス・クラスに分類する事です.
+        </p>
+        <p class="fragment" data-fragment-index="1"> 例: 画像データの分類 </p>
+        <div class="fragment" data-fragment-index="1" align="center"> <img src="fig/windmill.jpg" style="vertical-align:middle"> → 「風車」 </div>
+        <p class="fragment" data-fragment-index="2"> 今後は「パターン認識」と言ったらこの種類の処理を指すことにします. </p>
+        </section>
+
+        <section>
+        <p>
+        数学的に言えば, 入力データのドメイン $O$ とクラスの集合 $C=\{c_1,c_2,\ldots\}$ に対して各データにクラスを割り当てる関数
+        \[ f: O \rightarrow C \]
+        で出来るだけ誤りの無い物を構築する事が目標となります.
+        </p>
+        <p style="font-size:80%">
+        「出来るだけ誤りの無い」という事の意味については後で説明します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        一般に入力データのドメインは非常に高次元の空間になります.
+        </p>
+        <img class="fragment" data-fragment-index="1" src="fig/windmill2.png" align="left">
+        <p class="fragment" data-fragment-index="1">
+        例えば, $240 \times 320$pxで RGBの3チャンネルからなる画像は
+        \[ 3\times 240\times 320 = 230400\text{個} \]
+        の数値からなります.
+        </p>
+        <p class="fragment" data-fragment-index="2">
+        つまり, このサイズの画像は約23万次元の空間内に分布するということになります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        従って, <strong> 識別精度を出来るだけ損なわずに入力データの次元を削る </strong> 
+        という事が重要になります.
+        </p>
+        <p class="fragment">
+        また,次元削減にも限度がありますので <strong> 高次元のデータを効率的に処理する </strong>
+        為の数学的な工夫・アルゴリズム的な工夫も重要になります.
+        </p>
+        </section>
+
+        <section>
+        <h2> パターン認識の流れ </h2>
+        <p>
+        パターン認識は大きく3つのフェーズからなります.
+        </p>
+        <ol>
+          <li class="fragment"> 前処理 </li>
+          <li class="fragment"> 特徴抽出 </li>
+          <li class="fragment"> 識別 </li>
+        </ol>
+        </section>
+
+        <section>
+        <div align="center"> <img src="fig/pattern-recognition-flow1.png"> </div>
+        </section>
+        <section>
+        <div align="center"> <img src="fig/pattern-recognition-flow2.png"> </div>
+        </section>
+        <section>
+        <div align="center"> <img src="fig/pattern-recognition-flow3.png"> </div>
+        </section>
+        <section>
+        <div align="center"> <img src="fig/pattern-recognition-flow4.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        パターン認識の精度に最も影響するのが特徴抽出だと思います.
+        データの形式・データの表す物が持つ特徴を良く観察してこれを設計する必要があります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば「文字は主に線で構成される」という事に注目すると各ピクセルを特徴量とするのは
+        あまり賢くなさそうです.
+        </p>
+        <div align="center"> <img src="fig/feature-extraction-example1.png" width="50%"> </div>
+        </section>
+
+        <section>
+        <p>
+        代わりに,単純なセグメントからなるマスクを複数用意して, マスクされた部分の一致度を特徴量とする方法が考えられます.
+        </p>
+        <div align="center"> <img src="fig/feature-extraction-example2.png" width="50%"> </div>
+        </section>
+        <section>
+        <p>
+        代わりに,単純なセグメントからなるマスクを複数用意して, マスクされた部分の一致度を特徴量とする方法が考えられます.
+        </p>
+        <div align="center"> <img src="fig/feature-extraction-example3.png" width="50%"> </div>
+        </section>
+        <section>
+        <p>
+        代わりに,単純なセグメントからなるマスクを複数用意して, マスクされた部分の一致度を特徴量とする方法が考えられます.
+        </p>
+        <div align="center"> <img src="fig/feature-extraction-example4.png" width="50%"> </div>
+        </section>
+        <section>
+        <p>
+        代わりに,単純なセグメントからなるマスクを複数用意して, マスクされた部分の一致度を特徴量とする方法が考えられます.
+        </p>
+        <div align="center"> <img src="fig/feature-extraction-example5.png" width="50%"> </div>
+        </section>
+
+        <section>
+        <p>
+        この様に特徴抽出は非常に難しくまた面白い部分なのですが, この勉強会では今後一般的な話題のみを取り上げます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        一方で, 「識別」は完全に数学の問題となります. そこでまずは識別器の理論について進めていきます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> パターン識別の手法 </h2>
+        </section>
+
+        <section>
+        <p>
+        今回はパターン識別の代表的な手法を紹介します. 数学的な話題は次回以降に回します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        <strong> 特徴ベクトル (feature vector) </strong> のなす空間を <strong> 特徴空間 (feature space) </strong> と呼びます.
+        これを $\Omega$ と表しましょう.
+        </p>
+        <p>
+        識別器とは $\Omega$ の各点に $C=\{c_1,c_2,\ldots,\}$ のいずれかを割り当てる関数 $\varphi: \Omega \rightarrow C$ の事です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        識別器 $\varphi: \Omega\rightarrow C$ を定めると言うことは, <strong> 特徴空間 $\Omega$ を幾つかの領域に分割しラベルを振る </strong> という事に他なりません.
+        </p>
+        <div align="center"> <img src="fig/pattern-recognition1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        特徴空間の分割が既知の法則に従って出来るのならばそれで良いのですが, 法則が分からない場合には <strong> 学習データ (learning examples) </strong> から識別器を構築します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        学習データはいくつかの特徴ベクトルとそのクラスの組 $D=\{(\mathbf{x}_1,y_1),\ldots,(\mathbf{x}_n,y_n)\}$ からなります.
+        </p>
+        <div align="center"> <img width="60%" src="prog/fig1-1.png"> <a href="prog/prog1-1.py">prog1-1.py</a> </div>
+        </section>
+
+        <section>
+        <h2> テンプレートマッチング </h2>
+        <p>
+        各クラスを１つの<strong> 代表ベクトル (representative vector) </strong> で表現し, 代表ベクトルと入力 $\mathbf{x}$ の何らかの距離によって
+        $\mathbf{x}$ が属すクラスを決定する手法を <strong> テンプレートマッチング (template matching) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        最も単純な方法は入力 $\mathbf{x}$ と代表ベクトル $\mathbf{\mu}_c$ の距離を<strong> ユークリッド距離(euclidean distance) </strong>
+        \[ ||\mathbf{x}-\mathbf{\mu}_c||^2=(\mathbf{x}-\mathbf{\mu}_c)^T(\mathbf{x}-\mathbf{\mu}_c) \]
+        で測る方法です.
+        </p>
+        </section>
+
+        <section>
+        <p> 代表ベクトルが以下の様になっているならば, <span style="color:transparent">特徴空間は以下の様に分割(ボロノイ分割 (Voronoi tessellation))されます. </span></p>
+        <div align="center"> <img width="60%" src="prog/fig1-2-1.png"> <a href="prog/prog1-2.py">prog1-2.py</a> </div>
+        </section>
+
+        <section>
+        <p> 代表ベクトルが以下の様になっているならば, 特徴空間は以下の様に分割(<strong>ボロノイ分割 (Voronoi tessellation)</strong>)されます. </p>
+        <div align="center"> <img width="60%" src="prog/fig1-2-2.png"> <a href="prog/prog1-2.py">prog1-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        学習データ $D$ をもとにした代表ベクトルの決定方法には複数の方法がありますが, 単純な方法は<strong> 同じクラスに属する特徴ベクトルの重心 </strong> を代表ベクトルとする方法です.
+        </p>
+        </section>
+
+        <section>
+        <p> 以下の学習データに対して </p>
+        <div align="center"> <img width="70%" src="prog/fig1-3-1.png"> <a href="prog/prog1-3.py">prog1-3.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下が代表ベクトルで </p>
+        <div align="center"> <img width="70%" src="prog/fig1-3-2.png"> <a href="prog/prog1-3.py">prog1-3.py</a> </div>
+        </section>
+
+        <section>
+        <p> 次のように分割されます. </p>
+        <div align="center"> <img width="70%" src="prog/fig1-3-3.png"> <a href="prog/prog1-3.py">prog1-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        <strong> クラスによって分散が異なる場合 </strong> にユークリッド距離を使うと,
+        以下の図のように分散の大きいクラスでの識別精度が低下してしまいます.
+        </p>
+        <div align="center"> <img width="70%" src="prog/fig1-4-1.png"> <a href="prog/prog1-4.py">prog1-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        これは, クラス $c$ の分布の分散共分散行列を $\Sigma_c$ として $\mathbf{x}$ と代表ベクトル $\mathbf{\mu}_c$ の距離を
+        \[ (\mathbf{x}-\mathbf{\mu}_c)^T\Sigma_c^{-1}(\mathbf{x}-\mathbf{\mu}_c) \]
+        で測る事によって調整する事が出来ます. これを <strong> マハラノビス距離 (Maharanobis distance)</strong>と呼びます.
+        $\Sigma_c$ は一般には分からないので標本分散(これは母分散の最尤推定量)などを代わり使います.
+        </p>
+        <p>
+        数学的な根拠は後の回に説明する予定です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        先ほどの例をマハラノビス距離で識別すると以下のようになります. 各曲線はクラス間の識別面であり, これらは二次曲線となっています.
+        </p>
+        <div align="center"> <img width="70%" src="prog/fig1-4-2.png"> <a href="prog/prog1-4.py">prog1-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        代表ベクトルを複数持たせる事によってより複雑な分布を表現するという方法(<strong>マルチテンプレート法</strong>)もあります. 代表ベクトルの決め方は難しいですが, クラスタリングなどの手法を併用します.
+        </p>
+        <div align="center"> <img width="70%" src="prog/fig1-5.png"> <a href="prog/prog1-5.py">prog1-5.py</a> </div>
+        </section>
+
+        <section>
+        <h2> $k$近傍法 </h2>
+        <p>
+        入力 $\mathbf{x}$ に対して学習データを近い順番に $k$ 個選び, 多数決によって $\mathbf{x}$ が属すクラスを決定する手法を
+        <strong> $k$近傍法 ($k$-nearest-neighbours classification rule, $k$-NN法) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば以下の $\mathbf{x}$ は $5$-NN法 ではクラス $0$ に分類されます.
+        </p>
+        <div align="center"> <img width="70%" src="prog/fig1-6.png"> <a href="prog/prog1-6.py">prog1-6.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        $k$-NN法は単純な方法で複雑な識別面を表現する事ができ学習データが十分にある場合には非常に良い識別精度を発揮します.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        一方 $k$ が小さすぎると以下の例 ($k=1$)のように学習データのノイズを拾ってしまいます. $k$ の決定については後の回にやります.
+        </p>
+        <div class="fragment" data-fragment-index="1" align="center"> <img width="60%" src="prog/fig1-7.png"> <a href="prog/prog1-7.py">prog1-7.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        $k$近傍法では学習データ集合 $D$ が大きいほど計算量が大きくなります. また, $D$ 全体を保存しておかなければいけません.
+        </p>
+        <p class="fragment">
+        学習データが密に分布している場合は<strong> kdツリー</strong> などの空間分割アルゴリズムが効果的です.
+        </p>
+        <p class="fragment">
+        疎に分布している場合には近似的な最近傍探索アルゴリズムが利用されます. 詳しくは後の回に紹介します.
+        </p>
+        </section>
+
+        <section>
+        <h2> 識別関数 </h2>
+        <p>
+        クラス毎に<strong> 識別関数 (dicriminant function) </strong>
+        \[ f_c: \Omega \rightarrow \mathbb{R} \]
+        を定め, この値が最小(もしくは最大)となる $c$ を $\mathbf{x}$ のクラスとする方法を考える事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ユークリッド距離によるテンプレート法は
+        \[ f_c(\mathbf{x}) = ||\mathbf{x}-\mathbf{\mu}_c||^2 \]
+        という識別関数, マハラノビス距離によるテンプレート法は
+        \[ f_c(\mathbf{x}) = (\mathbf{x}-\mathbf{\mu}_c)^T\Sigma_c^{-1}(\mathbf{x}-\mathbf{\mu}_c) \]
+        という識別関数によって表す事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        問題は識別関数 $f_c(\mathbf{x})$ をどのように決定するのかということです.
+        </p>
+        <p class="fragment">
+        １つの方法は $f_c(\mathbf{x})$ を <strong> パラメトリックモデル (parametric model)</strong> $f_c(\mathbf{x},\mathbf{a})$ として
+        表現し, パラメータ $\mathbf{a}$ に関する最適化問題に帰着する事です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        パラメトリックモデルというのはいくつかの未知パラメータによって決定されるモデルの事です.
+        </p>
+        <p class="fragment">
+        例えば, <strong>線形識別関数 (linear discriminant function)</strong>と呼ばれるモデルは
+        \[\begin{aligned}
+        f_c(\mathbf{x}) &= \mathbf{a}_c^T\mathbf{x}+b_c  \\
+        &= a_{c1}x_1 + a_{c2}x_2 + \cdots + a_{cm}x_m + b_c
+        \end{aligned} \]
+        と表されます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        実はユークリッド距離によるテンプレートマッチングは線形識別関数による識別と等価です.
+        </p>
+        \[ ||\mathbf{x}-\mathbf{\mu}_c||^2 = ||\mathbf{x}||^2 -2\mathbf{\mu}_c^T\mathbf{x}+||\mathbf{\mu}_c||^2 \]
+        <p>
+        であり, $||\mathbf{x}||^2$ は $c$ によらないですから $||\mathbf{x}-\mathbf{\mu}_c||^2$ が最小となるのは
+        \[ \mathbf{\mu}_c^T\mathbf{x}-\frac{1}{2}||\mathbf{\mu}_c||^2 \]
+        が最大となる時です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        既知のベクトル値関数 $\Psi: \Omega \rightarrow \mathbb{R}^m$ によって
+        \[ \begin{aligned}
+        f_c(\mathbf{x}) &= \mathbf{a}_c^T\Psi(\mathbf{x}) \\
+        &= a_{c1}\psi_1(\mathbf{x}) + a_{c2}\psi_2(\mathbf{x}) + \cdots + a_{cm}\psi_m(\mathbf{x})
+        \end{aligned} \]
+        と表されるモデルは <strong> 一般化線形識別関数 (generalized linear discriminant function) </strong> 
+        と呼ばれます.
+        </p>
+        <p>
+        簡単に言えばパラメータについて線形である物は全て一般化線形識別関数です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば, 入力が一次元の時
+        \[ \psi_i(x) = x^i \qquad (0\leq i \leq m) \]
+        とおけば一般化線形識別関数は
+        \[ f_c(x) = a_0 + a_1x + a_2x^2 + \cdots + a_mx^m \]
+        となります. これは $k$ 次の<strong> 多項式モデル (polynomial model) </strong>に他なりません.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さて, パラメータを最適化する為の評価基準は様々考える事が出来ますが今回は<strong> 平均二乗誤差最小化 (least mean squared error)</strong> による手法を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まず, クラスが全部で $k$ 個あるとしてそれをそれらを $c_1,c_2,\ldots,c_k$ とします.
+        識別関数を束にした関数
+        \[ \mathbf{f}(\mathbf{x}) = (f_{c_1}(\mathbf{x}),f_{c_2}(\mathbf{x}),\ldots,f_{c_k}(\mathbf{x}))^T \]
+        と各 $c_i$ に対して $i$ 番目だけが $1$ のベクトル
+        \[ \mathbf{p}_{c_i} = (0,0,\ldots,0,1,0,\ldots,0,0)^T \]
+        を定めます. 
+        </p>
+        <p class="fragment">
+        この時学習データ $D=\{(\mathbf{x}_1,y_1),\ldots,(\mathbf{x}_n,y_n)\}$ に対して
+        \[ \frac{1}{n}\sum_{i=1}^n || \mathbf{f}(\mathbf{x}_i) - \mathbf{p}_{y_i}||^2 \]
+        を平均二乗誤差と呼びます. これが最小化となるように各 $\mathbf{a}_c$ を決定します.
+        </p>
+        </section>
+
+        <section>
+        p>
+        一般化線形識別関数の場合には直接パラメータを求めてしまう事が出来るのでちょっとやってみましょう.
+        </p>
+        <p class="fragment">
+        \[ f_c(\mathbf{x}) = \mathbf{a}_c^T\Psi(\mathbf{x}) \]
+        を代入すると
+        \[ \begin{aligned}
+        \mathbf{f}(\mathbf{x}) &= (\mathbf{a}_{c_1}^T\Psi(\mathbf{x}), \mathbf{a}_{c_2}^T\Psi(\mathbf{x}),\ldots,\mathbf{a}_{c_k}^T\Psi(\mathbf{x}))^T \\
+        &= (\mathbf{a}_{c_1},\mathbf{a}_{c_2},\dots,\mathbf{a}_{c_k})^T\Psi(\mathbf{x})
+        \end{aligned} \]
+        となるので, $A = (\mathbf{a}_{c_1},\mathbf{a}_{c_2},\ldots,\mathbf{a}_{c_k})$ と置けば
+        \[ \mathbf{f}(\mathbf{x})=A^T\Psi(\mathbf{x}) \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        従って
+        \[ \begin{aligned}
+        \sum_{i=1}^n||\mathbf{f}(\mathbf{x}_i)-\mathbf{p}_{y_i}||^2 &= \sum_{i=1}^n||A^T\Psi(\mathbf{x}_i)-\mathbf{p}_{y_i}||^2 \\
+        &= \sum_{i=1}^n (\Psi(\mathbf{x}_i)^TA-\mathbf{p}_{y_i}^T)(A^T\Psi(\mathbf{x}_i)-\mathbf{p}_{y_i}) \\
+        &= \sum_{i=1}^n \left\{ \Psi(\mathbf{x}_i)^TAA^T\Psi(\mathbf{x}_i)-2\Psi(\mathbf{x}_i)^TA\mathbf{p}_{y_i}+||\mathbf{p}_{y_i}||^2 \right\}
+        \end{aligned} \]
+        となるので, これを $g(A)$ とおいて $A$ で微分すれば
+        \[ \frac{\partial g(A)}{\partial A} = 2\sum_{i=1}^n\left\{\Psi(\mathbf{x}_i)\Psi(\mathbf{x}_i)^TA-\Psi(\mathbf{x}_i)\mathbf{p}_{y_i}^T\right\} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これは
+        \[ \begin{aligned}
+        X &= (\Psi(\mathbf{x}_1),\Psi(\mathbf{x}_2),\ldots,\Psi(\mathbf{x}_n))^T \\
+        P &= (\mathbf{p}_{y_1},\mathbf{p}_{y_2},\ldots,\mathbf{p}_{y_n})^T \\
+        \end{aligned}
+        \] 
+        と置けば
+        \[ \frac{\partial g(A)}{\partial A} = 2(X^TXA-X^TP) \]
+        と表されるので,
+        </p>
+        </section>
+
+        <section>
+        <p>
+        平均二乗誤差が最小となるのは
+        \[ \frac{\partial g(A)}{\partial A}=O\Leftrightarrow X^TXA=X^TP \]
+        が成立する時となります.
+        </p>
+        <p>
+        特に $X^TX$ が正則ならば
+        \[ \color{red}{ A = (X^TX)^{-1}X^TP } \]
+        が求めるパラメータです.
+        </p>
+        <p style="font-size:70%">
+        一般に $X^TX$ が正則でないならば $X$ の擬似逆行列 $X^+$ によって
+        \[ \color{red}{ A = X^+P } \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        実際に使ってみましょう.
+        </p>
+        </section>
+
+        <section>
+        <h2> 識別器を組み合わせる </h2>
+        <p>
+        単純な識別器を複数組み合わせる事によって精度を向上させる事が出来ると期待出来ます.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        例えば線形識別関数は平面で領域を分割する事しか出来ませんが, それを複数組み合わせれば
+        例えば楕円領域を表す事が出来ます.
+        </p>
+        <div class="fragment" data-fragment-index="1" align="center"> <img width="40%" src="fig/combining-linear-discriminants.png"> </div>
+        </section>
+
+        <section>
+        <h2> 決定木 </h2>
+        <p>
+        識別器を組み合わせる分かり易い方法は<strong>決定木 (decision tree)</strong>であると思います.
+        荒い識別器で大きく分類していきながら徐々に細かい特徴を見ていきます.
+        全ての特徴量を１つの識別器に投入するよりも効率的な方法です.
+        </p>
+        <div align="center"> <img width="50%" src="fig/decision-tree.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        決定木を自動的に構築する問題も非常に難しいです.
+        ルートから再帰的に入力の分割を行っていくのですが, どの識別器を使うのか？
+        構築を終了出来る条件は何か？という事を考える必要があります.
+        </p>
+        </section>
+
+        <section>
+        <h2> ニューラルネットワーク </h2>
+        <div align="center"> <img width="50%" src="fig/neural-net-element.png"> </div>
+        </section>
+
+        <section>
+        <h3> 第１回はここで終わります </h3>
+        <p>
+        パターン認識という技術がどのようなものであるか理解していただけたと思います.
+        次回はベイズ統計の復習をした後, 識別器の評価であるとか事前知識の利用といった基礎的な話題を進めていきます.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>

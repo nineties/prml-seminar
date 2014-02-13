@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\combining-linear-discriminants.png"
+   inkscape:export-xdpi="95.32"
+   inkscape:export-ydpi="95.32"
+   sodipodi:docname="neural-net-element.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="402.72285"
+     inkscape:cy="626.43695"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="746"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <defs
+     id="defs4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       ry="0"
+       y="166.6479"
+       x="67.14286"
+       height="338.57144"
+       width="595.71429"
+       id="rect4143"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <g
+       title="$\Omega$"
+       style="fill:#000000"
+       id="equation_00"
+       transform="matrix(5.7796714,0,0,5.7796714,-377.2806,-204.56545)">
+      <defs
+         id="defs4152">
+        <path
+           id="equation_00_00"
+           d="M 6.77,-1.62 H 6.52 c -0.05,0.26 -0.09,0.49 -0.18,0.73 -0.05,0.16 -0.08,0.24 -0.66,0.24 h -0.8 c 0.13,-0.56 0.44,-1.04 0.89,-1.7 0.47,-0.71 0.88,-1.4 0.88,-2.19 0,-1.39 -1.35,-2.51 -3.04,-2.51 -1.72,0 -3.05,1.14 -3.05,2.51 0,0.79 0.41,1.48 0.88,2.19 0.44,0.66 0.76,1.14 0.89,1.7 H 1.53 C 0.95,-0.65 0.92,-0.73 0.87,-0.88 0.79,-1.11 0.74,-1.37 0.69,-1.62 H 0.44 L 0.77,0 h 1.6 c 0.22,0 0.25,0 0.25,-0.21 0,-0.7 -0.31,-1.58 -0.54,-2.22 -0.21,-0.58 -0.49,-1.37 -0.49,-2.12 0,-1.6 1.1,-2.28 2.01,-2.28 0.96,0 2.02,0.72 2.02,2.28 0,0.75 -0.27,1.51 -0.56,2.33 C 4.91,-1.8 4.59,-0.9 4.59,-0.21 4.59,0 4.62,0 4.85,0 h 1.59 l 0.33,-1.62 z"
+           inkscape:connector-curvature="0" />
+      </defs>
+      <g
+         id="equation_00_g">
+        <use
+           id="use4156"
+           y="63"
+           xlink:href="#equation_00_00"
+           x="77"
+           width="744.09448"
+           height="1052.3622" />
+      </g>
+    </g>
+    <path
+       sodipodi:type="arc"
+       style="fill:#ff0000;stroke:#ff0000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;fill-opacity:0.19607843"
+       id="path4169"
+       sodipodi:cx="368.57144"
+       sodipodi:cy="334.50504"
+       sodipodi:rx="130"
+       sodipodi:ry="83.571426"
+       d="m 498.57144,334.50504 a 130,83.571426 0 1 1 -260,0 130,83.571426 0 1 1 260,0 z" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 420,165.21933 171.42857,340"
+       id="path4939"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 221.42857,166.6479 662.85714,362.36218"
+       id="path4941"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 77.142857,169.50504 C 80,178.07647 661.42857,315.21933 661.42857,315.21933"
+       id="path4943"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 65.714286,272.36218 661.42857,228.07647"
+       id="path4945"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 67.142857,419.50504 435.71429,166.6479"
+       id="path4947"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 150,503.79075 312.85714,165.21933"
+       id="path4949"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 301.42857,505.21933 168.57143,166.6479"
+       id="path4951"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 477.14286,505.21933 65.714286,279.50504"
+       id="path4953"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 325.71429,505.21933 662.85714,232.36218"
+       id="path4955"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 65.714286,460.93361 662.85714,382.36218"
+       id="path4957"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
