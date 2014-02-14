@@ -322,7 +322,8 @@
 
         <section>
         <p>
-        この様に特徴抽出は非常に難しくまた面白い部分なのですが, この勉強会では今後一般的な話題のみを取り上げます.
+        この様に特徴抽出は非常に難しくまた面白い部分なのですが, 各分野に固有の話題ばかりですので
+        この勉強会では特徴抽出の一般論と特に有名な手法だけを紹介します.
         </p>
         </section>
 
@@ -338,7 +339,7 @@
 
         <section>
         <p>
-        今回はパターン識別の代表的な手法を紹介します. 数学的な話題は次回以降に回します.
+        今回はパターン識別の代表的な手法をざっと紹介します. 数学的な話・アルゴリズム的な話は来週以降詳しくやっていきます.
         </p>
         </section>
 
@@ -355,6 +356,9 @@
         <section>
         <p>
         識別器 $\varphi: \Omega\rightarrow C$ を定めると言うことは, <strong> 特徴空間 $\Omega$ を幾つかの領域に分割しラベルを振る </strong> という事に他なりません.
+        </p>
+        <p>
+        各領域をどのように表現するか？どのように分割を行うか？$\mathbf{x}$ が属する領域をどうやって求めるか？という事を考える事になります.
         </p>
         <div align="center"> <img src="fig/pattern-recognition1.png"> </div>
         </section>
@@ -375,16 +379,19 @@
         <section>
         <h2> テンプレートマッチング </h2>
         <p>
-        各クラスを１つの<strong> 代表ベクトル (representative vector) </strong> で表現し, 代表ベクトルと入力 $\mathbf{x}$ の何らかの距離によって
+        各クラスを１つの<strong> 代表ベクトル (representative vector) </strong> で表現し, 代表ベクトルと入力 $\mathbf{x}$ の距離によって
         $\mathbf{x}$ が属すクラスを決定する手法を <strong> テンプレートマッチング (template matching) </strong> と呼びます.
         </p>
         </section>
 
         <section>
         <p>
-        最も単純な方法は入力 $\mathbf{x}$ と代表ベクトル $\mathbf{\mu}_c$ の距離を<strong> ユークリッド距離(euclidean distance) </strong>
+        最も単純な距離の測り方は<strong> ユークリッド距離(euclidean distance) </strong>を利用する事です.
+        </p>
+        <p>
+        つまり入力 $\mathbf{x}$ と代表ベクトル $\mathbf{\mu}_c$ の距離を
         \[ ||\mathbf{x}-\mathbf{\mu}_c||^2=(\mathbf{x}-\mathbf{\mu}_c)^T(\mathbf{x}-\mathbf{\mu}_c) \]
-        で測る方法です.
+        で求めます.
         </p>
         </section>
 
@@ -429,10 +436,10 @@
 
         <section>
         <p>
-        これは, クラス $c$ の分布の分散共分散行列を $\Sigma_c$ として $\mathbf{x}$ と代表ベクトル $\mathbf{\mu}_c$ の距離を
-        \[ (\mathbf{x}-\mathbf{\mu}_c)^T\Sigma_c^{-1}(\mathbf{x}-\mathbf{\mu}_c) \]
+        これは, クラス $c$ の分布の分散共分散行列を $\mathbf{\Sigma}_c$ として $\mathbf{x}$ と代表ベクトル $\mathbf{\mu}_c$ の距離を
+        \[ (\mathbf{x}-\mathbf{\mu}_c)^T\mathbf{\Sigma}_c^{-1}(\mathbf{x}-\mathbf{\mu}_c) \]
         で測る事によって調整する事が出来ます. これを <strong> マハラノビス距離 (Maharanobis distance)</strong>と呼びます.
-        $\Sigma_c$ は一般には分からないので標本分散(これは母分散の最尤推定量)などを代わり使います.
+        $\mathbf{\Sigma}_c$ は一般には分からないので標本分散(これは母分散の最尤推定量)などを代わり使います.
         </p>
         <p>
         数学的な根拠は後の回に説明する予定です.
@@ -448,7 +455,7 @@
 
         <section>
         <p>
-        代表ベクトルを複数持たせる事によってより複雑な分布を表現するという方法(<strong>マルチテンプレート法</strong>)もあります. 代表ベクトルの決め方は難しいですが, クラスタリングなどの手法を併用します.
+        代表ベクトルを複数持たせる事によってより複雑な分布を表現するという方法(<strong>マルチテンプレートマッチング法</strong>)もあります. 代表ベクトルの決め方は難しいですが, クラスタリングなどの手法を併用します.
         </p>
         <div align="center"> <img width="70%" src="prog/fig1-5.png"> <a href="prog/prog1-5.py">prog1-5.py</a> </div>
         </section>
@@ -501,11 +508,14 @@
 
         <section>
         <p>
-        ユークリッド距離によるテンプレート法は
+        ユークリッド距離によるテンプレートマッチング法は
         \[ f_c(\mathbf{x}) = ||\mathbf{x}-\mathbf{\mu}_c||^2 \]
-        という識別関数, マハラノビス距離によるテンプレート法は
-        \[ f_c(\mathbf{x}) = (\mathbf{x}-\mathbf{\mu}_c)^T\Sigma_c^{-1}(\mathbf{x}-\mathbf{\mu}_c) \]
+        という識別関数, マハラノビス距離によるテンプレートマッチング法は
+        \[ f_c(\mathbf{x}) = (\mathbf{x}-\mathbf{\mu}_c)^T\mathbf{\Sigma}_c^{-1}(\mathbf{x}-\mathbf{\mu}_c) \]
         という識別関数によって表す事が出来ます.
+        </p>
+        <p>
+        従ってテンプレートマッチングは識別関数による識別法の１つです.
         </p>
         </section>
 
@@ -514,7 +524,10 @@
         問題は識別関数 $f_c(\mathbf{x})$ をどのように決定するのかということです.
         </p>
         <p class="fragment">
-        １つの方法は $f_c(\mathbf{x})$ を <strong> パラメトリックモデル (parametric model)</strong> $f_c(\mathbf{x},\mathbf{a})$ として
+        1つの方法は, テンプレートマッチング法の様に幾何学的な考察を行う事です. 後の回に紹介しますが, 他には部分空間法などの手法があります.
+        </p>
+        <p class="fragment">
+        ２つ目の方法は $f_c(\mathbf{x})$ を <strong> パラメトリックモデル (parametric model)</strong> $f_c(\mathbf{x},\mathbf{a})$ として
         表現し, パラメータ $\mathbf{a}$ に関する最適化問題に帰着する事です.
         </p>
         </section>
@@ -535,12 +548,24 @@
 
         <section>
         <p>
+        クラス $c_1,c_2$ の間の識別面は
+        \[ \small{\begin{aligned}
+        &f_{c_1}(\mathbf{x})=f_{c_2}(\mathbf{x})\\
+        \Leftrightarrow &(a_{c_11}-a_{c_21})x_1+\cdots+(a_{c_1m}-a_{c_2m})x_m+(b_{c_1}-b_{c_2}) = 0
+        \end{aligned}} \]
+        より平面となるので, 線形識別関数を使うと特徴空間は平面で区切られて行くことになります.
+        </p>
+        </section>
+
+        <section>
+        <p>
         実はユークリッド距離によるテンプレートマッチングは線形識別関数による識別と等価です.
         </p>
         \[ ||\mathbf{x}-\mathbf{\mu}_c||^2 = ||\mathbf{x}||^2 -2\mathbf{\mu}_c^T\mathbf{x}+||\mathbf{\mu}_c||^2 \]
         <p>
         であり, $||\mathbf{x}||^2$ は $c$ によらないですから $||\mathbf{x}-\mathbf{\mu}_c||^2$ が最小となるのは
-        \[ \mathbf{\mu}_c^T\mathbf{x}-\frac{1}{2}||\mathbf{\mu}_c||^2 \]
+        線形識別関数
+        \[ f_c(\mathbf{x})=\mathbf{\mu}_c^T\mathbf{x}-\frac{1}{2}||\mathbf{\mu}_c||^2 \]
         が最大となる時です.
         </p>
         </section>
@@ -556,7 +581,7 @@
         と呼ばれます.
         </p>
         <p>
-        簡単に言えばパラメータについて線形である物は全て一般化線形識別関数です.
+        つまり, 特徴ベクトルを $\Psi$ で変換してから線形識別関数で識別するというモデルです.
         </p>
         </section>
 
@@ -585,16 +610,21 @@
         \[ \mathbf{p}_{c_i} = (0,0,\ldots,0,1,0,\ldots,0,0)^T \]
         を定めます. 
         </p>
-        <p class="fragment">
-        この時学習データ $D=\{(\mathbf{x}_1,y_1),\ldots,(\mathbf{x}_n,y_n)\}$ に対して
+        </section>
+
+        <section>
+        <p>
+        学習データ $D=\{(\mathbf{x}_1,y_1),\ldots,(\mathbf{x}_n,y_n)\}$ に対して
         \[ \frac{1}{n}\sum_{i=1}^n || \mathbf{f}(\mathbf{x}_i) - \mathbf{p}_{y_i}||^2 \]
         を平均二乗誤差と呼びます. これが最小化となるように各 $\mathbf{a}_c$ を決定します.
+        </p>
+        <p>
+        つまり $\mathbf{f}(\mathbf{x}_i)$ と $\mathbf{p}_{y_i}$ が出来るだけ近づく様に最適化を行います.
         </p>
         </section>
 
         <section>
-        p>
-        一般化線形識別関数の場合には直接パラメータを求めてしまう事が出来るのでちょっとやってみましょう.
+        一般化線形識別関数の場合にはパラメータを直接求めてしまう事が出来るのでちょっとやってみましょう.
         </p>
         <p class="fragment">
         \[ f_c(\mathbf{x}) = \mathbf{a}_c^T\Psi(\mathbf{x}) \]
@@ -603,8 +633,8 @@
         \mathbf{f}(\mathbf{x}) &= (\mathbf{a}_{c_1}^T\Psi(\mathbf{x}), \mathbf{a}_{c_2}^T\Psi(\mathbf{x}),\ldots,\mathbf{a}_{c_k}^T\Psi(\mathbf{x}))^T \\
         &= (\mathbf{a}_{c_1},\mathbf{a}_{c_2},\dots,\mathbf{a}_{c_k})^T\Psi(\mathbf{x})
         \end{aligned} \]
-        となるので, $A = (\mathbf{a}_{c_1},\mathbf{a}_{c_2},\ldots,\mathbf{a}_{c_k})$ と置けば
-        \[ \mathbf{f}(\mathbf{x})=A^T\Psi(\mathbf{x}) \]
+        となるので, $\mathbf{A} = (\mathbf{a}_{c_1},\mathbf{a}_{c_2},\ldots,\mathbf{a}_{c_k})$ と置けば
+        \[ \mathbf{f}(\mathbf{x})=\mathbf{A}^T\Psi(\mathbf{x}) \]
         となります.
         </p>
         </section>
@@ -613,12 +643,12 @@
         <p>
         従って
         \[ \begin{aligned}
-        \sum_{i=1}^n||\mathbf{f}(\mathbf{x}_i)-\mathbf{p}_{y_i}||^2 &= \sum_{i=1}^n||A^T\Psi(\mathbf{x}_i)-\mathbf{p}_{y_i}||^2 \\
-        &= \sum_{i=1}^n (\Psi(\mathbf{x}_i)^TA-\mathbf{p}_{y_i}^T)(A^T\Psi(\mathbf{x}_i)-\mathbf{p}_{y_i}) \\
-        &= \sum_{i=1}^n \left\{ \Psi(\mathbf{x}_i)^TAA^T\Psi(\mathbf{x}_i)-2\Psi(\mathbf{x}_i)^TA\mathbf{p}_{y_i}+||\mathbf{p}_{y_i}||^2 \right\}
+        \sum_{i=1}^n||\mathbf{f}(\mathbf{x}_i)-\mathbf{p}_{y_i}||^2 &= \sum_{i=1}^n||\mathbf{A}^T\Psi(\mathbf{x}_i)-\mathbf{p}_{y_i}||^2 \\
+        &= \sum_{i=1}^n (\Psi(\mathbf{x}_i)^T\mathbf{A}-\mathbf{p}_{y_i}^T)(\mathbf{A}^T\Psi(\mathbf{x}_i)-\mathbf{p}_{y_i}) \\
+        &= \sum_{i=1}^n \left\{ \Psi(\mathbf{x}_i)^T\mathbf{A}\mathbf{A}^T\Psi(\mathbf{x}_i)-2\Psi(\mathbf{x}_i)^T\mathbf{A}\mathbf{p}_{y_i}+||\mathbf{p}_{y_i}||^2 \right\}
         \end{aligned} \]
-        となるので, これを $g(A)$ とおいて $A$ で微分すれば
-        \[ \frac{\partial g(A)}{\partial A} = 2\sum_{i=1}^n\left\{\Psi(\mathbf{x}_i)\Psi(\mathbf{x}_i)^TA-\Psi(\mathbf{x}_i)\mathbf{p}_{y_i}^T\right\} \]
+        となるので, これを $g(\mathbf{A})$ とおいて $\mathbf{A}$ で微分(資料末尾に補足説明)すると
+        \[ \frac{\partial g(\mathbf{A})}{\partial \mathbf{A}} = 2\sum_{i=1}^n\left\{\Psi(\mathbf{x}_i)\Psi(\mathbf{x}_i)^T\mathbf{A}-\Psi(\mathbf{x}_i)\mathbf{p}_{y_i}^T\right\} \]
         となります.
         </p>
         </section>
@@ -627,12 +657,12 @@
         <p>
         これは
         \[ \begin{aligned}
-        X &= (\Psi(\mathbf{x}_1),\Psi(\mathbf{x}_2),\ldots,\Psi(\mathbf{x}_n))^T \\
-        P &= (\mathbf{p}_{y_1},\mathbf{p}_{y_2},\ldots,\mathbf{p}_{y_n})^T \\
+        \mathbf{X} &= (\Psi(\mathbf{x}_1),\Psi(\mathbf{x}_2),\ldots,\Psi(\mathbf{x}_n))^T \\
+        \mathbf{P} &= (\mathbf{p}_{y_1},\mathbf{p}_{y_2},\ldots,\mathbf{p}_{y_n})^T \\
         \end{aligned}
         \] 
         と置けば
-        \[ \frac{\partial g(A)}{\partial A} = 2(X^TXA-X^TP) \]
+        \[ \frac{\partial g(\mathbf{A})}{\partial \mathbf{A}} = 2(\mathbf{X}^T\mathbf{X}\mathbf{A}-\mathbf{X}^T\mathbf{P}) \]
         と表されるので,
         </p>
         </section>
@@ -640,24 +670,162 @@
         <section>
         <p>
         平均二乗誤差が最小となるのは
-        \[ \frac{\partial g(A)}{\partial A}=O\Leftrightarrow X^TXA=X^TP \]
+        \[ \frac{\partial g(\mathbf{A})}{\partial \mathbf{A}}=O\Leftrightarrow \mathbf{X}^T\mathbf{X}\mathbf{A}=\mathbf{X}^T\mathbf{P} \]
         が成立する時となります.
         </p>
         <p>
-        特に $X^TX$ が正則ならば
-        \[ \color{red}{ A = (X^TX)^{-1}X^TP } \]
+        特に $\mathbf{X}^T\mathbf{X}$ が正則ならば
+        \[ \color{red}{ \mathbf{A} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{P} } \]
         が求めるパラメータです.
         </p>
         <p style="font-size:70%">
-        一般に $X^TX$ が正則でないならば $X$ の擬似逆行列 $X^+$ によって
-        \[ \color{red}{ A = X^+P } \]
+        一般に $\mathbf{X}^T\mathbf{X}$ が正則でないならば $\mathbf{X}$ の擬似逆行列 $\mathbf{X}^+$ によって
+        \[ \color{red}{ \mathbf{A} = \mathbf{X}^+\mathbf{P} } \]
         となります.
         </p>
         </section>
 
         <section>
         <p>
-        実際に使ってみましょう.
+        平均二乗誤差最小化による一般化線形識別関数の構築を行ってみましょう.
+        まずは以下のデータをサンプルとして使います.
+        </p>
+        <div align="center"> <img width="60%" src="prog/fig1-8-1.png">
+          <a href="prog/prog1-8-1.py">prog1-8-1.py</a>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        コードは以下のようになります.
+        </p>
+<pre><code class="python" style="max-height:400px"># -*- coding: utf-8 -*-
+import sys
+from numpy import *
+from scipy import linalg
+from matplotlib.pyplot import *
+
+data = loadtxt(sys.argv[1], delimiter="\t")
+
+xs = data[0:2,:].T   # 学習データ [[x0,y0], [x1,y1], ...]
+cs = int_(data[2,:]) # 正解クラス [c0, c1, ...]
+
+# 学習データの数
+N = len(xs)
+
+# クラスの数
+K = max(cs)+1
+
+#### 特徴ベクトルの変換関数 ####
+def phi(x):
+    return [x[0], x[1], 1]
+    #return [x[0]**2, x[1]**2, x[0]*x[1], x[0], x[1], 1]
+
+#### パラメータの最適化 ####
+# phi(特徴ベクトル)を行に並べた行列
+X = array([ phi(xs[i]) for i in range(N) ])
+
+# 正解クラス番号の成分だけ1にしたベクトルpを
+# 行に並べた行列
+P = zeros([N, K])
+for i in range(N):
+    P[i, cs[i]] = 1
+
+# X^TXA = X^TP を満たす A が求めるパラメータ
+A = linalg.solve(X.T.dot(X), X.T.dot(P))
+
+# 擬似逆行列を使う場合
+# A = linalg.pinv(X).dot(P)
+
+# 最小二乗法を実行してくれる関数もあります
+# A,residues,rank,s=linalg.lstsq(X, P)
+
+#### 識別器の構築 ####
+def distance(x, i):
+    t = zeros(K)
+    t[i] = 1
+    return linalg.norm(x-t)
+
+# (x, y) と (0,...,0,1,0,...,0) の距離が最小のクラスに分類
+def classify(x, y):
+    p = A.T.dot(phi([x, y]))
+    return argmin([distance(p, i) for i in range(K)])
+
+#### どんな感じで空間が分割されたか見てみましょう ####
+# 表示領域の設定
+xmin = min(xs[:,0]); xmax = max(xs[:,0])
+ymin = min(xs[:,1]); ymax = max(xs[:,1])
+xmin -= (xmax-xmin)/20
+xmax += (xmax-xmin)/20
+ymin -= (ymax-ymin)/20
+ymax += (ymax-ymin)/20
+xlim(xmin, xmax)
+ylim(ymin, ymax)
+
+X, Y = meshgrid(linspace(xmin, xmax, 100), linspace(ymin, ymax, 100))
+Z = vectorize(classify)(X, Y)
+pcolor(X, Y, Z, alpha=0.1)
+scatter(xs[:,0], xs[:,1], c=cs, s = 50, linewidth=0)
+show()
+</code></pre>
+        </section>
+
+        <section>
+        <p>
+        線形識別関数
+        \[ f_c(\mathbf{x}) = a_{c0}x_0 + a_{c1}x_1 + a_{c2} \]
+        での識別を行ってみましょう. これは
+        \[ \Psi(\mathbf{x}) = (x_0, x_1, 1)^T \]
+        とおいた場合の一般化線形識別関数ですから, 前頁のコードにおいて
+<pre><code class="python" style="max-height:400px">def phi(x):
+    return [x[0], x[1], 1]
+</code></pre>
+        として実行します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        結果は以下のようになります.
+        </p>
+        <div align="center"> <img width="70%" src="prog/fig1-8-2-1.png">
+        </section>
+
+        <section>
+        <p>
+        続いて以下のような学習データでやってみましょう.
+        </p>
+        <div align="center"> <img width="60%" src="prog/fig1-8-3.png">
+          <a href="prog/prog1-8-3.py">prog1-8-3.py</a>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        今度は変数について2次の識別関数
+        \[ f_c(\mathbf{x}) = a_{c0}x_0^2 + a_{c1}x_1^2 + a_{c2}x_0x_1 + a_{c3}x_0 + a_{c4}x_1 + a_{c5} \]
+        を使ってみましょう. これは
+        \[ \Phi(\mathbf{x})=(x_0^2,x_1^2,x_0x_1,x_0, x_1,1)^T \]
+        とおいた場合なので, 先ほどのコードを
+        </p>
+<pre><code class="python" style="max-height:400px">def phi(x):
+    return [x[0]**2, x[1]**2, x[0]*x[1], x[0], x[1], 1]
+</code></pre>
+        <p>
+        と修正して実行します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        結果は以下のようになります.
+        </p>
+        <div align="center"> <img width="60%" src="prog/fig1-8-2-2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この様に一般化線形識別関数という統一的なモデルで様々な識別面を表す事ができます. また, 数学的な取り扱いも容易である事から様々な手法の基礎として用いられる事が多いです.
         </p>
         </section>
 
@@ -676,9 +844,10 @@
         <section>
         <h2> 決定木 </h2>
         <p>
-        識別器を組み合わせる分かり易い方法は<strong>決定木 (decision tree)</strong>であると思います.
-        荒い識別器で大きく分類していきながら徐々に細かい特徴を見ていきます.
-        全ての特徴量を１つの識別器に投入するよりも効率的な方法です.
+        複数の識別器を使って段階的に識別を行っていく方法を<strong>決定木 (decision tree)</strong>による識別と言います.
+        </p>
+        <p>
+        最初は大まかに分類していきながら徐々に細かい特徴を見ていきます.
         </p>
         <div align="center"> <img width="50%" src="fig/decision-tree.png"> </div>
         </section>
@@ -693,7 +862,50 @@
 
         <section>
         <h2> ニューラルネットワーク </h2>
-        <div align="center"> <img width="50%" src="fig/neural-net-element.png"> </div>
+        <p>
+        神経細胞を模したような単純な識別器をネットワーク状に結合して出来上がる識別器を<strong> ニューラルネットワーク (neural network)</strong>と呼びます.
+        </p>
+        <div align="center"> <img width="50%" src="fig/neural-network.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        ニューラルネットワークの素子は以下の図の様な構造をしています.
+        各入力線に重み $w_1,w_2,\ldots,w_m$ としきい値 $\theta$ が定められており
+        \[ x_1w_1 + x_2w_2 + \cdots + x_mw_m > \theta \]
+        であるならば $1$ を,そうでなければ $0$ を出力します.
+        </p>
+        <div align="center"> <img width="40%" src="fig/neural-net-element.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        \[ x_1w_1 + x_2w_2 + \cdots + x_mw_m = \theta \]
+        は平面なので素子１つは入力の空間を平面で切るという非常に単純なものです.
+        これをネットワーク状に結合する事によって全体として非常に複雑な識別面を形成する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ニューラルネットワークも重み$\mathbf{w}$ としきい値 $\mathbf{\theta}$ というパラメータを持つパラメトリックモデルと考える事が出来ます.
+        </p>
+        <p>
+        パラメータの学習には <strong> バックプロパゲーション (backpropagation)</strong> という手法が有名です. これも後の回に扱いたいと思います.
+        </p>
+        </section>
+
+        <section>
+        <h2> 集団学習 </h2>
+        <p>
+        識別器を組み合わせる方法として, 単純な識別器の結果の多数決を取るという方法も考えられます. これは<strong>集団学習(ensemble learning)</strong>という方法です.
+        </p>
+        <p>
+        同じ学習データで同じ学習をしたら同じ識別器が出来上がってしまうので, 使用する学習データのサブセットや学習方法を変えながら個々の識別器を構築します.
+        </p>
+        <p>
+        有名な<strong> バギング (bagging)</strong>と<strong>ブースティング (boosting)</strong>について後の回に紹介したいと思います.
+        </p>
         </section>
 
         <section>
@@ -703,6 +915,119 @@
         次回はベイズ統計の復習をした後, 識別器の評価であるとか事前知識の利用といった基礎的な話題を進めていきます.
         </p>
         </section>
+
+        <section>
+        <h2> 補足: ベクトル・行列でのスカラー関数の微分 </h2>
+        <p>
+        スカラー関数 $f(\mathbf{x})$ に対してそのベクトル $\mathbf{x}$ での微分係数を
+        \[ \frac{\partial f(\mathbf{x})}{\partial \mathbf{x}} = \left(
+        \frac{\partial f(\mathbf{x})}{\partial x_1}, \frac{\partial f(\mathbf{x})}{\partial x_2}, \ldots,\frac{\partial f(\mathbf{x})}{\partial x_n}\right)^T \]
+        と定めます. つまりこれは勾配
+        \[ \frac{\partial f(\mathbf{x})}{\partial \mathbf{x}}=\mathrm{grad} f(\mathbf{x}) \]
+        に他ならないので, 極値をとる点では
+        \[ \frac{\partial f(\mathbf{x})}{\partial \mathbf{x}}=\mathbf{0} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        定数 $c$ に対しては当然
+        \[ \frac{\partial c}{\partial \mathbf{x}} = \mathbf{0} \]
+        となります.
+        </p>
+        <p>
+        定数ベクトルとの内積 $\mathbf{a}^T\mathbf{x}=\mathbf{x}^T\mathbf{a}$ に対しては成分計算をしてみると
+        \[ \frac{\partial}{\partial\mathbf{x}}\mathbf{a}^T\mathbf{x} = \frac{\partial}{\partial\mathbf{x}}\mathbf{x}^T\mathbf{a}=\mathbf{a} \]
+        である事が判ります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        二次形式
+        \[ \mathbf{x}^T\mathbf{A}\mathbf{x} = \sum_{i,j} a_{ij}x_ix_j \]
+        については
+        \[ \begin{aligned}
+        \frac{\partial}{\partial x_k} \mathbf{x}^T\mathbf{A}\mathbf{x} &= \sum_{i,j} a_{ij}\frac{\partial}{\partial x_k} x_ix_j=\sum_{i,j}a_{ij}(x_j\delta_i^k+x_i\delta_j^k) \\
+        &= \sum_j a_{kj}x_j + \sum_i a_{ik}x_i
+        \end{aligned} \]
+        なので
+        \[ \frac{\partial}{\partial \mathbf{x}} = (\mathbf{A}+\mathbf{A}^T)\mathbf{x} \]
+        となります($\delta_{ij}$ はクロネッカーのデルタ).
+        </p>
+        </section>
+
+        <section>
+        <p>
+        特に $||\mathbf{A}\mathbf{x}||^2$ については
+        \[ ||\mathbf{A}\mathbf{x}||^2 = \mathbf{x}^T\mathbf{A}^T\mathbf{A}\mathbf{x} \]
+        なので
+        \[ \frac{\partial}{\partial\mathbf{x}}||\mathbf{A}\mathbf{x}||^2 = (\mathbf{A}^T\mathbf{A}+(\mathbf{A}^T\mathbf{A})^T)\mathbf{x} = 2\mathbf{A}^T\mathbf{A}\mathbf{x} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        よって例えば, 
+        \[ || \mathbf{A}\mathbf{x}-\mathbf{b}||^2 = ||\mathbf{A}\mathbf{x}||^2-2\mathbf{x}^T\mathbf{A}^T\mathbf{b}+||\mathbf{b}||^2 \]
+        を最小にする $\mathbf{x}$ は
+        \[ \frac{\partial}{\partial\mathbf{x}}||\mathbf{A}\mathbf{x}-\mathbf{b}||^2 = 2(\mathbf{A}^T\mathbf{A}\mathbf{x}-\mathbf{A}^T\mathbf{b}) \]
+        より
+        \[ \mathbf{A}^T\mathbf{A}\mathbf{x}=\mathbf{A}^T\mathbf{b} \]
+        の解となります. これは最小二乗法による回帰分析などでよく出てくる方程式です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        同様に行列変数 $\mathbf{X}=(\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_m)$ を引数に取るスカラー関数 $f(\mathbf{X})$ に対して, 行列 $\mathbf{X}$ での微分係数を
+        \[ \frac{\partial f(\mathbf{X})}{\partial \mathbf{X}} = \left(
+        \frac{\partial f(\mathbf{X})}{\partial\mathbf{x}_1},
+        \frac{\partial f(\mathbf{X})}{\partial\mathbf{x}_2},\ldots,
+        \frac{\partial f(\mathbf{X})}{\partial\mathbf{x}_m},
+        \right) \]
+        $f(X)$ が極値を取るならば, 全ての方向の勾配が $\mathbf{0}$ になるので
+        \[ \frac{\partial f(\mathbf{X})}{\partial \mathbf{X}} = \mathbf{O} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ベクトルの場合と同様に公式を導くと, 定数 $c$ については
+        \[ \frac{\partial}{\partial\mathbf{X}}c = \mathbf{O} \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p> $\mathbf{a}^T\mathbf{X}\mathbf{b}$ に対しては
+        \[ \mathbf{a}^T\mathbf{X}\mathbf{b}=\sum_{i,j}a_iX_{ij}b_j \]
+        なので
+        \[ \frac{\partial}{\partial X_{kl}}\mathbf{a}^T\mathbf{X}\mathbf{b}=\sum_{i,j}a_i\delta_i^k\delta_j^lb_j = a_kb_l \]
+        ですから
+        \[ \frac{\partial}{\partial \mathbf{X}}\mathbf{a}^T\mathbf{X}\mathbf{b} = \mathbf{a}\mathbf{b}^T \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\mathbf{a}^T\mathbf{X}\mathbf{X}^T\mathbf{b}$ については
+        \[ \mathbf{a}^T\mathbf{X}\mathbf{X}^T\mathbf{b} = \sum_{i,j,k}a_iX_{ik}X_{jk}b_j \]
+        なので
+        \[ \begin{aligned}
+        \frac{\partial}{\partial X_{pq}} &= \sum_{i,j,k}a_i(\delta_i^p\delta_k^qX_{jk}+\delta_k^p\delta_j^qX_{ik})b_j \\
+        &= \sum_j a_pX_{jq}b_j + \sum_ia_iX_{ip}b_q \\
+        \end{aligned} \]
+        となります. よって
+        \[ \frac{\partial}{\partial \mathbf{X}}\mathbf{a}^T\mathbf{X}\mathbf{X}^T\mathbf{b} = (\mathbf{a}\mathbf{b}^T+\mathbf{b}\mathbf{a}^T)X \]
+        となります. $\mathbf{a}^T\mathbf{X}^T\mathbf{X}\mathbf{b}$ などについても同様に計算を行います.
+        </p>
+        </section>
+
 			</div>
 		</div>
 

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>パターン認識・機械学習勉強会</title>
     <link rel="stylesheet" href="css/reveal.css">
-    <link rel="stylesheet" href="css/theme/night.css">
+    <link rel="stylesheet" href="css/theme/beige.css">
   </head>
   <body>
     <div class="reveal">
@@ -19,28 +19,40 @@
       </div>
     </div>
 
-    <script src="js/head.min.js"></script>
+    <script src="lib/js/head.min.js"></script>
     <script src="js/reveal.min.js"></script>
 
-    <script>
-      Reveal.initialize({
-        controls: false,
-        progress: false,
-        history: false,
-        overview: false,
-        touch: false,
-        center: false,
-        rollingLinks: false,
-        transition: "none",
+		<script>
 
-        dependencies: [
-					{ src: "reveal.js/lib/js/classList.js", condition: function() { return !document.body.classList; } },
-					{ src: "reveal.js/plugin/highlight/highlight.js", async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: "reveal.js/plugin/zoom-js/zoom.js", async: true, condition: function() { return !!document.body.classList; } },
-					{ src: "reveal.js/plugin/notes/notes.js", async: true, condition: function() { return !!document.body.classList; } }
-          ]
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
       });
-    </script>
+
+		</script>
 
     <!-- ADNETWORK by RAO ReTargeting Tag BEGIN -->
     <script type="text/javascript">
