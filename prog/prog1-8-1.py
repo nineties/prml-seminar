@@ -2,7 +2,7 @@
 from numpy import *
 from matplotlib.pyplot import *
 
-#### サンプルデータ ####
+#### 繧ｵ繝ｳ繝励Ν繝�繝ｼ繧ｿ ####
 N = [10, 10, 10]
 mu = [array([0, 0]), array([1, 2]), array([3, 1])]
 sigma = [0.5, 0.5, 0.5]

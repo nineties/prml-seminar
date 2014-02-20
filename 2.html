@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第2回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第2回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年2月20日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 第2回の内容</h3>
+        <p>
+        本日は基礎的な話題であるベイズ確率論,ベイズ識別,モデル選択について進めていきます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 記法・用語について </h3>
+        <p>
+        多変数関数 $f(\mathbf{x})=f(x_1,x_2,\ldots,x_n)$ の領域 $D$ での重積分を
+        \[ \int_Df(\mathbf{x})\mathrm{d}\mathbf{x}\overset{\mathrm{def}}{=} \int\cdots\int f(x_1,\ldots,x_n)\mathrm{d}x_1\ldots,\mathrm{d}x_n \]
+        と書きます.
+        </p>
+        <p>
+        離散変数に関する和も
+        \[ \sum_{\mathbf{x}}f(\mathbf{x}) \overset{\mathrm{def}}{=} \sum_{x_1}\ldots\sum_{x_n}f(x_1,\ldots,x_n) \]
+        の様に書きます.
+        </p>
+        <p>
+        どちらも $\mathbf{x}$ の範囲が書いていない場合には $\mathrm{x}$ の変域全体について積分・和を取ることとします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        確率変数 $\mathbf{x}$ が連続の場合, 確率分布は <strong> 確率密度関数 (probability density function) </strong> $p(\mathbf{x})$ によって表され, 確率 $p(A)$ は
+        \[ p(A) = \int_A \pi(\mathbf{x})\mathrm{d}\mathbf{x} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        確率変数 $\mathbf{x}$ が離散的の場合の確率 $p(A)$ は, 各点での確率の和
+        \[ p(A) = \sum_{\mathbf{a} \in A}p(\mathbf{x}=\mathbf{a}) \]
+        と表されますが, $\pi(\mathbf{t})=p(\mathbf{x}=\mathbf{t})$ と定めれば,
+        \[ p(A) = \sum_{\mathbf{x}\in A}\pi(\mathbf{x}) \]
+        と書くことが出来ます. この $\pi(\mathbf{x})$ は <strong> 確率質量関数 (probability mass function) </strong> と呼ばれます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        連続変数と離散変数の場合で記法を使い分けるのは面倒なので, 変数が離散的の場合も
+        \[ p(A) = \sum_{\mathbf{x}\in A}\pi(\mathbf{x}) \]
+        を
+        \[ p(A) = \int_A \pi(\mathbf{x})\mathrm{d}\mathbf{x} \]
+        と書きます.
+        </p>
+        <p style="font-size:70%">
+        測度論が必要ですが程度が過ぎるので勉強会ではやりません.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ベイズ確率論 </h2>
+        </section>
+
+        <section>
+        <h2> ベイズ確率 </h2>
+        <p>
+        データ $\mathbf{x}$ のクラスが $c$ である確率
+        \[ p(\mathrm{class}(\mathbf{x})=c) \]
+        のようなものを頻度主義的に解釈する事は出来ません.  $\mathrm{class}(\mathbf{x})=c$ であるか否かは既に確定している事柄だからです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        しかし, $\mathbf{class}(\mathbf{x})=c$ である否かは私達には「分からない」ので, 主観的な不確かさが存在します.
+        </p>
+        <p class="fragment">
+        このような「不確かさ」を定量的に扱う為の代表的な体系が <strong> ベイズ確率論 (Bayesian probability theory)</strong> です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ベイズ的解釈では 確率 $p(A)$ を
+        \[ \text{「事象 $A$ が起こるという事の確信度」} \]
+        と考えます.
+        </p>
+        <p class="fragment" data-fragment-index="2"> 但し, $p(A)$ は確率論の公理を満たす様に数量化します. </p>
+        <div class="block fragment" data-fragment-index="2" style="border-color:blue;font-size:90%">
+        \[ \begin{aligned}
+        1. & p(A) \geq 0 \\
+        2. & \text{$A_1,A_2,\ldots$ が互いに素の時} \\
+           & p(A_1\cup A_2\cup \cdots) = p(A_1) + p(A_2) + \cdots \\
+        3. & p(\Omega) = 1\qquad (\Omega:\text{標本全体})
+        \end{aligned} \]
+        </div>
+        </section>
+
+        <section>
+        <p>
+        ベイズ確率は主観的に定まるわけですが, 新たな情報を取り入れて <strong> ベイズ改訂 (Belief revision)</strong> を行う事によってその客観性を高めていく事が出来ます.
+        </p>
+        <div align="center"> <img width="700px" src="fig/bayesian-revision.png"> </div>
+        </section>
+
+        <section>
+        <p> ベイズ改訂にはベイズの定理を利用します. </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4 style="color:blue"> ベイズの定理 </h4>
+        <p>
+        \[ p(X|D) = \frac{p(D|X)p(X)}{p(D)} \]
+        が成立する。
+        </p>
+        <p>
+        $p(X)$ を<strong>事前確率 (priori probability)</strong>, $p(X|D)$ を<strong>事後確率 (posterior probability)</strong>と呼ぶ.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        例えば, 「ある日本人$A$ さん」が男性である確率を考えましょう.
+        </p>
+        <p class="fragment">
+        事前確率 $p(\text{男})$ は可能な限り客観的に考えながら, 最終的には主観で定めます.
+        <p class="fragment">
+        今, $A$ さんについて一切の情報が無いけども, 日本人の男女比が $95:100$ <span style="font-size:60%">(数値は適当)</span> である事を知っているとしましょう. そこで
+        \[ p(\text{男}) = \frac{95}{200} = 0.475 \]
+        と事前確率を設定する事にします.
+        </p>
+        </section>
+
+        <section>
+        <p> ここで「$A$さんの身長が 170cm以上」という新情報が得られたとしましょう. 日本人男性の 60%が170cm以上, 女性では5% であるとします.
+        </p>
+        <p class="fragment">
+        するとベイズの定理より
+        \[ \small{\begin{aligned}
+        &p(男|\text{170cm以上})\propto p(\text{170cm以上}|男)p(男) = 0.6\times 0.475 = 0.285 \\
+        &p(女|\text{170cm以上})\propto p(\text{170cm以上}|女)p(女) = 0.05\times 0.525 = 0.02625
+        \end{aligned}} \]
+        となります. <span style="font-size:70%"> (分母の $p(\text{170cm以上})$ は共通なので計算は不要) </span>
+
+        </p>
+        <p class="fragment">
+        最後に確率の和が $1$ になるように正規化を行えば事後確率
+        \[ p(\text{男}|\text{170cm以上}) \approx 0.916 \]
+        が得られます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        男女比率を考えずに $p(\text{男})=0.5$ として計算すると
+        \[ p(\text{男}|\text{170cm以上}) \approx 0.923 \]
+        となります.
+        </p>
+        <p>
+        前頁の
+        \[ p(\text{男}|\text{170cm以上}) \approx 0.916 \]
+        では男性の方が少ないという事が加味されて確率が少し小さくなっています.
+        </p>
+        </section>
+
+        <section>
+        <p> 以下は確率分布に対するベイズの定理です. </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4 style="color:blue"> 確率分布のベイズ改訂 </h4>
+        <p>
+        \[ \pi(\mathbf{x}|\mathbf{d}) = \frac{p(\mathbf{d}|\mathbf{x})\pi(\mathbf{x})}{p(\mathbf{d})}\propto p(\mathbf{d}|\mathbf{x})\pi(\mathbf{x}) \]
+        が成立する。
+        </p>
+        <p>
+        $\pi(\mathbf{x})$ を<strong>事前分布 (priori distribution)</strong>, $\pi(\mathbf{x}|\mathbf{d})$ を<strong>事後分布 (posterior distribution)</strong>と呼ぶ.
+        </p>
+        <p>
+        また, 
+        \[ L(\mathbf{x}|\mathbf{d})=p(\mathbf{d}|\mathbf{x}) \]
+        を $\mathbf{x}$ の関数とみなした時これを <strong> 尤度関数 (likelihood function) </strong> と呼ぶ.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        頻度主義による分析手法はデータ数が十分にないと極端な結論を導いてしまう事があります.
+        </p>
+        <p class="fragment">
+        ベイズ確率論では事前知識を事前分布として取り込むことで, そうした極端な結論を回避する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p> 例えばあるコインを投げて表が出る確率 $\theta$ について考えましょう. </p>
+        <p class="fragment">
+        コインを $3$ 回投げて全て表が出たならば尤度関数は
+        \[ L(\theta|\text{$3$連続表}) = p(\text{$3$連続表}|\theta) = \theta^3 \]
+        となります. <strong> 最尤法 (maximum liklihood estimation, MLE)</strong> では $L$ が最大となるようにパラメータを推定するので $\theta = 1$ という結論が得られます.
+        </p>
+        <p class="fragment">
+        「$3$ 連続表が出る」という事象が最も起こりやすいのは「表しかでないコイン」の場合であるというわけです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        では, 事前知識として 「$\theta=0,1$ という事は無いだろう」「$\theta=0.5$の近辺だろう」という事を取り入れてみましょう.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        そこで, 事前分布 $\pi(\theta)$ としてベータ分布 $Be(2,2)$ つまり
+        \[ \pi(\theta)\propto\theta(1-\theta) \]
+        を使ってみます.
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="500px" src="prog/fig2-1-1.png"> <a href="prog/prog2-1-1.py" style="font-size:60%">prog2-1-1.py</a> </div>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ベイズの定理より事後分布は
+        \[ \small{\pi(\theta|\text{$3$連続表}) \propto p(\text{$3$連続表}|\theta)\pi(\theta) \propto \theta^3\cdot \theta(1-\theta) = \theta^4(1-\theta)} \]
+        つまりベータ分布 $Be(5,2)$ となります.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        事前知識を加味しつつ, 実験結果を考慮して分布が右に動いています.事後分布の密度は $\theta=0.8$ のとき最大値をとります.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="500px" src="prog/fig2-1-2.png"> <a href="prog/prog2-1-2.py" style="font-size:60%">prog2-1-2.py</a> </div>
+        </section>
+
+        <section>
+        <h3> MAP推定値 </h3>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <p>
+        データ $\mathbf{x}$ を所与として, 事後分布 $\pi(\theta|\mathbf{x})$ を最大にするような $\hat{\theta}$, すなわち
+        \[ \hat{\theta} = \mathop{\rm arg~max}\limits_{\theta}\pi(\theta|\mathbf{x}) \]
+        を<strong> 事後分布最大化推定量 (maximum a posterior estimator, MAP推定値) </strong> と呼ぶ.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        先ほどの例では計算の容易な分布を利用しましたが, 実際にはもっと複雑な分布を利用する必要があります.
+        </p>
+        <p class="fragment">
+        そこで <strong>マルコフ連鎖モンテカルロ法 (Markov chain Monte Carlo methods, MCMC法) </strong> というランダムサンプリングに基づく数値積分法や, <strong> 変分ベイズ法 (variational Bayesian methods, VB法) </strong> などの近似推定法が必要となります. 後の回に解説を行う予定です.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ベイズ識別 </h2>
+        </section>
+
+        <section>
+        <p>
+        様々な識別手法を互いに比較したりする為には, 数学的な検討が必要不可欠ですので, ベイズ確率論を利用してパターン識別の問題について詳しく見ていきます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 特徴ベクトルの分布 </h3>
+        <p>
+        まず, クラスの集合 $C=\{c_1,c_2,\ldots\}$ の各パターンが出現する確率を $p(c_i)$ としましょう.
+        </p>
+        <p class="fragment">
+        例えば英文ではアルファベット e が最も頻繁に登場し, z が最も少ないという傾向がありますが, こういった各パターンの出現頻度の偏りを $p(c)$ で表現します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        続いて, パターン $c$ が選ばれた時に観測される特徴ベクトル $\mathbf{x}$ の分布を $\pi(\mathbf{x} | c)$ としましょう. これは <strong> クラス分布 (class-conditional distribution) </strong> と呼ばれます.
+        </p>
+        <p class="fragment">
+        すると, 特徴ベクトル $\mathbf{x}$ の分布は
+        \[ \pi(\mathbf{x}) = \sum_c \pi(\mathbf{x}|c)p(c) \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 損失関数 </h3>
+        <p>
+        識別器はクラスを返す関数 $\varphi(\mathbf{x})$ と表す事が出来ます.
+        </p>
+        <p class="fragment">
+        ここで問題となるのは $\varphi(\mathbf{x})$ の「良さ」をどのように評価するかです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まず, クラス $c'$ のデータを誤って $c$ と識別してしまった場合の損失の大きさを表す <strong> 損失関数 (loss function) </strong> $L(c, c')$ を定めます.
+        </p>
+        <p class="fragment">
+        最も簡単なのが <strong> 0-1損失関数 (0-1 loss function) </strong>
+        \[ L(c, c') = \left\{\begin{array}{cc}
+        0 & (c = c') \\
+        1 & (c \neq c')
+        \end{array}\right. \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\varphi$ を最適化する簡単な方法として, 学習データ $\{(\mathbf{x}_1,y_1),(\mathbf{x}_2,y_2),\ldots,(\mathbf{x}_n,y_n)\}$ に対する平均損失
+        \[ \frac{1}{n}\sum_i L(\varphi(\mathbf{x}_i), y_i) \]
+        を最小化する方法が考えられますが, これはデータ数が少ない場合に上手く行きません.
+        </p>
+        </section>
+
+        <section>
+        <p> 例えば1-NN法では学習データに対する損失が全て $0$ になりますが </p>
+        <div align="center"> <img width="700px" src="prog/fig2-2-1.png"> <a href="prog/prog2-2.py" style="font-size:60%">prog2-2.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下のような歪な境界面になって,未知のデータに対する識別能力が低下します. </p>
+        <div align="center"> <img width="700px" src="prog/fig2-2-2.png"> <a href="prog/prog2-2.py" style="font-size:60%">prog2-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        学習データに基いて作られた識別器の, 未知の新しいデータに対する識別能力を <strong> 汎化能力 (generalization performance) </strong> と呼びます.
+        これを最適化する事が本当に必要な事です.
+        </p>
+        </section>
+
+        <section>
+        <h3> 期待損失最小化 </h3>
+        <p>
+        特徴ベクトル $\mathbf{x}$ は分布 $\pi(\mathbf{x})=\sum_c \pi(\mathbf{x}|c)p(c)$ に従うので, 損失の期待値は
+        \[ EL(\varphi) = \int \sum_c L(\varphi(\mathbf{x}),c)\pi(\mathbf{x}|c)p(c)\mathrm{d}\mathbf{x} \]
+        となります. これを <strong> 期待損失 (expected loss)</strong> と呼びます.
+        </p>
+        <p>
+        これを最小化するように識別器を最適化する事を <strong> 期待損失最小化 (expected loss minimization)</strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <h3> ベイズ識別 </h3>
+        <p>
+        0-1損失関数の場合を考えます. 
+        \[ EL(\varphi) = \int\sum_c L(\varphi(\mathbf{x}),c)\pi(\mathbf{x}|c)p(c)\mathrm{d}\mathbf{x} \]
+        の $\pi(\mathbf{x}|c)p(c)$ が最大の所の損失を $0$ にすれば良いので,
+        \[ \varphi(\mathbf{x}) = \mathop{\rm arg~max}\limits_{c} \pi(\mathbf{x}|c)p(c) \]
+        とするのが最適です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで, ベイズの定理より
+        \[ p(c|\mathbf{x}) \propto \pi(\mathbf{x}|c)p(c) \]
+        なので, 今述べた方法はクラス $c$ の事前確率 $p(c)$ に対する事後確率 $p(c|\mathbf{x})$ を最大化する方法であると言えます. その為 <strong> 事後確率最大化識別 (maximum a posterior probability discrimination, MAP識別) </strong> または <strong> ベイズ識別 (Bayesian classification) </strong> と呼ばれます.
+        </p>
+        </section>
+
+        <section>
+        <p> まとめましょう. </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4 style="color:blue"> ベイズ識別 </h4>
+        <p>
+        \[ \varphi(\mathbf{x}) = \mathop{\rm arg~max}\limits_{c}\pi(\mathbf{x}|c)p(c) \] 
+        を識別関数とすると, これは 0-1損失関数に対する期待損失を最小化する.
+        </p>
+        </div>
+        <p>
+        多くの場合 $\pi(\mathbf{x}|c)p(c)$ は非常に小さな値になるので
+        \[ \ln\pi(\mathbf{x}|c)p(c) = \ln\pi(\mathbf{x}|c)+\ln p(c) \]
+        を考える事も多いです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $p(c)$ と $\pi(\mathbf{x}|c)$ は実際には分からないので, 推定を行う必要があります.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        $p(c)$ は各クラスの出現頻度の統計をとって推定する事が出来ます. 十分な統計が取れないならば $p(c)=\mathrm{const}.$ とします.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="500px" src="http://upload.wikimedia.org/wikipedia/commons/4/41/English-slf.png"> <a href="http://ja.wikipedia.org/wiki/%E9%A0%BB%E5%BA%A6%E5%88%86%E6%9E%90_(%E6%9A%97%E5%8F%B7)" style="font-size:60%">wikipedia</a> </div>
+        </section>
+
+        <section>
+        <p>
+        クラス分布 $\pi(\mathbf{x}|c)$ は学習データから推定するということになります. 様々な分布の推定方法が存在します.
+        </p>
+        <div align="center"> <img width="600px" src="fig/class-conditional-distribution2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        ここで1つだけ簡単な例を紹介します.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        各クラス $c$ に対する特徴ベクトルの分布 $\pi(\mathbf{\mathbf{x}}|c)$ が多変量正規分布 $\mathbf{N}(\mathbf{\mu}_c,\mathbf{\Sigma}_c)$ であるとしましょう.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="500px" src="prog/fig2-3.png"> <a href="prog/prog2-3.py" style="font-size:60%">prog2-3.py</a> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        すなわち,
+        \[ \pi(\mathbf{\mathbf{x}}|c) = \frac{1}{(\sqrt{2\pi})^n\sqrt{|\mathbf{\Sigma}_c|}}\exp\left\{-\frac{1}{2}(\mathbf{x}-\mathbf{\mu}_c)^T\mathbf{\Sigma}_c^{-1}(\mathbf{x}-\mathbf{\mu}_c)\right\} \]
+        とおきます.
+        </p>
+        <p class="fragment">
+        すると
+        \[ \begin{aligned}
+        &\ln \pi(\mathbf{x}|c)p(c) \\
+        = &-\frac{1}{2}(\mathbf{x}-\mathbf{\mu}_c)^T\mathbf{\Sigma}_c^{-1}(\mathbf{x}-\mathbf{\mu}_c) - \frac{1}{2}\ln |\mathbf{\Sigma}_c| +\ln p(c) + \mathrm{const.}
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        今の結果からテンプレートマッチング法について前回よりも良く理解する事が出来ます.
+        </p>
+        <p>
+        まず, $p(c)=\mathrm{const}., \mathbf{\Sigma}_c = \sigma^2I$ であるならば
+        \[ \ln \pi(\mathbf{x}|c)p(c) 
+        = -\frac{1}{2\sigma^2}||\mathbf{x}-\mathbf{\mu}_c||^2 + \mathrm{const}. \]
+        となるので, $c$ のベイズ推定値はユークリッド距離
+        \[ ||\mathbf{x}-\mathbf{\mu}_c || \]
+        を最小化するものです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        つまり, ユークリッド距離によるテンプレートマッチング法とは
+        </p>
+        <ul>
+          <li> 特徴ベクトルが多変量正規分布に従うと仮定. </li>
+          <li> 各クラスの出現頻度が等しい. </li>
+          <li> 分散が等方的で等しい. </li>
+        </ul>
+        <p>
+        という仮定の下, 0-1損失関数による期待損失を最小化する識別方法であるという事が分かりました.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        同様に $p(c)=\mathrm{const}., |\mathbf{\Sigma}_c| = \mathrm{const}.$ であるならば
+        \[ \ln \pi(\mathbf{x}|c)p(c)
+        = -\frac{1}{2}(\mathbf{x}-\mathbf{\mu}_c)^T\mathbf{\Sigma}_c^{-1}(\mathbf{x}-\mathbf{\mu}_c) + \mathrm{const}. \]
+        となってマハラノビス距離によるテンプレートマッチング法と一致します.
+
+        </p>
+        <p>
+        この場合は出現頻度が等しい事と, 一般化分散 $|\mathbf{\Sigma}_c|$ が等しい事を仮定している事になります.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> モデル選択 </h2>
+        </section>
+
+        <section>
+        <p>
+        今の例では 「$\pi(\mathbf{x},c)$ が多変量正規分布というモデルに従っていると仮定する」という部分が本質的でした.
+        </p>
+        <p>
+        識別の理論ではクラス分布 $\pi(\mathbf{x},c)$ のモデルの選択が重要となります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 過学習 </h3>
+        <p>
+        モデル選択の例題として, 以下のデータに<strong> 多項式モデル (polynomial model)</strong>
+        \[ y=a_dx^d+a_{d-1}x^{d-1}+\cdots+a_1x+a_0 \]
+        を当てはめる問題を考えます.
+        </p>
+        <div align="center"> <img width="500px" src="prog/fig2-4-0.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        フィッティングは最小二乗法で行います. つまり学習データ $\{(x_1,y_1),(x_2,y_2),\ldots,(x_n,y_n)\}$ に対して<strong>残差平方和 (residual sum of squares, RSS) </strong>
+        \[ RSS=\sum_i(a_dx_i^d+a_{d-1}x_i^{d-1}+\cdots+a_1x_i+a_0-y_i)^2 \]
+        を最小化する様に多項式の係数を決定します.
+        </p>
+        </section>
+
+        <section>
+        <p> 1次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-1.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+        <section>
+        <p> 2次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-2.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+        <section>
+        <p> 3次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-3.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+        <section>
+        <p> 4次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-4.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+        <section>
+        <p> 5次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-5.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+        <section>
+        <p> 6次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-6.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+        <section>
+        <p> 7次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-7.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+        <section>
+        <p> 8次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-8.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+        <section>
+        <p> 9次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-4-9.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        高次の多項式モデルでは, 学習データの確率的変動を忠実に拾ってしまい汎化能力が低下していることが判ります. これが <strong> 過学習 (overfitting) </strong> と呼ばれる現象です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig2-4-9.png"> <a href="prog/prog2-4.py" style="font-size:60%">prog2-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        過学習の問題に対処する為には,
+        </p>
+        <ul>
+          <li> 学習結果の汎化能力を評価する </li>
+          <li> モデルの複雑さを評価する </li>
+          <li> 過学習を起こさない学習方法を利用する </li>
+        </ul>
+        <p>
+        など方法があります.
+        </p>
+        </section>
+
+        <section>
+        <h3> ホールドアウト検証 </h3>
+        <p>
+        学習用データが十分にある場合には, それを学習用データと<strong> 検証用データ (validation set) </strong> の2つにわけ
+        </p>
+        <ol>
+          <li> 学習用データで学習を行う. </li>
+          <li> 検証用データに対する誤り率などによって評価をする. </li>
+        </ol>
+        <p>
+        という検証が出来ます. これは<strong>ホールドアウト検証 (hold-out validation) </strong> と呼ばれます.
+        </p>
+        <p class="fragment">
+        検証用データに対しても過学習してしまわない様に気をつける必要があります. 場合によっては3つ目の最終的な確認を行うデータセットを用意する場合もあります.
+        </p>
+        </section>
+
+        <section>
+        <p> 1次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-1.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+        <section>
+        <p> 2次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-2.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+        <section>
+        <p> 3次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-3.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+        <section>
+        <p> 4次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-4.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+        <section>
+        <p> 5次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-5.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+        <section>
+        <p> 6次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-6.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+        <section>
+        <p> 7次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-7.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+        <section>
+        <p> 8次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-8.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+        <section>
+        <p> 9次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-5-9.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今の例では $4$ 次のモデルでの検証用セットに対する$RSS$ が最小となりました.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig2-5-4.png"> <a href="prog/prog2-5.py" style="font-size:60%">prog2-5.py</a> </div>
+        </section>
+
+        <section>
+        <h3> $K$-交差検証 </h3>
+        <p>
+        学習用データが少ない場合には学習用データの出来るだけ多くを利用して訓練を行いたいので, 以下の方法が使えます.
+        </p>
+        <ol>
+          <li> 学習用データを $K$ 組に分割する. </li>
+          <li> $K-1$組を使って学習し, 残りの$1$組で検証を行う. </li>
+          <li> 上記を $K$ パターン行ってその平均をとる. </li>
+        </ol>
+        <p>
+        これは <strong> $K$-交差検証 ($K$-cross validation) </strong> と呼ばれます.
+        </p>
+        <p>
+        次頁以降 $K=4$ の場合のサンプルを載せてあります.
+        </p>
+        </section>
+
+        <section>
+        <p> 1次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-1.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        <section>
+        <p> 2次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-2.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        <section>
+        <p> 3次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-3.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        <section>
+        <p> 4次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-4.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        <section>
+        <p> 5次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-5.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        <section>
+        <p> 6次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-6.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        <section>
+        <p> 7次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-7.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        <section>
+        <p> 8次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-8.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        <section>
+        <p> 9次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig2-6-9.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今の例で $4$ 次のモデルでの残差平方和の平均が最も小さくなりました.
+        </p>
+        <section>
+        <p> 4次式の場合 </p>
+        <div align="center"> <img width="600px" src="prog/fig2-6-4.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
+        </section>
+        </section>
+
+        <section>
+        <h3> leave-one-out 交差検証 </h3>
+        <p>
+        $K$-交差検証の極端な場合として $K=(\text{学習データ数})$ とするものがあります. これは <strong> leave-one-out 交差検証 (leave-one-out cross validation, LOOCV法) </strong> と呼ばれます.
+        </p>
+        <p>
+        交差検証では $K$ を大きくした方がより多くの学習データを利用できるわけですが, それに応じて必要な計算量が増加するという問題もあります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 第2回はここで終わります </h3>
+        <p>
+        時間が無くなりそうなのでここまでにします. 次回も前半はモデル選択について解説します. 赤池情報基準量などのモデルの評価指標や, ベイズ線形回帰などの過学習を防ぐ学習方法について説明します.
+        </p>
+        <p>
+        その後, 本日お話したMCMC法や変分ベイズ法の解説をしようかと思っていますが,内容を変更する可能性があります.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
