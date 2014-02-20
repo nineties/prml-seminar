@@ -254,7 +254,7 @@
         事前確率 $p(\text{男})$ は可能な限り客観的に考えながら, 最終的には主観で定めます.
         <p class="fragment">
         今, $A$ さんについて一切の情報が無いけども, 日本人の男女比が $95:100$ <span style="font-size:60%">(数値は適当)</span> である事を知っているとしましょう. そこで
-        \[ p(\text{男}) = \frac{95}{200} = 0.475 \]
+        \[ p(\text{男}) = \frac{95}{195} \approx 0.487 \]
         と事前確率を設定する事にします.
         </p>
         </section>
@@ -265,15 +265,15 @@
         <p class="fragment">
         するとベイズの定理より
         \[ \small{\begin{aligned}
-        &p(男|\text{170cm以上})\propto p(\text{170cm以上}|男)p(男) = 0.6\times 0.475 = 0.285 \\
-        &p(女|\text{170cm以上})\propto p(\text{170cm以上}|女)p(女) = 0.05\times 0.525 = 0.02625
+        &p(男|\text{170cm以上})\propto p(\text{170cm以上}|男)p(男) = 0.6\times 0.487 \approx 0.292 \\
+        &p(女|\text{170cm以上})\propto p(\text{170cm以上}|女)p(女) = 0.05\times 0.525 \approx 0.0257
         \end{aligned}} \]
         となります. <span style="font-size:70%"> (分母の $p(\text{170cm以上})$ は共通なので計算は不要) </span>
 
         </p>
         <p class="fragment">
         最後に確率の和が $1$ になるように正規化を行えば事後確率
-        \[ p(\text{男}|\text{170cm以上}) \approx 0.916 \]
+        \[ p(\text{男}|\text{170cm以上}) \approx 0.919 \]
         が得られます.
         </p>
         </section>
@@ -286,7 +286,7 @@
         </p>
         <p>
         前頁の
-        \[ p(\text{男}|\text{170cm以上}) \approx 0.916 \]
+        \[ p(\text{男}|\text{170cm以上}) \approx 0.919 \]
         では男性の方が少ないという事が加味されて確率が少し小さくなっています.
         </p>
         </section>
@@ -793,12 +793,18 @@
 
         <section>
         <p>
-        今の例で $4$ 次のモデルでの残差平方和の平均が最も小さくなりました.
+        今の例では $4$ 次のモデルでの残差平方和の平均が最も小さくなりました.
         </p>
-        <section>
-        <p> 4次式の場合 </p>
         <div align="center"> <img width="600px" src="prog/fig2-6-4.png"> <a href="prog/prog2-6.py" style="font-size:60%">prog2-6.py</a> </div>
         </section>
+
+        <section>
+        <p>
+        検証に基づく方法ではモデルの複雑さは考慮していないので, データ数が増えていくとより複雑なモデルが選ばれる様になります.
+        </p>
+        <p>
+        モデルの複雑さを測る為には来週説明する指標を利用する事となります.
+        </p>
         </section>
 
         <section>
