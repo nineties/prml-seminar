@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第3回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第3回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年2月27日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> モデル選択基準 </h2>
+        </section>
+
+        <section>
+        <p>
+        前回に続いてモデル選択の話題を進めます.
+        </p>
+        <p class="fragment">
+        前回は交差検証によって汎化性能を推定する方法を紹介しましたが, データが十分ある場合にはより複雑なモデルが選ばれやすいという傾向があります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        複雑さを考慮してモデルを評価する指標としては <strong> 赤池情報量基準 (Akaike information criterion, AIC) </strong> が有名で, 例えば以下のように定義されます<span style="font-size:60%">(C.M.ビショップ「パターン認識と機械学習(上・下)」では等価ですが異なる定義がなされています)</span>.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+          <h4> 赤池情報量基準 </h4>
+        <p>
+        \[ \mathrm{AIC} = -2\ln L + 2M \]
+        但し, $L$ は最大尤度, $M$ はモデルのパラメータ数.
+        </p>
+        </div>
+        <p>
+        $\mathrm{AIC}$ が最小となるようにモデルを選択します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        回帰分析に最小二乗法を利用した場合は, 学習データ数を $n$, 残差平方和を $RSS$ として
+        \[ \mathrm{AIC}\approx n\ln\left(\frac{RSS}{n}\right)+2M+\mathrm{const}.\]
+        となります.(<a href="http://nineties.github.io/math-seminar/17.html#/34">参考</a>)
+        </p>
+        <p>
+        前回と同じフィッティングの問題で計算してみましょう.
+        </p>
+        </section>
+
+        <section>
+        <p> 1次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-1.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+        <section>
+        <p> 2次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-2.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+        <section>
+        <p> 3次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-3.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+        <section>
+        <p> 4次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-4.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+        <section>
+        <p> 5次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-5.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+        <section>
+        <p> 6次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-6.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+        <section>
+        <p> 7次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-7.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+        <section>
+        <p> 8次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-8.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+        <section>
+        <p> 9次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-10-9.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今の例では $3$ 次のモデルでの$\mathrm{AIC}$ が最小となりました.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-10-3.png"> <a href="prog/prog3-10.py" style="font-size:60%">prog3-10.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        複雑なモデルにより大きなペナルティを課した <strong>ベイズ情報量基準 (Bayesian information criterion, BIC) </strong> というも物もあります.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+          <h4> ベイズ情報量基準 </h4>
+        <p>
+        \[ \mathrm{BIC} = -2\ln L + M\ln n \]
+        但し, $L$ は最大尤度, $M$ はモデルのパラメータ数, $n$ は学習データの数.
+        </p>
+        </div>
+        <p>
+        他に, <strong>最小記述長 (minimum description length, MDL)</strong>も有名ですが, $\mathrm{MDL}=\mathrm{BIC}/2$ なので, $\mathrm{BIC}$ と等価です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        モデル選択基準は非常に手軽に計算出来る反面, かなり粗い近似の元に導出されている量なのでニューラルネットワークなどの複雑な確率分布を用いる手法では誤った結果を導く事があります. 注意して利用してください.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ベイズ線形回帰 </h2>
+        </section>
+
+        <section>
+        <p>
+        モデルのパラメータの分布も考慮にいれて回帰分析を行う事で, 過学習を回避する事が出来ます. ベイズ確率論に基づくモデル選択の問題に対する厳密なアプローチと言えます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 線形回帰 </h3>
+        <p>
+        まずは <strong> 線形回帰 (linear regression) </strong> の復習をしましょう.
+        </p>
+        <p>
+        既知のベクトル値関数 $\Psi$ を用いて
+        \[ f(\mathbf{x}, \mathbf{a}) = \mathbf{a}^T\Psi(\mathbf{x}) \]
+        と表されるモデルを <strong> 一般化線形モデル (generalized linear model) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば, 多項式モデルは
+        \[ \begin{aligned}
+         &a_nx^n+a_{n-1}x^{n-1}+\cdots+a_1x+a_0 \\
+         =&(a_n,a_{n-1},\ldots,a_1,a_0)\begin{pmatrix} x^n \\ x^{n-1} \\ \vdots \\ x \\ 1 \end{pmatrix}
+         \end{aligned} \]
+        と書けるので, 一般化線形モデルの１つです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\Psi(\mathbf{x})$ の成分はそのモデルの <strong> 基底 (basis) </strong> と呼ばれます. 多項式モデルの場合には $1,x,x^2,\ldots$ という基底をつかっています.
+        </p>
+        <p>
+        他に, よくつかうガウス基底とロジスティックシグモイド基底を紹介します. 
+        分野によってはフーリエ基底やウェーブレット基底なども利用されますが 省略します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        <strong> ガウス基底 (Gaussian basis) </strong> は
+        \[ \psi_i(x) = \exp\left\{-\frac{(x-\mu_i)^2}{2\sigma^2}\right\} \]
+        という形の基底です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        <strong> ロジスティック・シグモイド基底 (logictic sigmoid basis) </strong> は
+        \[ \psi_i(x) = \frac{1}{1+\exp\left(-\frac{x-\mu_i}{\sigma}\right)} \]
+        という形の基底です.
+        </p>
+        </section>
+
+        <section>
+        <h2> 最小二乗法 </h2>
+        <p>
+        「観測誤差は正規分布に従う」という仮定に基づいてパラメータの最尤推定値を求める方法が <strong> 最小二乗法 (least squares method) </strong> です. 
+        </p>
+        <p class="fragment">
+        つまり, 個々の学習データ $(\mathbf{x}_i,y_i)$ を
+        \[ y_i = f(\mathbf{x}_i,\mathbf{a}) + \varepsilon_i \]
+        と表した時に, $\varepsilon_i\sim N(0, \sigma_i^2)$ であると仮定します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        学習データ $D=\{(\mathbf{x}_1,y_1),(\mathbf{x}_2,y_2),\ldots,(\mathbf{x}_n,y_n)\}$ が独立に生成されたと仮定すると, 尤度関数は
+        \[ \begin{aligned}
+        L(\mathbf{a}) &\propto \prod_{i} \exp\left\{-\frac{||y_i-f(\mathbf{x}_i,\mathbf{a})||^2}{2\sigma_i^2}\right\} \\
+        &= \exp\left\{-\frac{1}{2}\sum_i \frac{||y_i-f(\mathbf{x}_i,\mathbf{a})||^2}{\sigma_i^2}\right\}
+        \end{aligned} \]
+        となりますので,
+        </p>
+        </section>
+
+        <section>
+        <p> $\mathbf{a}$ の最尤推定値は
+        \[ \hat{\mathbf{a}}=\mathop{\rm arg~max}\limits_{\mathbf{a}}\sum_i \frac{||y_i-f(\mathbf{x}_i,\mathbf{a})||^2}{\sigma_i^2} \]
+        となります.
+        </p>
+        <p>
+        特に $\sigma_i$ が全て等しいならば
+        \[ \hat{\mathbf{a}}=\mathop{\rm arg~max}\limits_{\mathbf{a}}\sum_i ||y_i-f(\mathbf{x}_i,\mathbf{a})||^2 \]
+        となり, 通常の最小二乗法の式が得られました.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        一般化線形モデルの場合には
+        \[ \sum_i ||y_i-\mathbf{a}^T\Psi(\mathbf{x}_i)||^2 \]
+        を $\mathbf{a}$ で微分した物が $\mathbf{0}$ となる条件から, 最小二乗法の <strong> 正規方程式 (normal equation) </strong>
+        \[ \mathbf{X}^T\mathbf{X}\mathbf{a}=\mathbf{X}^T\mathbf{y} \]
+        が得られます. ただし,
+        \[ \begin{aligned}
+        \mathbf{X} &= (\Psi(\mathbf{x}_1),\Psi(\mathbf{x}_2),\ldots,\Psi(\mathbf{x}_m))^T \\
+        \mathbf{y} &= (y_1,y_2,\ldots,y_n)^T
+        \end{aligned} \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ということで最小二乗法では, パラメータ $\mathbf{a}$ の分布が一切考慮されていない事がわかりました. つまり, 全空間から残差平方和を最小化する $\mathbf{a}$ を単純に求めています.
+        </p>
+        <p>
+        これが過学習の生じる原因であると言えます.
+        </p>
+        </section>
+
+        <section>
+        <h3> ベイズ線形回帰 </h3>
+        <p>
+        そこで, パラメータ $\mathbf{a}$ の事前分布 $\pi(\mathbf{a})$ を導入し, MAP推定を行いましょう.
+        </p>
+        <p class="fragment">
+        ベイズの定理より, 事後分布 $\pi(\mathbf{a}|D)$ は事前分布と尤度関数の積に比例するので($\sigma_i=\sigma=\mathrm{const}.$ として)
+        \[ \pi(\mathbf{a}|D)\propto \pi(\mathbf{a})\exp\left\{-\frac{1}{2\sigma^2}\sum_i ||y_i-\mathbf{a}^T\Psi(\mathbf{x}_i)||^2\right\} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで, 事前分布 $\pi(\mathbf{a})$ も正規分布 $\mathcal{N}(\mathbf{a}_0,\mathbf{\Sigma}_0)$ であるとするならば, 事後分布 $\pi(\mathbf{a}|D)$ も正規分布 $\mathcal{N}(\mathbf{a},\mathbf{\Sigma})$ となります. ただし,
+        \[ \begin{aligned}
+        \mathbf{\Sigma}^{-1}&=\frac{1}{\sigma^2}\mathbf{X}^T\mathbf{X}+\mathbf{\Sigma}_0^{-1} \\
+        \mathbf{a} &= \mathbf{\Sigma}\left(\frac{1}{\sigma^2}\mathbf{X}^T\mathbf{y}+\mathbf{\Sigma}_0^{-1}\mathbf{a}_0\right)
+        \end{aligned} \]
+        となります. (<a href="http://nineties.github.com/math-seminar/18.html#/40">参考</a>)
+        </p>
+        </section>
+
+        <section>
+        <p>
+        数式が複雑で分かりにくいので特別な状況として, $\mathbf{\Sigma}_0 = \sigma_0^2I$ の場合を考えてみましょう.
+        </p>
+        <p class="fragment">
+        前頁の式に代入して $\mathbf{\Sigma}$ を消去すると
+        \[ \frac{1}{\sigma^2}\mathbf{X}^T\mathbf{X}\mathbf{a}+\frac{1}{\sigma_0^2}\mathbf{a} = \frac{1}{\sigma^2}\mathbf{X}^T\mathbf{y}+\frac{1}{\sigma_0^2}\mathbf{a}_0 \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\alpha = \sigma^2/\sigma_0^2$ とおいて更に整理すると
+        \[ \mathbf{X}^T(\mathbf{X}\mathbf{a}-\mathbf{y})+\alpha(\mathbf{a}-\mathbf{a}_0) \]
+        となりますが, これから残差平方和に <strong> 正則化項 (regularization term) </strong> を追加した
+        \[ \sum_i||\mathbf{y}-\mathbf{a}^T\Psi(\mathbf{x}_i)||^2 + \alpha||\mathbf{a}||^2 \]
+        の最小化を行っているのだという事が分かります.
+        </p>
+        <p>
+        パラメータが正規分布に従うと仮定するならば, $||\mathbf{a}||^2$ が大きすぎることに対してペナルティが発生するという事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        多項式フィッティングの問題をベイズ線形回帰で解いてみましょう. 多項式モデルでは, 高次の項ほど変動が大きいので$\mathbf{\Sigma}_0=\sigma_0^2I$ という仮定は妥当ではありません. 高次の係数ほど $0$ に近いであろうと想定して, 以下のような事前分布を使ってみます.
+        \[ \small{\begin{aligned}
+        \mathbf{a}_0 &= (0, 0, \ldots, 0)^T \\
+        \mathbf{\Sigma}_0 &= \begin{pmatrix}
+        \sigma_n^2 & 0 & \cdots & 0 \\
+        0          & \sigma_{n-1}^2 & \cdots & 0 \\
+        \vdots & \vdots & \ddots & \vdots \\
+        0 & \cdots & \cdots & \sigma_0^2
+        \end{pmatrix}, \qquad (\sigma_0 > \sigma_1 > \cdots > \sigma_{n-1} > \sigma_n)
+        \end{aligned}} \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今回, 誤差の分布が正規分布であるとかパラメータの事前分布が正規分布であるなどの仮定をおきましたが, これらの選択理由の1つが計算の容易さです.
+        </p>
+        <p class="fragment">
+        より複雑な状況に対応する為には計算機に頼る必要がありますから, ベイズ線形回帰の応用の前にMCMC法という手法を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> マルコフ連鎖モンテカルロ法 </h2>
+        </section>
+
+        <section>
+        <p>
+        確率の計算では非常に高次元の重積分が必要になります.
+        </p>
+        <p class="fragment">
+        例えば, $f(\mathbf{x})$ の分布 $\pi(\mathbf{x})$ における期待値は積分
+        \[ E[f(\mathbf{x})] = \int f(\mathbf{x})\pi(\mathbf{x})\mathrm{d}\mathbf{x} \]
+        となります.
+        </p>
+        <p class="fragment">
+        また, 同時確率 $p(\mathbf{x}, \mathbf{y})$ から $\mathbf{x}$ の分布を求める(<strong>周辺化</strong>を行う)為には
+        \[ p(\mathbf{x}) = \int p(\mathbf{x},\mathbf{y})\mathrm{d}\mathbf{y} \]
+        という積分が必要です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        低次の積分ならば積分区間を $N$ 分割して近似する数値積分法を利用する事が出来ますが(参考: <a href="http://nineties.github.com/math-seminar/6.html">プログラマの為の数学勉強会第6回</a>),
+        この方法では, $d$ 次元の重積分を行うのに $O(N^d)$ の計算量が必要になります.
+        </p>
+        <div align="center"> <img width="600px" src="fig/trapezoidal.png"> </div>
+        </section>
+
+        <section>
+        <h3> モンテカルロ法とは </h3>
+        <p>
+        <strong> モンテカルロ法 (Monte Carlo method) </strong> とは乱数を用いて行う数値計算法の総称です.
+        </p>
+        <p>
+        高次の重積分を効率的に計算する為に必要です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        モンテカルロ法は大数の強法則を基本原理とします.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> 大数の強法則 </h4>
+        <p>
+        平均が $\mathbf{\mu}$ で分散が有限の同一の分布に独立に従う確率変数 $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ があるとき, ($E[|\mathbf{x}_i|]&lt;\infty$ ならば)その標本平均
+        \[ \overline{\mathbf{x}}_n = \frac{1}{n}\sum_{i=1}^n\mathbf{x}_i \]
+        について
+        \[ p\left(\lim_{n\rightarrow\infty}\overline{\mathbf{x}}_n=\mu\right) = 1 \]
+        が成り立つ.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        確率変数 $\mathbf{x}$ が分布 $\pi(\mathbf{x})$ に従う場合, $f(\mathbf{x})$ の期待値 $E[f(\mathbf{x})]$ の近似値を以下のように求める事が出来ます.
+        </p>
+        <ol>
+          <li> $\pi(\mathbf{x})$ に独立に従うサンプル $\mathbf{x}_1,\ldots,\mathbf{x}_n$ を多数生成する. </li>
+          <li> $E[f(\mathbf{x})]$ の近似値を
+          \[ E[f(\mathbf{x})]\approx \frac{1}{n}\left\{f(\mathbf{x}_1)+f(\mathbf{x}_2)+\cdots+f(\mathbf{x}_n)\right\} \]
+          によって求める. </li>
+        </ol>
+        </section>
+
+        <section>
+        <p>
+        簡単な例として, 標準正規分布 $N(0, 1)$ の分散 (もちろんこれは $1$ に等しい) をモンテカルロ法で計算してみましょう.
+        </p>
+        <p>
+        平均が $\mu$ の時の分散は
+        \[ V[x] = E[(x-\mu)^2] \]
+        である事を使います.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これは以下の様なコードで簡単に実行出来ます. 試しに $1000$ サンプルで一度実行してみた結果は
+        \[ 0.947868542873 \]
+        となりました. もちろん, 実行の度に数値は変わります.
+        </p>
+<pre><code class="python" style="max-height:400px"># -*- coding: utf-8 -*-
+from numpy import *
+N = 1000
+
+# N(0,1) に従う乱数を N 個生成
+x = random.randn(N)
+
+print average((x-0)**2)
+</code></pre>
+        <div align="right"> <a href="prog/prog3-1.py" style="font-size:60%">prog3-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今の例において, サンプル数 $N$ に対する絶対誤差の平均は以下の様になります. 一般に, モンテカルロ法では $1/\sqrt{N}$ のオーダーで誤差が減少していきます.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-2.png"> <a href="prog/prog3-2.py" style="font-size:60%">prog3-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        ここで
+        \[ E[f(\mathbf{x})] = \int f(\mathbf{x})\pi(\mathbf{x})\mathrm{d}\mathbf{x} \]
+        ですから, 重積分の計算を期待値の計算に帰着してランダムサンプリングを利用する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まずは, 簡単な例で数式を用いずに説明しましょう.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        正方形領域 $[-1,1]\times[-1,1]$ 上の一様乱数 $(x,y)$ を生成したとき, これが単位円の中に入る確率は面積比と等しく $\pi/4$ です.
+        </p>
+        <div class="fragment" data-fragment-index="1" align="center"> <img width="500px" src="fig/monte-carlo-circle1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        よって,ランダムサンプリングによって円の中に入る点の数の比率を計算すれば, $\pi$ の近似値を求める事が出来ます.
+        </p>
+        <p>
+        例えば1万サンプルで計算してみると $3.1276$ などの数値が得られます.
+        </p>
+<pre><code class="python" style="max-height:400px"># -*- coding: utf-8 -*-
+from numpy import *
+N = 10000
+# [-1,1] x [-1,1] 上の一様乱数を N 点生成
+x = random.uniform(-1, 1, N)
+y = random.uniform(-1, 1, N)
+
+# 円内に入った点の比率から円周率を計算
+print 4.0*count_nonzero(x**2 + y**2 <= 1)/N
+</code></pre>
+        <div align="right"> <a href="prog/prog3-3.py" style="font-size:60%">prog3-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今の例で行ったのは
+        \[ f(x,y) = \left\{\begin{array}{cc}
+        1 & (x^2+y^2 \leq 1) \\
+        0 & (x^2+y^2 \geq 1)
+        \end{array}\right. \]
+        に対する
+        \[ \pi = \int_{-1}^1 \int_{-1}^1 f(x,y)\mathrm{d}x\mathrm{d}y \]
+        という(広義)重積分の近似計算です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで $[-1,1]\times[-1,1]$ 上の一様分布の密度関数は $u(x,y) = 1/4$ なので,
+        \[ \pi = 4\int_{-1}^1 \int_{-1}^1 f(x,y)u(x,y)\mathrm{d}x\mathrm{d}y \]
+        と表す事が出来ますから
+        \[ \pi = 4E_u[f(x,y)] \]
+        という期待値計算に帰着出来るというわけです($E_u$ は分布 $u$ 上での期待値という意味).
+        </p>
+        </section>
+
+        <section>
+        <h3> 重点的サンプリング </h3>
+        <p>
+        続いて, 標準正規分布 $N(0,1)$ における確率 $p(x \geq 2)$ を考えましょう. これは $N(0,1)$ の密度関数を $\pi(x)$ とすれば
+        \[ p(x \geq 2) = \int_2^\infty \pi(x)\mathrm{d}x \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これを $N(0,1)$ からのサンプリングによって求めた場合 $x &lt; 2$ の領域からのサンプリングは無駄になるので, 必要なサンプル数が大きくなってしまいます.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-4-1.png"> <a href="prog/prog3-4-1.py" style="font-size:60%">prog3-4-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        実際の実験結果は以下のようになりました. 例えば平均絶対誤差を $0.001$ 未満にする為には, 15000サンプルほどは必要になるということが分かります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-4-2.png"> <a href="prog/prog3-4-2.py" style="font-size:60%">prog3-4-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        精度を上げる為には以下の部分だけを重点的にサンプリング出来れば良いです.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-4-3.png"> <a href="prog/prog3-4-3.py" style="font-size:60%">prog3-4-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        指数分布は $x\geq 0$ という形の領域に分布するので都合がよいです. これを $2$ だけ平行移動して使いましょう.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-4-4.png"> <a href="prog/prog3-4-4.py" style="font-size:60%">prog3-4-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        $\pi(\mathbf{x})$ に関するサンプリングを $q(\mathbf{x})$ に関するサンプリングに取り替えるには等式
+        \[ \int f(\mathbf{x})\pi(\mathbf{x})\mathrm{d}\mathbf{x} = \int f(\mathbf{x})\frac{\pi(\mathbf{x})}{q(\mathbf{x})}q(\mathbf{x})\mathrm{d}\mathbf{x} \]
+        が使えます. つまり
+        \[ E_\pi[f(\mathbf{x})] = E_q\left[f(\mathbf{x})\frac{\pi(\mathbf{x})}{q(\mathbf{x})}\right] \]
+        です. これを <strong>重点的サンプリング (importance sampling) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下が先ほどの実験との比較ですが, 圧倒的に精度が良い事が分かります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-4-5-1.png"> <a href="prog/prog3-4-5.py" style="font-size:60%">prog3-4-5.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        重点的サンプリングの方を詳しく見ると, 200サンプルほどで平均誤差 $0.001$ 未満を達成しているようです.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-4-5-2.png"> <a href="prog/prog3-4-5.py" style="font-size:60%">prog3-4-5.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 棄却サンプリング </h3>
+        <p>
+        $\pi(\mathbf{x})$ から直接サンプリングを行うのが難しいという場合もあります. そこでやはりサンプリングが可能な他の分布 $q(\mathbf{x})$ の利用を考えます.
+        </p>
+        <p class="fragment">
+        重点的サンプリングをこの目的に利用する事も可能ですが, 他に <strong> 棄却サンプリング (rejection sampling) </strong> という方法があります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下が棄却サンプリングの手順です.
+        </p>
+        <ol>
+          <li> $M$ を $\pi(\mathbf{x}) \geq Mq(\mathbf{x})$ を満たす定数とする. </li>
+          <li> $q(\mathbf{x})$ からサンプル $\mathbf{a}$ をとる.
+          <li> $\pi(\mathbf{a})/Mq(\mathbf{a})$ の確率で $\mathbf{x}=\mathbf{a}$ を採択する. 採択できなかったら2に戻る. </li>
+        </ol>
+        </section>
+
+        <section>
+        <p>
+        まず
+        \[ p(\mathbf{x}\text{を採択}|\mathbf{x}) = \frac{\pi(\mathbf{x})}{Mq(\mathbf{x})} \]
+        であるので
+        \[ \begin{aligned}
+        p(\text{採択}) &= \int p(\mathbf{x}\text{を採択}|\mathbf{x})q(\mathbf{x})\mathrm{d}\mathbf{x}\\
+        &= \frac{1}{M}\int\pi(\mathbf{x})\mathrm{d}\mathbf{x}\\
+        &= \frac{1}{M}
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        よって採択された $\mathbf{x}$ の分布は
+        \[ \begin{aligned}
+        \pi(\mathbf{x}|\text{採択}) &= \frac{p(\text{採択}|\mathbf{x})q(\mathbf{x})}{p(\text{採択})} \\
+        &= \frac{\pi(\mathbf{x})}{M}\div\frac{1}{M} \\
+        &= \pi(\mathbf{x})
+        \end{aligned} \]
+        となるので, $\pi(\mathbf{x})$ からのサンプリングが実現します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば, 人工的に作った以下の分布 (密度関数:$f(x)=1-|x|$) からサンプリングしたいとします.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-5-1.png"> <a href="prog/prog3-5.py" style="font-size:60%">prog3-5.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        $a \leq x \leq b$ という形の領域なのでベータ分布を使えます. $Be(2, 2)$ を使い, $M=2$ としてみましょう.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-5-2.png"> <a href="prog/prog3-5.py" style="font-size:60%">prog3-5.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        棄却法で1000サンプル生成する実験を行った所以下のようになりました.
+        採択率は $1/M$ なので, 実際には約 $M$ 倍のサンプルが生成されています(以下の実験では $1995$ サンプル).
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-5-3.png"> <a href="prog/prog3-5.py" style="font-size:60%">prog3-5.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        以上重点的サンプリングと棄却サンプリングを紹介しましたが, いずれも分布 $q(\mathbf{x})$ の選択が重要です. 
+        </p>
+        <ul>
+          <li> 重点的サンプリングでは出来るだけ $f(\mathbf{x})\pi(\mathbf{x})$ の値が大きいところからサンプリングしたい. </li>
+          <li> 棄却法では $M$ を出来るだけ $1$ に近づけたい. </li>
+        </ul>
+        <p class="fragment">
+        しかし, 現実の分布は非常に複雑なので適切な $q(\mathbf{x})$ を選ぶ事は大変困難です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        また, 高次元空間特有の問題もあります.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        再び例として $\pi$ の計算の問題を考えましょう.
+        </p>
+        <div class="fragment" data-fragment-index="1" align="center"> <img width="500px" src="fig/monte-carlo-circle1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        半径 $1$ の球と, 一辺 $1$ の立方体の体積は以下のようになります.
+        \[ \begin{array}{|c||c|c|}\hline
+        \text{次元} & \text{球の体積} & \text{立方体の体積} \\ \hline\hline
+        2\text{次元} & 3.14 & 4 \\
+        3\text{次元} & 4.19 & 8 \\
+        4\text{次元} & 4.93 & 16 \\
+        5\text{次元} & 5.26 & 32 \\
+        6\text{次元} & 5.17 & 64 \\ \hline
+        \end{array} \]
+        </p>
+        <p style="font-size:60%">
+        半径 $1$ の $n$次元球の体積は $\sqrt{\pi^n}/\Gamma(n/2+1)$. 
+        </p>
+        <p class="fragment">
+        高次元の空間では $(\text{球の体積})/(\text{立方体の体積})$ がほとんど $0$ になってしまうので, サンプルのほとんどが捨てられてしまう事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        一辺の長さが $1$ の $n$ 次元立方体の,厚みが $\varepsilon/2 &gt; 0$ の表面部分の体積が占める割合は
+        \[\frac{\text{(表面部分の体積)}}{\text{(全体の体積)}}  \approx \frac{1-(1-\varepsilon)^d}{1} \xrightarrow{d\rightarrow\infty} 1 \]
+        となります.
+        </p>
+        <p class="fragment">
+        つまり, <strong> 高次元の空間の体積はそのほとんどが表面部分に集中してしまう </strong> ので一様なサンプリングでは必要なサンプル数が指数的に増加してしまいます. <strong> 次元の呪い </strong> と呼ばれる問題の１つです.
+        </p>
+        </section>
+
+        <section>
+        <h3> マルコフ連鎖 </h3>
+        <p>
+        時間 $t$ と共に変化する確率変数 $\mathbf{x}^{(t)}$ を<strong> 確率過程 (stochastic process) </strong> と呼びます.
+        </p>
+        <p class="fragment">
+        確率過程のうち, 時刻 $t+1$ の様子が時刻 $t$ の状態のみから決まるもの. つまり,
+        \[ \pi(\mathbf{x}^{(t+1)}|\mathbf{x}^{(0)}, \mathbf{x}^{(1)}, \ldots, \mathbf{x}^{(t)}) = \pi(\mathbf{x}^{(t+1)} | \mathbf{x}^{(t)}) \]
+        を満たすものを <strong> マルコフ連鎖 (Markov chain)</strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        簡単な例として, 以下のような3状態を持つマルコフ過程を考えてみましょう.
+        </p>
+        <div align="center"> <img width="500px" src="fig/markov-chain-example.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        時刻 $t$ に状態 $i$ に存在する確率を $p^{(t)}_i$ とすれば, これは以下のように行列を用いて書くことが出来ます.
+        </p>
+        <div align="center"> <img width="800px" src="fig/markov-chain-example2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        では, $\mathbf{p}^{(0)} = (1, 0, 0)^T$ として確率の変化を見てみましょう.
+        </p>
+<pre><code class="python" style="max-height:400px">t=0     : [ 1.  0.  0.]
+t=1     : [ 0.5  0.   0.5]
+t=2     : [ 0.58333333  0.16666667  0.25      ]
+t=3     : [ 0.51388889  0.13888889  0.34722222]
+t=4     : [ 0.53472222  0.16203704  0.30324074]
+t=5     : [ 0.52353395  0.15509259  0.32137346]
+t=6     : [ 0.52771348  0.15882202  0.31346451]
+t=7     : [ 0.52577375  0.15742884  0.31679741]
+t=8     : [ 0.52656143  0.15807542  0.31536315]
+t=9     : [ 0.52621462  0.15781286  0.31597252]
+t=10    : [ 0.52635994  0.15792846  0.3157116 ]
+t=11    : [ 0.52629719  0.15788002  0.31582279]
+t=12    : [ 0.5263238   0.15790094  0.31577527]
+t=13    : [ 0.52631239  0.15789207  0.31579554]
+t=14    : [ 0.52631725  0.15789587  0.31578688]
+t=15    : [ 0.52631517  0.15789425  0.31579058]
+t=16    : [ 0.52631605  0.15789494  0.315789  ]
+t=17    : [ 0.52631568  0.15789465  0.31578968]
+t=18    : [ 0.52631584  0.15789477  0.31578939]
+t=19    : [ 0.52631577  0.15789472  0.31578951]
+</code></pre>
+        <div align="right"> <a href="prog/prog3-6.py" style="font-size:60%">prog3-6.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        実は初期状態が $1,2,3$ のどれであっても, 十分に時間が経過すると
+        \[ \lim_{t\rightarrow\infty}\mathbf{p}^{(t)} = \frac{1}{19}(10, 3, 6)^T \]
+        という確率分布に収束します.
+        </p>
+        <p class="fragment">
+        つまり, このマルコフ過程を $10:3:6$ の比率で $1,2,3$ を出力する乱数発生器とみなす事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        実験としてマルコフ連鎖の最初の $10$ ステップを捨てて, 続く $1000$ ステップをサンプリングした所, 状態 $1,2,3$ の出現頻度は
+        \[ 0.552 \quad:\quad  0.144 \quad:\quad 0.304 \]
+        となりました. (<a href="prog/prog3-7.py" style="font-size:60%">prog3-7.py</a>)
+        </p>
+        <p class="fragment">
+        確率過程なので各状態間には依存関係がありますが, 巨視的には $10:3:6$ という分布に従ってサンプリングする事が出来た事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        一般に, 離散状態のマルコフ過程は <strong> 推移確率行列 (transition probability matrix)</strong> $\mathbf{P}$ によって
+        \[ \mathbf{p}^{(t+1)}=\mathbf{P}\mathbf{p}^{(t)} \]
+        と表す事ができます.
+        </p>
+        <p class="fragment">
+        この連鎖が適切な条件(エルゴード性 (ergodicity))を満たす時, $t\rightarrow\infty$ において $\mathbf{p}^{(t)}$ は
+        \[ \mathbf{p} = \mathbf{P}\mathbf{p} \]
+        を満たす分布 $\mathbf{p}$ に収束します. これをマルコフ連鎖の <strong> 不変分布 (invariant distribution) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <h3> マルコフ連鎖モンテカルロ法とは </h3>
+        <p>
+        <strong> マルコフ連鎖モンテカルロ法 (Markov chain Monte Carlo methods, MCMC法) </strong> とは, サンプリングを行いたい分布 $\pi(\mathbf{x})$ が不変分布になるようなマルコフ連鎖を生成する事によって, $\pi(\mathbf{x})$ からのランダムサンプリングを実現する手法です.
+        </p>
+        <p class="fragment">
+        現在の位置から少しだけ移動するという事を繰り返すMCMC法は, 高次元のスカスカな空間からサンプリングする方法に比べて非常に効率的です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        MCMC法にはいくつかの手法が存在しますが, 今回は <strong> メトロポリス・ヘイスティングス法 (Metropolis-Hastings, MH法) </strong> を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <h3> 詳細釣り合い条件 </h3>
+        <p>
+        確率分布 $\pi(\mathbf{x}^{(t)})$ から $\pi(\mathbf{x}^{(t+1)})$ への推移は <strong> 推移核 (transition kernel) </strong> $k(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})$ を用いて
+        \[ \pi(\mathbf{x}^{(t+1)}) = \int k(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})\pi(\mathbf{x}^{(t)})\mathrm{d}\mathbf{x}^{(t)} \]
+        と書くことが出来ます.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        この時, <strong> 詳細釣り合い条件 (detailed balance condition) </strong> と呼ばれる以下の条件が成立するならば, このマルコフ連鎖の不変分布 $\pi(\mathbf{x})$ に収束する事が分かっています.
+        </p>
+        <div class="block fragment" data-fragment-index="1" style="border-color:blue;font-size:90%">
+        \[ k(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})\pi(\mathbf{x}^{(t)}) =
+           k(\mathbf{x}^{(t)}|\mathbf{x}^{(t+1)})\pi(\mathbf{x}^{(t+1)}) \]
+        </div>
+        </section>
+
+        <section>
+        <p>
+        今, 目標とする分布 $\pi(\mathbf{x})$ はわかっていて, 推移核 $k(\mathbf{x}'|\mathbf{x})$ はわからないという状況です.
+        </p>
+        <p class="fragment">
+        そこで, サンプリングが可能な <strong> 提案分布 (proposal distribution) </strong> $q(\mathbf{x}'|\mathbf{x})$ を用意します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        提案分布が詳細釣り合い条件を満たさないなら
+        \[ q(\mathbf{x}'|\mathbf{x})\pi(\mathbf{x}) > q(\mathbf{x}|\mathbf{x}')\pi(\mathbf{x}') \]
+        であると仮定できます.
+        </p>
+        <p class="fragment">
+        この左辺の確率に従って $\mathbf{x}$ から $\mathbf{x}'$ へ推移しますが, この確率が大きすぎるわけですからここで棄却サンプリングを行って推移確率を微調整します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        採択する確率 $a$ は
+        \[ aq(\mathbf{x}'|\mathbf{x})\pi(\mathbf{x}) = q(\mathbf{x}|\mathbf{x}')\pi(\mathbf{x}') \]
+        を満たせば良いですから
+        \[ a = \frac{q(\mathbf{x}|\mathbf{x}')\pi(\mathbf{x}')}{q(\mathbf{x}'|\mathbf{x})\pi(\mathbf{x})} \]
+        となります. 但し先ほどの仮定が満たされない場合には $a=1$ とします.
+        </p>
+        </section>
+
+        <section>
+        <p> まとめましょう. </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> メトロポリス・ヘイスティングス法 </h4>
+        <ol>
+          <li> 目標分布を $\pi(\mathbf{x})$, 提案分布を $q(\mathbf{x}'|\mathbf{x})$ とする. </li>
+          <li> 提案分布 $q(\mathbf{x}|\mathbf{x}^{(t)})$ に従って, $\mathbf{x}^{(t+1)}$ を生成する. </li>
+          <li> 次の採択確率に従ってこれを採択する.
+          \[ a = 
+          \mathrm{min}\left\{\frac{q(\mathbf{x}|\mathbf{x}')\pi(\mathbf{x}')}{q(\mathbf{x}'|\mathbf{x})\pi(\mathbf{x})}, 1 \right\} \]
+          </li>
+        </p>
+        </ol>
+        <p>
+        マルコフ連鎖の最初の方は初期状態への依存性が高いので捨てる. これを <strong> バーンイン(burn-in) </strong> と呼ぶ.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <h3> ランダム・ウォーク </h3>
+        <p>
+        <strong> ランダム・ウォーク (random walk) </strong> とは$\mathbf{x}^{(t)}$ から $\mathbf{x}^{(t+1)}$ への推移が
+        \[ \mathbf{x}^{(t+1)} = \mathbf{x}^{(t)} + \mathbf{z} \]
+        と記述されるような確率過程です. $\mathbf{z}$ は正規分布は $t$ 分布など対称的な分布からとります.
+        </p>
+        <div align="center"> <img width="300px" src="fig/random-walk.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        提案分布が対称的ならば $q(\mathbf{x}'|\mathbf{x}) = q(\mathbf{x}|\mathbf{x}')$ が成り立つので, 採択確率は
+          \[ a = 
+          \mathrm{min}\left\{\frac{\pi(\mathbf{x}')}{\pi(\mathbf{x})}, 1 \right\} \]
+          という非常に単純なものとなります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        では例として, 二次元正規分布
+        \[ \small{ \mathcal{N}\left(\mathbf{0},
+        \begin{pmatrix}
+        1 & 1/2 \\
+        1/2 & 1
+        \end{pmatrix} \right)} \]
+        からサンプリングしてみましょう.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-8-1.png"> <a href="prog/prog3-8.py" style="font-size:60%">prog3-8.py</a> </div>
+        <div align="center"> <img width="300px" src="fig/.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        ランダム・ウォークに用いる $\mathbf{z}$ は二次元正規分布
+        \[ \mathcal{N}(\mathbf{0}, \sigma^2I) \]
+        からとることにします.
+        </p>
+        <p>
+        開始点はわざとずらして $\mathbf{x}^{(0)} = (1,-1)^T$ としてみます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下は $\sigma=1$, バーンイン期間 $10$ ステップ、 サンプル数 $100$ での例です. 図の見やすさの為に値を小さくしていますが, 実際にはバーンイン期間・サンプル数共にもっと多く取る必要があります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-8-2.png"> <a href="prog/prog3-8.py" style="font-size:60%">prog3-8.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        $\sigma=1$, バーンイン期間 $100$、 サンプル数 $1000$ だと以下のようになります. 母分布の密度をよく反映したサンプリングができている事がわかると思います.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-9-1.png"> <a href="prog/prog3-9.py" style="font-size:60%">prog3-9.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        ランダム・ウォークのパラメータ $\sigma$ は一歩で進む距離を調節するものです. $\sigma$ をあまり小さくし過ぎるとサンプリングに偏りが出てしまいます.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-9-2.png"> <a href="prog/prog3-9.py" style="font-size:60%">prog3-9.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        かと言って $\sigma$ を大きくしすぎると無駄なサンプリングが増えます.
+        $\sigma$ の値を決める一般的な方法はありません. 取り組む問題毎に検討が必要です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-9-3.png"> <a href="prog/prog3-9.py" style="font-size:60%">prog3-9.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 第3回はここで終わります </h3>
+        <p>
+        MCMC法は必須技術ですので良く復習してください. より詳しい話題は実際の問題に適用しながら説明していこうと思います.
+        </p>
+        <p>
+        次回は MCMC法 を利用したパラメータ推定など応用を見ていこうと思います.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
