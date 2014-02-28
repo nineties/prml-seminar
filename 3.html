@@ -1045,10 +1045,10 @@ t=19    : [ 0.52631577  0.15789472  0.31578951]
         <h4> メトロポリス・ヘイスティングス法 </h4>
         <ol>
           <li> 目標分布を $\pi(\mathbf{x})$, 提案分布を $q(\mathbf{x}'|\mathbf{x})$ とする. </li>
-          <li> 提案分布 $q(\mathbf{x}|\mathbf{x}^{(t)})$ に従って, $\mathbf{x}^{(t+1)}$ を生成する. </li>
+          <li> 提案分布 $q(\mathbf{x}^{(t)}|\mathbf{x}^{(t)})$ に従って, $\mathbf{x}^{(t+1)}$ を生成する. </li>
           <li> 次の採択確率に従ってこれを採択する.
           \[ a = 
-          \mathrm{min}\left\{\frac{q(\mathbf{x}|\mathbf{x}')\pi(\mathbf{x}')}{q(\mathbf{x}'|\mathbf{x})\pi(\mathbf{x})}, 1 \right\} \]
+          \mathrm{min}\left\{\frac{q(\mathbf{x}^{(t)}|\mathbf{x}^{(t+1)})\pi(\mathbf{x}^{(t+1)})}{q(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})\pi(\mathbf{x}^{(t)})}, 1 \right\} \]
           </li>
         </p>
         </ol>
