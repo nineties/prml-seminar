@@ -984,9 +984,7 @@ t=19    : [ 0.52631577  0.15789472  0.31578951]
         <section>
         <h3> 詳細釣り合い条件 </h3>
         <p>
-        確率分布 $\pi(\mathbf{x}^{(t)})$ から $\pi(\mathbf{x}^{(t+1)})$ への推移は <strong> 推移核 (transition kernel) </strong> $k(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})$ を用いて
-        \[ \pi(\mathbf{x}^{(t+1)}) = \int k(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})\pi(\mathbf{x}^{(t)})\mathrm{d}\mathbf{x}^{(t)} \]
-        と書くことが出来ます.
+        連続的な分布では, $\mathbf{x}$ にいる時に $\mathbf{x}'$ へ移動する確率密度 $k(\mathbf{x}'|\mathbf{x})$ を <strong> 推移核 (transition kernel) </strong> と呼びます.
         </p>
         <p class="fragment" data-fragment-index="1">
         この時, <strong> 詳細釣り合い条件 (detailed balance condition) </strong> と呼ばれる以下の条件が成立するならば, このマルコフ連鎖の不変分布が $\pi(\mathbf{x})$ となる事が分かっています.
@@ -995,6 +993,20 @@ t=19    : [ 0.52631577  0.15789472  0.31578951]
         \[ k(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})\pi(\mathbf{x}^{(t)}) =
            k(\mathbf{x}^{(t)}|\mathbf{x}^{(t+1)})\pi(\mathbf{x}^{(t+1)}) \]
         </div>
+        </section>
+
+        <section>
+        <p>
+        時刻 $t$ における分布が $\pi(\mathbf{x}^{(t)})$ である時, 次の時刻の分布は
+        \[ \pi'(\mathbf{x}^{(t+1)})=\int k(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})\pi(\mathbf{x}^{(t)})\mathrm{d}\mathbf{x}^{(t)} \]
+        となりますが, 詳細釣り合い条件が成立しているならば
+        \[ \begin{aligned}
+        \pi'(\mathbf{x}^{(t+1)})&=\int k(\mathbf{x}^{(t)}|\mathbf{x}^{(t+1)})\pi(\mathbf{x}^{(t+1)})\mathrm{d}\mathbf{x}^{(t)} \\
+                                &=\pi(\mathbf{x}^{(t+1)})\int k(\mathbf{x}^{(t)}|\mathbf{x}^{(t+1)})\mathrm{d}\mathbf{x}^{(t)} \\
+                                &=\pi(\mathbf{x}^{(t+1)})
+        \end{aligned} \]
+        となります. つまり, 時刻 $t+1$ における分布もやはり $\pi$ であるということになります.
+        </p>
         </section>
 
         <section>
