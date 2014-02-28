@@ -32,7 +32,7 @@ def next(x):
 BURNIN = 10 # グラフの見やすさの為に小さな値にしています
 N = 100
 
-x = [1, -1]
+x = [2, -2]
 
 # バーンイン
 burn_x = zeros(BURNIN); burn_y = zeros(BURNIN)
@@ -43,7 +43,12 @@ for i in range(BURNIN):
 
 # サンプリング
 sample_x = zeros(N); sample_y = zeros(N)
-for i in range(N):
+
+# グラフの見た目を良くするために１点共有
+sample_x[0] = burn_x[-1]
+sample_y[0] = burn_y[-1]
+
+for i in range(1, N):
     sample_x[i] = x[0]
     sample_y[i] = x[1]
     x = next(x)

@@ -275,7 +275,7 @@
         $\Psi(\mathbf{x})$ の成分はそのモデルの <strong> 基底 (basis) </strong> と呼ばれます. 多項式モデルの場合には $1,x,x^2,\ldots$ という基底をつかっています.
         </p>
         <p>
-        他に, よくつかうガウス基底とロジスティックシグモイド基底を紹介します. 
+        他に, よくつかうガウス基底とロジスティック・シグモイド基底を紹介します. 
         分野によってはフーリエ基底やウェーブレット基底なども利用されますが 省略します.
         </p>
         </section>
@@ -284,16 +284,19 @@
         <p>
         <strong> ガウス基底 (Gaussian basis) </strong> は
         \[ \psi_i(x) = \exp\left\{-\frac{(x-\mu_i)^2}{2\sigma^2}\right\} \]
-        という形の基底です.
+        という形の基底です.正規分布に比例するもので, 局所的な分布を表現する為に利用できます.
         </p>
+        <div align="center"> <img width="400px" src="prog/fig3-11.png"> <a href="prog/prog3-11.py" style="font-size:60%">prog3-11.py</a> </div>
         </section>
 
         <section>
         <p>
         <strong> ロジスティック・シグモイド基底 (logictic sigmoid basis) </strong> は
         \[ \psi_i(x) = \frac{1}{1+\exp\left(-\frac{x-\mu_i}{\sigma}\right)} \]
-        という形の基底です.
+        という形の基底です. 識別の問題では 0 か 1 の値をとる関数をよく考えますが, 不連続なので扱いが難しいです.
+        この基底は0-1関数を微分可能なもので近似したものと考える事が出来ます.
         </p>
+        <div align="center"> <img width="400px" src="prog/fig3-12.png"> <a href="prog/prog3-12.py" style="font-size:60%">prog3-12.py</a> </div>
         </section>
 
         <section>
@@ -342,13 +345,13 @@
         \mathbf{X} &= (\Psi(\mathbf{x}_1),\Psi(\mathbf{x}_2),\ldots,\Psi(\mathbf{x}_m))^T \\
         \mathbf{y} &= (y_1,y_2,\ldots,y_n)^T
         \end{aligned} \]
-        です.
+        です(<a href="http://nineties.github.io/prml-seminar/1.html#/80">参考</a>).
         </p>
         </section>
 
         <section>
         <p>
-        ということで最小二乗法では, パラメータ $\mathbf{a}$ の分布が一切考慮されていない事がわかりました. つまり, 全空間から残差平方和を最小化する $\mathbf{a}$ を単純に求めています.
+        最小二乗法の導出では, パラメータ $\mathbf{a}$ の分布が一切考慮されていない事がわかるとおもいます. つまり, $-\infty$ から $\infty$ まで全空間から残差平方和を最小化する $\mathbf{a}$ を単純に求めています.
         </p>
         <p>
         これが過学習の生じる原因であると言えます.
@@ -394,11 +397,11 @@
         $\alpha = \sigma^2/\sigma_0^2$ とおいて更に整理すると
         \[ \mathbf{X}^T(\mathbf{X}\mathbf{a}-\mathbf{y})+\alpha(\mathbf{a}-\mathbf{a}_0) \]
         となりますが, これから残差平方和に <strong> 正則化項 (regularization term) </strong> を追加した
-        \[ \sum_i||\mathbf{y}-\mathbf{a}^T\Psi(\mathbf{x}_i)||^2 + \alpha||\mathbf{a}||^2 \]
+        \[ \sum_i||\mathbf{y}-\mathbf{a}^T\Psi(\mathbf{x}_i)||^2 + \alpha||\mathbf{a}-\mathbf{a}_0||^2 \]
         の最小化を行っているのだという事が分かります.
         </p>
         <p>
-        パラメータが正規分布に従うと仮定するならば, $||\mathbf{a}||^2$ が大きすぎることに対してペナルティが発生するという事になります.
+        つまり, $\mathbf{a}$ と $\mathbf{a}_0$ が離れすぎることに対してペナルティをあたえた最小二乗法であると言えます.
         </p>
         </section>
 
@@ -412,17 +415,100 @@
         0          & \sigma_{n-1}^2 & \cdots & 0 \\
         \vdots & \vdots & \ddots & \vdots \\
         0 & \cdots & \cdots & \sigma_0^2
-        \end{pmatrix}, \qquad (\sigma_0 > \sigma_1 > \cdots > \sigma_{n-1} > \sigma_n)
+        \end{pmatrix}, \quad (\sigma_0 > \sigma_1 > \cdots > \sigma_{n-1} > \sigma_n)
         \end{aligned}} \]
         </p>
         </section>
 
         <section>
+        <p> 1次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-1.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+        <section>
+        <p> 2次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-2.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+        <section>
+        <p> 3次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-3.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+        <section>
+        <p> 4次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-4.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+        <section>
+        <p> 5次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-5.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+        <section>
+        <p> 6次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-6.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+        <section>
+        <p> 7次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-7.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+        <section>
+        <p> 8次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-8.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+        <section>
+        <p> 9次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-13-9.png"> <a href="prog/prog3-13.py" style="font-size:60%">prog3-13.py</a> </div>
+        </section>
+
+        <section>
         <p>
-        今回, 誤差の分布が正規分布であるとかパラメータの事前分布が正規分布であるなどの仮定をおきましたが, これらの選択理由の1つが計算の容易さです.
+        高次の多項式でも過学習を避ける事ができている事がわかります. 次頁以降にはホールド・アウト検証の結果も載せておきます．
+        </p>
+        <p>
+        現実の問題で現れる分布は単純なモデルでは表せない事が多く複雑なモデルの使用は避けられません. ベイズ回帰ではそのような問題を適切に解くことが出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p> 1次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-1.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+        <section>
+        <p> 2次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-2.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+        <section>
+        <p> 3次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-3.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+        <section>
+        <p> 4次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-4.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+        <section>
+        <p> 5次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-5.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+        <section>
+        <p> 6次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-6.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+        <section>
+        <p> 7次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-7.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+        <section>
+        <p> 8次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-8.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+        <section>
+        <p> 9次式の場合 </p>
+        <div align="center"> <img width="700px" src="prog/fig3-14-9.png"> <a href="prog/prog3-14.py" style="font-size:60%">prog3-14.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        さて, 今回誤差の分布が正規分布であるとかパラメータの事前分布が正規分布であるなどの仮定をおきましたが, 計算が簡単だからという事が大きいです.
         </p>
         <p class="fragment">
-        より複雑な状況に対応する為には計算機に頼る必要がありますから, ベイズ線形回帰の応用の前にMCMC法という手法を紹介します.
+        単純な問題ばかりではつまらないので, ベイズ線形回帰の応用に進む前にMCMC法という計算機を利用した確率計算の手法を紹介します.
         </p>
         </section>
 
@@ -440,15 +526,15 @@
         となります.
         </p>
         <p class="fragment">
-        また, 同時確率 $p(\mathbf{x}, \mathbf{y})$ から $\mathbf{x}$ の分布を求める(<strong>周辺化</strong>を行う)為には
-        \[ p(\mathbf{x}) = \int p(\mathbf{x},\mathbf{y})\mathrm{d}\mathbf{y} \]
+        また, 同時分布 $\pi(\mathbf{x}, \mathbf{y})$ から $\mathbf{x}$ の分布を求める(<strong>周辺化</strong>を行う)為には
+        \[ \pi(\mathbf{x}) = \int \pi(\mathbf{x},\mathbf{y})\mathrm{d}\mathbf{y} \]
         という積分が必要です.
         </p>
         </section>
 
         <section>
         <p>
-        低次の積分ならば積分区間を $N$ 分割して近似する数値積分法を利用する事が出来ますが(参考: <a href="http://nineties.github.com/math-seminar/6.html">プログラマの為の数学勉強会第6回</a>),
+        低次の積分ならば積分区間を $N$ 分割して近似する数値積分法を利用する事が出来ますが(<a href="http://nineties.github.com/math-seminar/6.html">参考</a>),
         この方法では, $d$ 次元の重積分を行うのに $O(N^d)$ の計算量が必要になります.
         </p>
         <div align="center"> <img width="600px" src="fig/trapezoidal.png"> </div>
@@ -482,7 +568,7 @@
 
         <section>
         <p>
-        確率変数 $\mathbf{x}$ が分布 $\pi(\mathbf{x})$ に従う場合, $f(\mathbf{x})$ の期待値 $E[f(\mathbf{x})]$ の近似値を以下のように求める事が出来ます.
+        この法則に基づいて, 期待値 $E[f(\mathbf{x})]$ の近似値を以下のように求める事が出来ます.
         </p>
         <ol>
           <li> $\pi(\mathbf{x})$ に独立に従うサンプル $\mathbf{x}_1,\ldots,\mathbf{x}_n$ を多数生成する. </li>
@@ -651,6 +737,13 @@ print 4.0*count_nonzero(x**2 + y**2 <= 1)/N
         </section>
 
         <section>
+        <p>
+        $q(\mathbf{x})$ の選び方ですが, これは $f(\mathbf{x})\pi(\mathbf{x})$ の値の大小とある程度一致しているものを選びます.
+        </p>
+        <div align="center"> <img width="700px" src="fig/importance-sampling.png"> </div>
+        </section>
+
+        <section>
         <h3> 棄却サンプリング </h3>
         <p>
         $\pi(\mathbf{x})$ から直接サンプリングを行うのが難しいという場合もあります. そこでやはりサンプリングが可能な他の分布 $q(\mathbf{x})$ の利用を考えます.
@@ -665,7 +758,7 @@ print 4.0*count_nonzero(x**2 + y**2 <= 1)/N
         以下が棄却サンプリングの手順です.
         </p>
         <ol>
-          <li> $M$ を $\pi(\mathbf{x}) \geq Mq(\mathbf{x})$ を満たす定数とする. </li>
+          <li> $M$ を $\pi(\mathbf{x}) \leq Mq(\mathbf{x})$ を満たす定数とする. </li>
           <li> $q(\mathbf{x})$ からサンプル $\mathbf{a}$ をとる.
           <li> $\pi(\mathbf{a})/Mq(\mathbf{a})$ の確率で $\mathbf{x}=\mathbf{a}$ を採択する. 採択できなかったら2に戻る. </li>
         </ol>
@@ -699,7 +792,7 @@ print 4.0*count_nonzero(x**2 + y**2 <= 1)/N
 
         <section>
         <p>
-        例えば, 人工的に作った以下の分布 (密度関数:$f(x)=1-|x|$) からサンプリングしたいとします.
+        例えば, 人工的に作った以下の分布 (密度関数:$f(x)=1-|x|, (|x|\leq 1)$) からサンプリングしたいとします.
         </p>
         <div align="center"> <img width="600px" src="prog/fig3-5-1.png"> <a href="prog/prog3-5.py" style="font-size:60%">prog3-5.py</a> </div>
         </section>
@@ -714,7 +807,7 @@ print 4.0*count_nonzero(x**2 + y**2 <= 1)/N
         <section>
         <p>
         棄却法で1000サンプル生成する実験を行った所以下のようになりました.
-        採択率は $1/M$ なので, 実際には約 $M$ 倍のサンプルが生成されています(以下の実験では $1995$ サンプル).
+        採択率は $1/M$ なので, 実際には約 $M$ 倍のサンプルが生成されます(以下の実験では $1995$ サンプル).
         </p>
         <div align="center"> <img width="600px" src="prog/fig3-5-3.png"> <a href="prog/prog3-5.py" style="font-size:60%">prog3-5.py</a> </div>
         </section>
@@ -728,7 +821,7 @@ print 4.0*count_nonzero(x**2 + y**2 <= 1)/N
           <li> 棄却法では $M$ を出来るだけ $1$ に近づけたい. </li>
         </ul>
         <p class="fragment">
-        しかし, 現実の分布は非常に複雑なので適切な $q(\mathbf{x})$ を選ぶ事は大変困難です.
+        しかし, 現実の分布は非常に複雑なので適切な $q(\mathbf{x})$ を選ぶ事は困難です.
         </p>
         </section>
 
@@ -863,12 +956,22 @@ t=19    : [ 0.52631577  0.15789472  0.31578951]
         </section>
 
         <section>
-        <h3> マルコフ連鎖モンテカルロ法とは </h3>
+        <h3> マルコフ連鎖モンテカルロ法 </h3>
         <p>
         <strong> マルコフ連鎖モンテカルロ法 (Markov chain Monte Carlo methods, MCMC法) </strong> とは, サンプリングを行いたい分布 $\pi(\mathbf{x})$ が不変分布になるようなマルコフ連鎖を生成する事によって, $\pi(\mathbf{x})$ からのランダムサンプリングを実現する手法です.
         </p>
-        <p class="fragment">
-        現在の位置から少しだけ移動するという事を繰り返すMCMC法は, 高次元のスカスカな空間からサンプリングする方法に比べて非常に効率的です.
+        </section>
+
+        <section>
+        <p>
+        MCMC法では現在の状態を考慮して
+        </p>
+        <ul>
+          <li> 確率密度の高い所にいるなら出来るだけそこに留まる </li>
+          <li> 確率密度の低い所にいるなら, 高い方を目指して移動する </li>
+        </ul>
+        <p>
+        というように移動をくりかえします. これによって重点的サンプリングを実現する事ができます.
         </p>
         </section>
 
@@ -886,7 +989,7 @@ t=19    : [ 0.52631577  0.15789472  0.31578951]
         と書くことが出来ます.
         </p>
         <p class="fragment" data-fragment-index="1">
-        この時, <strong> 詳細釣り合い条件 (detailed balance condition) </strong> と呼ばれる以下の条件が成立するならば, このマルコフ連鎖の不変分布 $\pi(\mathbf{x})$ に収束する事が分かっています.
+        この時, <strong> 詳細釣り合い条件 (detailed balance condition) </strong> と呼ばれる以下の条件が成立するならば, このマルコフ連鎖の不変分布が $\pi(\mathbf{x})$ となる事が分かっています.
         </p>
         <div class="block fragment" data-fragment-index="1" style="border-color:blue;font-size:90%">
         \[ k(\mathbf{x}^{(t+1)}|\mathbf{x}^{(t)})\pi(\mathbf{x}^{(t)}) =
@@ -910,7 +1013,7 @@ t=19    : [ 0.52631577  0.15789472  0.31578951]
         であると仮定できます.
         </p>
         <p class="fragment">
-        この左辺の確率に従って $\mathbf{x}$ から $\mathbf{x}'$ へ推移しますが, この確率が大きすぎるわけですからここで棄却サンプリングを行って推移確率を微調整します.
+        $q(\mathbf{x}'|\mathbf{x})$ に従って $\mathbf{x}$ から $\mathbf{x'}$ へ推移するのですが, 棄却サンプリングを行えばこの確率を下げる事が出来ます. これによって左辺を小さくし, 両辺が等しくなるように調節します.
         </p>
         </section>
 
@@ -948,17 +1051,20 @@ t=19    : [ 0.52631577  0.15789472  0.31578951]
         <p>
         <strong> ランダム・ウォーク (random walk) </strong> とは$\mathbf{x}^{(t)}$ から $\mathbf{x}^{(t+1)}$ への推移が
         \[ \mathbf{x}^{(t+1)} = \mathbf{x}^{(t)} + \mathbf{z} \]
-        と記述されるような確率過程です. $\mathbf{z}$ は正規分布は $t$ 分布など対称的な分布からとります.
+        と記述されるような確率過程です. $\mathbf{z}$ は正規分布や $t$ 分布など対称的な分布からとります.
         </p>
         <div align="center"> <img width="300px" src="fig/random-walk.png"> </div>
         </section>
 
         <section>
         <p>
-        提案分布が対称的ならば $q(\mathbf{x}'|\mathbf{x}) = q(\mathbf{x}|\mathbf{x}')$ が成り立つので, 採択確率は
+        ランダム・ウォークでは $\mathbf{x}$ から $\mathbf{x'}$ へ行く確率と, $\mathbf{x}'$ から $\mathbf{x}$ へ行く確率が等しいので, $q(\mathbf{x}'|\mathbf{x})=q(\mathbf{x}|\mathbf{x}')$ となり, 採択確率は
           \[ a = 
           \mathrm{min}\left\{\frac{\pi(\mathbf{x}')}{\pi(\mathbf{x})}, 1 \right\} \]
-          という非常に単純なものとなります.
+          となります.
+        </p>
+        <p class="fragment">
+        $\pi(\mathbf{x}')/\pi(\mathbf{x})$ がより大きい方向に進みやすいので, 密度の高い部分が重点的にサンプリングされるというわけです.
         </p>
         </section>
 
@@ -983,7 +1089,7 @@ t=19    : [ 0.52631577  0.15789472  0.31578951]
         からとることにします.
         </p>
         <p>
-        開始点はわざとずらして $\mathbf{x}^{(0)} = (1,-1)^T$ としてみます.
+        開始点はわざとずらして $\mathbf{x}^{(0)} = (2,-2)^T$ としてみます.
         </p>
         </section>
 

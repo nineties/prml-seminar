@@ -3,6 +3,10 @@ from numpy import *
 from scipy import stats
 from matplotlib.pyplot import *
 
+# 棄却サンプリングのパラメータ
+M = 2
+
+# 目標とする分布
 def f(x):
     return 1.0-abs(x)
 
@@ -16,7 +20,7 @@ legend(loc=1)
 show()
 
 plot(x, y, label="f(x)")
-plot(x, stats.beta.pdf(x, 2, 2, loc=-1, scale=2)*2, label="beta(2,2) * 2")
+plot(x, stats.beta.pdf(x, 2, 2, loc=-1, scale=2)*M, label="beta(2,2) * %.1f" % M)
 legend(loc=1)
 show()
 
@@ -27,7 +31,7 @@ def sample():
     while True:
         ngen += 1
         x = 2*random.beta(2, 2)-1
-        p = f(x)/(2*stats.beta.pdf(x, 2, 2, loc=-1, scale=2))
+        p = f(x)/(M*stats.beta.pdf(x, 2, 2, loc=-1, scale=2))
         if random.uniform() < p: return x
 
 N = 1000

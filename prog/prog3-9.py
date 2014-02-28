@@ -17,7 +17,7 @@ X, Y = meshgrid(linspace(-3, 3, 100), linspace(-3, 3, 100))
 Z = vectorize(lambda x,y: f([x,y]))(X, Y)
 
 # MH法
-sigma=1
+sigma=50
 def next(x):
     while True:
         new_x = x + random.normal(0, sigma, 2)
@@ -27,7 +27,7 @@ def next(x):
 BURNIN = 100 # グラフの見やすさの為に小さな値にしています
 N = 1000
 
-x = [1, -1]
+x = [2, -2]
 
 # バーンイン
 burn_x = zeros(BURNIN); burn_y = zeros(BURNIN)
