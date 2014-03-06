@@ -621,7 +621,7 @@
         <p>
         まず, $\mathbf{t}$ を確率として解釈する場合には
         \[ t_1+t_2+\cdots+t_K = 1,\quad t_i\geq 0 \]
-        を満たすように成約を加える必要があります.
+        を満たすように制約を加える必要があります.
         </p>
         </section>
 
@@ -641,7 +641,7 @@
 
         <section>
         <p>
-        目標ベクトルとの誤差 $\mathbf{t} - \mathbf{f}(\mathbf{x})$ は明らかに正規分布には従わない為, 線形識別可能なデータでも正しく識別出来ない.
+        目標ベクトルとの誤差 $\mathbf{t} - \mathbf{f}(\mathbf{x})$ は明らかに正規分布には従わない為, 線形識別可能なデータでも正しく識別出来ません.
         </p>
         <div align="center"> <img width="600px" src="prog/fig4-7.png"> <a href="prog/prog4-7.py" style="font-size:60%">prog4-7.py</a> </div>
         </section>
@@ -669,7 +669,7 @@
         <p>
         ここで登場した
         \[ \sigma(a) = \frac{1}{1+\exp(-a)} \]
-        は前回紹介しました, <strong> ロジスティック・シグモイド基底 (logictic sigmoid basis) </strong> に他なりません.
+        は前回紹介しました, <strong> ロジスティック・シグモイド基底 (logistic sigmoid basis) </strong> に他なりません.
         </p>
         <div align="center"> <img width="400px" src="prog/fig3-12.png"> <a href="prog/prog3-12.py" style="font-size:60%">prog3-12.py</a> </div>
         </section>
@@ -681,7 +681,7 @@
         が $\mathbf{x}$ の関数である事に注意して, 適当な基底の変換 $\Psi$ を行った後に
         \[ a = \mathbf{w}^T\Psi(\mathbf{x}) \]
         と表すならば,
-        \[ p(C_1|\mathbf{x}) = \sigma(\mathbf{w}^T\Psi(\mathbf{x}) \]
+        \[ p(C_1|\mathbf{x}) = \sigma(\mathbf{w}^T\Psi(\mathbf{x})) \]
         となります. この確率的生成モデルを $K > 2$ の場合に拡張すると <strong> ロジスティック回帰 (logistic regression) </strong> という手法が得られます.
         </section>
         
@@ -703,7 +703,7 @@
         という所で時間が無くなってしまいましたので続きは次回にまわします. MCMC法をよく練習しておいて下さい.
         </p>
         <p>
-        次回はロジスティク回帰,ベイジアンロジスティック回帰, パーセプトロン, フィッシャー識別など線形識別の理論を勉強していきます.
+        次回はロジスティック回帰,ベイジアンロジスティック回帰, パーセプトロン, フィッシャーの線形判別など線形識別の理論を勉強していきます.
         </p>
         </section>
 			</div>
