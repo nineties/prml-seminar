@@ -138,7 +138,7 @@
         <section>
         <p>
         技術的な話題が続いて申し訳ないのですが, 大変重要なランダムサンプリング手法である <strong> ギブスサンプリング (Gibbs sampling, GS) </strong>
-        をします.
+        を紹介します.
         </p>
         <p class="fragment">
         ギブスサンプリングは前回紹介したメトロポリス・ヘイスティングス法(MH法)の特別な場合と見なす事が出来ます.
@@ -472,7 +472,7 @@
         <p>
         ガウス基底を $\Psi(x)=(\psi_1(x),\psi_2(x),\ldots,\psi_{10}(x))^T$ と書くと, パラメータ $\mathbf{a}=(a_1,a_2,\ldots,a_{10})^T$ に対して
         \[ y_i \sim N(\Psi(x_i)^T\mathbf{a}, \sigma^2) \]
-        と仮定する事になします. 例によって
+        と仮定する事になります. 例によって
         \[ \mathbf{X} = (\Psi(x_1),\Psi(x_2),\ldots,\Psi(x_n))^T,\quad \mathbf{y}=(y_1,y_2,\ldots,y_n)^T \]
         と置けば
         \[ \mathbf{y} \sim \mathcal{N}(\mathbf{X}\mathbf{a}, \sigma^2I) \]
@@ -540,7 +540,7 @@
 
         <section>
         <p>
-        これまでもやって来ましたように, 特徴ベクトル $\mathbf{x}$ にダミー成分を
+        これまでもやって来ましたように, 特徴ベクトル $\mathbf{x}$ にダミー変数を
         \[ \mathbf{x}=(\color{red}{1}, x_1,x_2,\ldots,x_m) \]
         のように入れてしまえば, 線形識別関数はもっと単純に
         \[ f(\mathbf{x})=\mathbf{w}^T\mathbf{x} \]
@@ -641,14 +641,14 @@
 
         <section>
         <p>
-        目標ベクトルとの誤差 $\mathbf{t} - \mathbf{f}(\mathbf{x})$ は明らかに正規分布には従わない為, 線形識別可能なデータでも正しく識別出来ません.
+        そして,目標ベクトルとの差 $\mathbf{t} - \mathbf{f}(\mathbf{x})$ は明らかに正規分布には従わない為, 線形識別可能なデータでも正しく識別出来ません.
         </p>
         <div align="center"> <img width="600px" src="prog/fig4-7.png"> <a href="prog/prog4-7.py" style="font-size:60%">prog4-7.py</a> </div>
         </section>
 
         <section>
         <p>
-        最後の問題は特に本質的です. $\mathbf{t}$ は正規分布ではなくどのような分布に従って生成されるのか($\mathbf{t}$ の <strong>確率的生成モデル (probabilistic generative model) </strong>)をしっかりと考える必要があります.
+        最後の問題は特に本質的です. $\mathbf{t}$ は正規分布ではなくどのような分布に従って生成されるのか, その <strong>確率的生成モデル (probabilistic generative model) </strong>をしっかりと考える必要があります.
         </p>
         </section>
 
