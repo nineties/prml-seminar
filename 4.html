@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第4回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第4回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年3月6日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ギブスサンプリング </h2>
+        </section>
+
+        <section>
+        <p>
+        技術的な話題が続いて申し訳ないのですが, 大変重要なランダムサンプリング手法である <strong> ギブスサンプリング (Gibbs sampling, GS) </strong>
+        をします.
+        </p>
+        <p class="fragment">
+        ギブスサンプリングは前回紹介したメトロポリス・ヘイスティングス法(MH法)の特別な場合と見なす事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        二変数の分布 $\pi(x,y)$ からサンプリングを行いたいとします. 
+        </p>
+        <p class="fragment">
+        MCMCでは, マルコフ連鎖
+        \[ (x_0,y_0)\rightarrow (x_1,y_1)\rightarrow (x_2,y_2)\rightarrow\cdots \]
+        を生成しますが, この1ステップ $(x_n,y_n) \rightarrow (x_{n+1},y_{n+1})$ を
+        </p>
+        <p class="fragment" data-fragment-index="2">
+        \[ (x_n,y_n) \rightarrow (x_{n+1},y_n) \rightarrow (x_{n+1},y_{n+1}) \]
+        と分解します.
+        </p>
+        <div class="fragment" data-fragment-index="2" align="center"> <img width="400px" src="fig/gibbs-sampling1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        $\pi(x,y)$ において $y=y_n$ と固定すれば
+        \[ \pi(x, y_n)\propto \pi(x|y_n) \]
+        となります. これから $x_{n+1}$ をサンプリングして, $(x_n,y_n)\rightarrow (x_{n+1},y_n)$ の推移を行います.
+        </p>
+        <div align="center"> <img width="900px" src="fig/gibbs-sampling2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        $(x_n,y_n)\rightarrow (x_{n+1},y_n)$ の推移では, (目標分布からサンプルを生成しているので当然)詳細釣り合い条件が成立します.
+        </p>
+        <p>
+        $(x_{n+1},y_n)\rightarrow (x_{n+1},y_{n+1})$ の推移でも同様です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まとめると
+        </p>
+        <ol>
+          <li> $\pi(x|y_n)$ に従って $x_{n+1}$ を選ぶ. </li>
+          <li> $\pi(y|x_{n+1})$ に従って $y_{n+1}$ を選ぶ. </li>
+        </ol>
+        <p>
+        という手順によって $(x_n,y_n)\rightarrow (x_{n+1},y_{n+1})$ の推移を行います.
+        </p>
+        <div align="center"> <img width="400px" src="fig/gibbs-sampling1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        2変数以外の場合に一般化すると, 以下のようになります.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> ギブスサンプリング </h4>
+        <p> 目標分布 $\pi(x_1,x_2,\ldots,x_m)$ に対して, マルコフ連鎖の1ステップ $(x_1,x_2,\ldots,x_m)\rightarrow (x_1',x_2',\ldots,x_m')$ を以下の手順で行う. </p>
+        <ol>
+          <li> $\pi(x_1'|x_2,x_3,x_4,\ldots,x_m)$ に従い $x_1'$ を生成 </li>
+          <li> $\pi(x_2'|x_1',x_3,x_4,\ldots,x_m)$ に従い $x_2'$ を生成 </li>
+          <li> $\pi(x_3'|x_1',x_2',x_4,\ldots,x_m)$ に従い $x_3'$ を生成 </li>
+          <li> $\cdots$ </li>
+          <li> $\pi(x_m'|x_1',x_2',x_3',\ldots,x_{m-1}')$ に従い $x_m'$ を生成 </li>
+        </ol>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        ギブスサンプリングは, 条件付き分布
+        \[ \pi(x_i'|x_1',x_2',\ldots,x_{i-1}',x_{i+1},\ldots,x_m) \]
+        に従うサンプリングが可能であるならば,
+        </p>
+        <ul>
+          <li> 提案分布 $q(\mathbf{x}'|\mathbf{x})$ が不要. </li>
+          <li> サンプルが全て採択される. </li>
+        </ul>
+        <p>
+        という非常に単純なMH法です. 
+        </p>
+        </section>
+
+        <section>
+        <p>
+        簡単な例として, 前回と同じく二次元正規分布
+        \[ \small{ \mathcal{N}\left(\mathbf{0},
+        \begin{pmatrix}
+        1 & \rho \\
+        \rho & 1
+        \end{pmatrix} \right)} \]
+        からサンプリングしてみます(下図は $\rho=0.5$).
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig3-8-1.png"> <a href="prog/prog3-8.py" style="font-size:60%">prog3-8.py</a> </div>
+        <div align="center"> <img width="300px" src="fig/.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この場合
+        \[ \pi(x,y) \propto \exp\left\{-\frac{1}{2(1-\rho^2)}(x^2-2\rho xy+y^2)\right\} \]
+        なので, $y$ を固定すると
+        \[ \pi(x|y)\propto\pi(x,y)\propto\exp\left\{-\frac{1}{2(1-\rho^2)}(x-\rho y)^2\right\} \]
+        つまり, $\pi(x|y)=N(\rho y, 1-\rho^2)$ となります. 同様に $\pi(y|x)=N(\rho x, 1-\rho^2)$ です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下が $\rho=0.5$, $(x_0,y_0)=(2,-2)$, バーンイン期間 $10$、 サンプル数 $100$ での例です. 
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig4-1.png"> <a href="prog/prog4-1.py" style="font-size:60%">prog4-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        別の例として, ベータ分布を多次元に拡張した <strong> ディリクレ分布 (Dirichlet distribution) </strong> からのサンプリングをやってみましょう.
+        </p>
+        <p>
+        $k-1$ 次のディリクレ分布は, パラメータ $\mathbf{a}=(a_1,a_2,\ldots,a_k)$ と変数 $\mathbf{x}=(x_1,x_2,\ldots,x_k)$ に対して
+        \[ \pi(\mathbf{x}) \propto \prod_{i=1}^k x_i^{a_i}\qquad \small{(x_i\geq 0, x_1+x_2+\cdots+x_k=1)} \]
+        と表されます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば $\mathbf{a}=(a,b,c)$ に対する $2$ 次のディリクレ分布は
+        \[ \pi(x,y)\propto x^ay^b(1-x-y)^c \]
+        となります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-2-1.png"> <a href="prog/prog4-2.py" style="font-size:60%">prog4-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        すると
+        \[ \pi(x|y)\propto x^a(1-x-y)^c \propto x^a\{(1-y)-x\}^c \]
+        より $\pi(x|y)$ は変域 $[0,1-y]$ 上のベータ分布 $Be(a+1,c+1)$ となります.
+        </p>
+        <p>
+        同様に $\pi(y|x)$ は変域 $[0,1-x]$ 上のベータ分布 $Be(b+1,c+1)$ となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下が $\mathbf{a}=(3,2,5)$, $(x_0,y_0)=(0,0)$, バーンイン期間 $10$、 サンプル数 $100$ での例です. 
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig4-2-2.png"> <a href="prog/prog4-2.py" style="font-size:60%">prog4-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        同分布でサンプル数を増やした場合はこんな様子です.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig4-3.png"> <a href="prog/prog4-3.py" style="font-size:60%">prog4-3.py</a> </div>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> MCMC法の応用例 </h2>
+        </section>
+
+        <section>
+        <p>
+        MCMC法は様々な問題に利用しますが, とりあえず最も簡単なベイズ線形回帰の問題を考えましょう.解析的に解ける例もあえてランダムサンプリングを使う形で解いてみます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下のような30組のデータ(<a href="prog/prog4-4.dat">prog4-4.dat</a>)に対する回帰分析を行いましょう. これは$y=2x+1$ に従って生成しています.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-4-1.png"> <a href="prog/prog4-4-1.py" style="font-size:60%">prog4-4-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        モデルは $y_i = ax_i+b+\varepsilon_i\quad (\varepsilon_i\sim N(0, \sigma^2))$ とします. つまり
+        \[ \mathbf{a}=(a,b)^T,\quad
+        \mathbf{X}= \begin{pmatrix}
+        x_1 & x_2 & \cdots & x_n \\
+        1   &   1 & \cdots &   1
+        \end{pmatrix}^T \]
+        とおいて,
+        \[ \mathbf{y} \sim \mathcal{N}(\mathbf{X}\mathbf{a},\sigma^2I) \]
+        というモデルを考えます. $\mathbf{a}$ と $\sigma^2$ の事後分布を求める事が目標です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まず,データ $D=\{(\mathbf{x}_1,y_1),(\mathbf{x}_2,y_2),\ldots,(\mathbf{x}_n,y_n)\}$ が与えられた時の尤度は
+        \[ \begin{aligned}
+        L(\mathbf{a},\sigma^2|D)&=\mathcal{N}(\mathbf{y}|\mathbf{X}\mathbf{a},\sigma^2I)\\
+        &= \propto (\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}||\mathbf{y}-\mathbf{X}\mathbf{a}||^2\right\}
+        \end{aligned} \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\mathbf{a}$ の事前分布は $\mathcal{N}(\mathbf{a}_0, \sigma_0^2I)$ としましょう.
+        </p>
+        <p>
+        $\sigma^2$ の事前分布は $[0,\infty)$ 上の分布とすべきですが, <strong> 逆ガンマ分布 (inverse gamma distribution) </strong> $IG(\alpha_0/2,\beta_0/2)$ が用いられる事が多いです.
+        </p>
+        <div align="center"> <img width="500px" src="prog/fig4-4-2.png"> <a href="prog/prog4-4-2.py" style="font-size:60%">prog4-4-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        [参考] 逆ガンマ分布 $IG(\alpha/2,\beta/2)$ とは密度関数が
+        \[ IG(x|\alpha/2,\beta/2) \propto x^{-\alpha/2-1}\exp\left(-\frac{\beta}{2x}\right) \]
+        と表される分布です.
+        \[ L(\mathbf{a},\sigma^2)\propto (\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}||\mathbf{y}-\mathbf{X}\mathbf{a}||^2\right\} \]
+        の $\mathbf{a}$ を固定すると, 逆ガンマ分布と同じ形の関数になるため計算が容易です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ベイズの定理より,$\mathbf{a},\sigma^2$ の事後分布は
+        \[ \pi(\mathbf{a},\sigma^2|D)\propto L(\mathbf{a},\sigma^2|D)\mathcal{N}(\mathbf{a}|\mathbf{a}_0,\sigma_0^2I)IG(\sigma^2|\alpha_0/2,\beta_0/2) \]
+        となり,これは各変数についての条件付き分布を求める事が出来るのでギブスサンプリングが使えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\sigma^2$ を固定すると
+        \[ \begin{aligned}
+        \pi(\mathbf{a}|\sigma^2,D)&\propto  L(\mathbf{a},\sigma^2|D)\mathcal{N}(\mathbf{a}|\mathbf{a}_0,\sigma_0^2I) \\
+        &\propto \exp\left\{-\frac{1}{2\sigma^2}||\mathbf{y}-\mathbf{X}\mathbf{a}||^2-\frac{1}{2\sigma_0^2}||\mathbf{a}-\mathbf{a}_0||^2\right\} \\
+        \end{aligned} \]
+        となるので, これを $\mathbf{a}$ について平方完成(もしくは微分)すると,
+        \[ \begin{aligned}
+        & \pi(\mathbf{a}|\sigma^2,D) = \mathcal{N}(\mathbf{a}', \mathbf{\Sigma}) \\
+        & \mathbf{\Sigma}^{-1} = \frac{1}{\sigma^2}\mathbf{X}^T\mathbf{X}+\frac{1}{\sigma_0^2}I\\
+        & \mathbf{a}' = \mathbf{\Sigma}\left(\frac{1}{\sigma^2}\mathbf{X}^T\mathbf{y}+\frac{1}{\sigma_0^2}\mathbf{a}_0\right)
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p> $\mathbf{a}$ を固定すると
+        \[ \begin{aligned}
+        \pi(\sigma^2|\mathbf{a},D) &\propto L(\mathbf{a},\sigma^2|D)IG(\sigma^2|\alpha_0/2,\beta_0/2) \\
+        &\propto (\sigma^2)^{-n/2-\alpha_0/2-1}\exp\left\{-\frac{1}{2\sigma^2}||\mathbf{y}-\mathbf{X}\mathbf{a}||^2-\frac{1}{2\sigma^2}\beta_0\right\}
+        \end{aligned} \]
+        となるので,
+        \[ \begin{aligned}
+        &\pi(\sigma^2|\mathbf{a},D) = IG(\alpha/2,\beta/2) \\
+        &\alpha = \alpha_0 + n\\
+        &\beta  = \beta_0 + ||\mathbf{y}-\mathbf{X}\mathbf{a}||^2
+        \end{aligned} \]
+        となります.
+        </section>
+
+        <section>
+        <p>
+        以上に基づいてギブスサンプラーを実装して走らせてみましょう.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        まず, $y=ax+b$ の $a$ の事後分布です.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="600px" src="prog/fig4-4-3-1.png"> <a href="prog/prog4-4-3.py" style="font-size:60%">prog4-4-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        続いて $b$ の事後分布です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-4-3-2.png"> <a href="prog/prog4-4-3.py" style="font-size:60%">prog4-4-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        最後に $\sigma^2$ の事後分布です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-4-3-3.png"> <a href="prog/prog4-4-3.py" style="font-size:60%">prog4-4-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        パラメータのMAP推定値は各分布の最頻値であり, 正規分布では標本平均と一致しますから
+        \[ \hat{a}=2.35, \hat{b}=0.92 \]
+        となります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-4-3-4.png"> <a href="prog/prog4-4-3.py" style="font-size:60%">prog4-4-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今の例ではMAP推定値を利用しましたが, 折角 $\mathbf{a},\sigma^2$ の分布が得られているのにもったいないです.
+        </p>
+        <p class="fragment">
+        $\mathbf{a},\sigma^2$ に関して畳み込みを行って得られる分布を <strong> 予測分布 (predictive distribution) </strong> と呼びます. つまり,
+        \[ \pi(y|x,D)=\int\int \pi(y|x,\mathbf{a},\sigma^2)\pi(\mathbf{a},\sigma^2|D)\mathrm{d}\mathbf{a}\mathrm{d}(\sigma^2) \]
+        と計算される分布です. (解析的に求められるならそれがベストですが) $\pi(\mathbf{a},\sigma^2|D)$ に従うサンプルを生成し, それを使って $\pi(y|x,\mathbf{a},\sigma^2)$ からサンプリングを行えば予測分布からのサンプリングが出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下は予測分布からのサンプリングによって 標準偏差 を推定した例です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-4-3-5.png"> <a href="prog/prog4-4-3.py" style="font-size:60%">prog4-4-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        もう少し複雑な例として, PRMLの3.3.2節の問題を解いてみます. 入力データとして $y_i=\sin(2\pi x_i)+\varepsilon_i\quad (\varepsilon_i \sim N(0,\sigma^2))$ というモデルで生成したものを利用します.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-5-1.png"> <a href="prog/prog4-5-1.py" style="font-size:60%">prog4-5-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        ガウス基底関数を $[0,1]$ に等間隔に10個 (分散パラメータは $\beta=0.1$ と固定) 配置して使う事にします.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-5-2.png"> <a href="prog/prog4-5-2.py" style="font-size:60%">prog4-5-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        ガウス基底を $\Psi(x)=(\psi_1(x),\psi_2(x),\ldots,\psi_{10}(x))^T$ と書くと, パラメータ $\mathbf{a}=(a_1,a_2,\ldots,a_{10})^T$ に対して
+        \[ y_i \sim N(\Psi(x_i)^T\mathbf{a}, \sigma^2) \]
+        と仮定する事になします. 例によって
+        \[ \mathbf{X} = (\Psi(x_1),\Psi(x_2),\ldots,\Psi(x_n))^T,\quad \mathbf{y}=(y_1,y_2,\ldots,y_n)^T \]
+        と置けば
+        \[ \mathbf{y} \sim \mathcal{N}(\mathbf{X}\mathbf{a}, \sigma^2I) \]
+        となって, 先ほどの問題と全く同じ様に解くことができます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ギブスサンプラーを走らせ, $\hat{\mathbf{a}}$ をMAP推定で求めると以下のような曲線が得られます.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-5-3.png"> <a href="prog/prog4-5-3.py" style="font-size:60%">prog4-5-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        予測分布の標準偏差を推定してみると以下のようになります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-5-4.png"> <a href="prog/prog4-5-3.py" style="font-size:60%">prog4-5-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        MCMC法を利用したパラメータ推定・回帰分析の例は一旦ここで終了します.
+        </p>
+        <p>
+        いろいろと細かい話(事前分布をどうするかなど)が残っていますが, 大体の様子はつかめたのではないかと思うので識別の問題に進みます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 線形識別モデル </h2>
+        </section>
+
+        <section>
+        <p>
+        PRMLの第4章に相当する内容を進めていきます.
+        </p>
+        <p class="fragment">
+        特徴空間 $\Omega$ を $K\geq 2$ 個の領域に分割する際の境界を <strong>決定面 (decision surface)</strong> と呼びます.
+        <strong>線形識別モデル (linear discriminant model) </strong> とは決定面が超平面となるようなモデルです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば第一回に紹介したテンプレートマッチング法は線形識別モデルの一種です.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig1-2-2.png"> </div>
+        </section>
+
+        <section>
+        <h3> 2クラスの場合 </h3>
+        <p>
+        クラスが $C_1,C_2$ の2つの場合を考えます. (特徴空間の $\Psi$ による変換を考えない場合)線形識別関数は
+        \[ f(\mathbf{x}) = \mathbf{w}^T\mathbf{x}+w_0 \]
+        と書くことができ, $\mathbf{w}$ を <strong> 重み (weight) </strong> $w_0$ を <strong> バイアス (bias) </strong>
+        と呼びます.
+        </p>
+        <p>
+        \[ f(\mathbf{x}) = \mathbf{w}^T\mathbf{x}-\theta \]
+        の用に書いて $\theta$ を <strong> しきい値 (threshold) </strong> と呼ぶ場合もあります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これまでもやって来ましたように, 特徴ベクトル $\mathbf{x}$ にダミー成分を
+        \[ \mathbf{x}=(\color{red}{1}, x_1,x_2,\ldots,x_m) \]
+        のように入れてしまえば, 線形識別関数はもっと単純に
+        \[ f(\mathbf{x})=\mathbf{w}^T\mathbf{x} \]
+        と書くことが出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さて, $2$ クラスの場合は
+        </p>
+        <ul>
+          <li> $f(\mathbf{x})&gt; 0$ ならば $C_1$ </li>
+          <li> $f(\mathbf{x})&lt; 0$ ならば $C_2$ </li>
+        </ul>
+        <p>
+        というように識別を行います.
+        </p>
+        <p>
+        従って決定面は
+        \[ \mathbf{w}^T\mathbf{x} = 0 \]
+        という $\mathbf{w}$ と直交する超平面となります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 多クラスの場合 </h3>
+        <p>
+        クラスの数 $K$ が $3$ 以上の場合,「 $f(\mathbf{x})$ の正負で識別する」という方針では問題が生じます.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        例えば $K=3$ の場合に $f(\mathbf{x}) > 0$ ならクラス1, $g(\mathbf{x})>0$ ならクラス3とした場合,
+        $f(\mathbf{x})>0\text{かつ}g(\mathbf{x})>0$ の領域のクラスが確定しません.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="500px" src="fig/one-versus-the-rest-classifier.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        そこで, 多クラス識別の場合には各クラス $c$ 毎に識別関数
+        \[ f_c(\mathbf{x})=\mathbf{w}_c^T\mathbf{x} \]
+        を定め,「$f_c(\mathbf{x})$ が最大の $c$ を選ぶ」という方法をとります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今の様なルールにすると, 領域の形状が想像しづらくなるかもしれませんが線形識別モデルで得られる領域は全て凸領域であるという一般的な事実が言えます.
+        </p>
+        <div align="center"> <img width="500px" src="fig/linear-discriminant1.png"> </div>
+        </section>
+
+        <section>
+        <h3> 1-of-K 符号化 </h3>
+        <p>
+        クラス数が $K$ であるとき, クラス $C_i$ に対して
+        \[ \mathbf{t}=(0,\ldots,0,1,0,\ldots,0)\quad\text{($i$番目だけ $1$)} \]
+        というベクトルを目標のベクトルとする符号化を <strong> 1-of-K 符号化 </strong> と呼びます.
+        </p>
+        <p class="fragment">
+        ここで $t_1+t_2+\cdots+t_K=1, t_i\geq 0$ を満たすようにとるならば, $t_i$ を $\mathbf{x}$ がクラス $C_i$ に属する確率と解釈する事が可能です.
+        </p>
+        </section>
+
+        <section>
+        <h3> 最小二乗法による線形識別の問題点 </h3>
+        <p>
+        第1回には識別関数 $f_c(\mathbf{x})$ を束にした
+        \[ \mathbf{f}(\mathbf{x})=(f_{c_1}(\mathbf{x}),f_{c_2}(\mathbf{x}),\ldots,f_{c_K}(\mathbf{x}))^T \]
+        を考え, 最小二乗法によって $\mathbf{f}(\mathbf{x})$ が目標ベクトル $\mathbf{t}$ に近づくように最適化する方法を紹介しました.
+        </p>
+        <p class="fragment">
+        実は, この方法にはいくつかの問題があります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まず, $\mathbf{t}$ を確率として解釈する場合には
+        \[ t_1+t_2+\cdots+t_K = 1,\quad t_i\geq 0 \]
+        を満たすように成約を加える必要があります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        また, 単純な最小二乗法は外れ値に敏感に反応してしまいます.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-6-1.png"> <a href="prog/prog4-6.py" style="font-size:60%">prog4-6.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        また, 単純な最小二乗法は外れ値に敏感に反応してしまいます.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-6-2.png"> <a href="prog/prog4-6.py" style="font-size:60%">prog4-6.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        目標ベクトルとの誤差 $\mathbf{t} - \mathbf{f}(\mathbf{x})$ は明らかに正規分布には従わない為, 線形識別可能なデータでも正しく識別出来ない.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig4-7.png"> <a href="prog/prog4-7.py" style="font-size:60%">prog4-7.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        最後の問題は特に本質的です. $\mathbf{t}$ は正規分布ではなくどのような分布に従って生成されるのか($\mathbf{t}$ の <strong>確率的生成モデル (probabilistic generative model) </strong>)をしっかりと考える必要があります.
+        </p>
+        </section>
+
+        <section>
+        <p> $K=2$ の場合を考えましょう.  既に述べたように $t_1$ は $\mathbf{x}$ がクラス $C_1$ である確率と解釈出来るので,ベイズの定理より
+        \[ t_1 = p(C_1|\mathbf{x}) = \frac{\pi(\mathbf{x}|C_1)p(C_1)}{\pi(\mathbf{x})} \]
+        と書くことが出来ます. ここで
+        \[ \pi(\mathbf{x})= \pi(\mathbf{x}|C_1)p(C_1) + \pi(\mathbf{x}|C_2)p(C_2) \]
+        であるので,
+        \[ a = \ln\frac{\pi(\mathbf{x}|C_1)p(C_1)}{\pi(\mathbf{x}|C_2)p(C_2)} \] 
+        と置き直せば
+        \[ p(C_1|\mathbf{x})=\frac{1}{1+\exp(-a)} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで登場した
+        \[ \sigma(a) = \frac{1}{1+\exp(-a)} \]
+        は前回紹介しました, <strong> ロジスティック・シグモイド基底 (logictic sigmoid basis) </strong> に他なりません.
+        </p>
+        <div align="center"> <img width="400px" src="prog/fig3-12.png"> <a href="prog/prog3-12.py" style="font-size:60%">prog3-12.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        ここで
+        \[ a = \ln\frac{\pi(\mathbf{x}|C_1)p(C_1)}{\pi(\mathbf{x}|C_2)p(C_2)} \] 
+        が $\mathbf{x}$ の関数である事に注意して, 適当な基底の変換 $\Psi$ を行った後に
+        \[ a = \mathbf{w}^T\Psi(\mathbf{x}) \]
+        と表すならば,
+        \[ p(C_1|\mathbf{x}) = \sigma(\mathbf{w}^T\Psi(\mathbf{x}) \]
+        となります. この確率的生成モデルを $K > 2$ の場合に拡張すると <strong> ロジスティック回帰 (logistic regression) </strong> という手法が得られます.
+        </section>
+        
+        <section>
+        ところで, ロジスティック・シグモイド関数の逆関数
+        \[ \sigma^{-1}(x) = \ln\left(\frac{x}{1-x}\right) \]
+        を用意しておけば,
+        \[ p(C_1|\mathbf{x}) = \sigma(\mathbf{w}^T\Psi(\mathbf{x}) \]
+        を
+        \[ \sigma^{-1}(p(C_1|\mathbf{x})) = \mathbf{w}^T\Psi(\mathbf{x}) \]
+        と左辺を線形に書くことが出来るので便利です. この $\sigma^{-1}$ は<strong> ロジット関数 (logit function) </strong> と呼ばれ, 一般にこのような用途で利用する逆関数を <strong> リンク関数 (link function) </strong> と呼びます.
+        </p>
+        </section>
+
+
+        <section>
+        <h3> 第4回はここで終わります </h3>
+        <p>
+        という所で時間が無くなってしまいましたので続きは次回にまわします. MCMC法をよく練習しておいて下さい.
+        </p>
+        <p>
+        次回はロジスティク回帰,ベイジアンロジスティック回帰, パーセプトロン, フィッシャー識別など線形識別の理論を勉強していきます.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>

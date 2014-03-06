@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="新規ドキュメント 1">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path3792"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="4.9924752"
+     inkscape:cy="540.42228"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="746"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 38.571429,710.93361 438.57143,246.6479"
+       id="path2985"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 415.71429,225.21932 c -2.85715,14.28572 -47.14286,478.57144 -47.14286,478.57144"
+       id="path2987"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 44.285714,638.07647 c 27.142857,0 547.142856,-121.42857 547.142856,-121.42857"
+       id="path2991"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 158.57143,308.07648 c 2.85714,5.71428 478.57143,307.14285 478.57143,307.14285"
+       id="path2993"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#ff0000;fill-opacity:0.19607843;stroke:none"
+       d="m 384.13533,558.6326 c 0,-5.51288 8.75163,-95.29969 9.34993,-95.92501 0.2726,-0.28491 26.03708,15.74858 57.25441,35.62996 31.21732,19.88139 56.16279,36.33346 55.43436,36.56016 -3.26134,1.01497 -119.54418,27.61362 -120.72007,27.61362 -0.72524,0 -1.31863,-1.74543 -1.31863,-3.87873 z"
+       id="path2999"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#ff0000;fill-opacity:0.19607843;stroke:none"
+       d="m 118.48197,620.75824 c 3.97408,-6.64341 185.56778,-215.39938 186.92099,-214.8801 0.90659,0.34789 20.40652,12.65724 43.3332,27.35411 33.6286,21.55721 41.67462,27.31385 41.63172,29.78605 -0.13915,8.02224 -9.58542,99.6078 -10.35278,100.37516 -1.25404,1.25404 -49.6123,12.3105 -189.59405,43.34811 -81.10308,17.98267 -73.41552,16.48483 -71.93908,14.01667 z"
+       id="path3773"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#ff0000;fill-opacity:0.19607843;stroke:none"
+       d="m 348.27819,429.83536 c -22.78571,-14.70681 -41.17537,-27.35327 -40.86591,-28.10327 0.91567,-2.21913 99.35751,-116.20535 99.89455,-115.66831 0.75662,0.75662 -16.06048,170.74842 -16.87947,170.62223 -0.39633,-0.0611 -19.36346,-12.14385 -42.14917,-26.85065 z"
+       id="path3775"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="-134.28572"
+       y="445.21933"
+       id="text3777"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3779"
+         x="-134.28572"
+         y="445.21933">このような形状の</tspan><tspan
+         sodipodi:role="line"
+         x="-134.28572"
+         y="495.21933"
+         id="tspan3781">領域は存在しない</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 174.28571,509.50504 260,533.79075"
+       id="path3783"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

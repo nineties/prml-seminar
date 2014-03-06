@@ -5,8 +5,9 @@ from matplotlib.pyplot import *
 import matplotlib.cm as cm
 
 # 多変量分布の図示
+rho = 0.5
 mu = array([0, 0]) # 平均
-S  = array([[1, 0.5],[0.5, 1]]) # 分散
+S  = array([[1, rho],[rho, 1]]) # 分散
 Sinv = LA.inv(S)
 detS = LA.det(S)
 
@@ -16,16 +17,19 @@ def f(x):
 X, Y = meshgrid(linspace(-3, 3, 100), linspace(-3, 3, 100))
 Z = vectorize(lambda x,y: f([x,y]))(X, Y)
 
-# MH法
-sigma=50
-def next(x):
-    while True:
-        new_x = x + random.normal(0, sigma, 2)
-        if random.uniform() <= min( f(new_x)/f(x), 1 ):
-            return new_x
+xlim(-3, 3)
+ylim(-3, 3)
+pcolor(X, Y, Z, alpha=0.3)
+show()
 
-BURNIN = 100
-N = 1000
+# Gibbs sampling
+def next(x):
+    new_x = random.normal(rho*x[1], 1-rho**2)
+    new_y = random.normal(rho*new_x, 1-rho**2)
+    return [new_x, new_y]
+
+BURNIN = 10 # グラフの見やすさの為に小さな値にしています
+N = 100
 
 x = [2, -2]
 
@@ -38,7 +42,12 @@ for i in range(BURNIN):
 
 # サンプリング
 sample_x = zeros(N); sample_y = zeros(N)
-for i in range(N):
+
+# グラフの見た目を良くするために１点共有
+sample_x[0] = burn_x[-1]
+sample_y[0] = burn_y[-1]
+
+for i in range(1, N):
     sample_x[i] = x[0]
     sample_y[i] = x[1]
     x = next(x)
@@ -46,8 +55,7 @@ for i in range(N):
 xlim(-3, 3)
 ylim(-3, 3)
 pcolor(X, Y, Z, alpha=0.3)
-scatter(burn_x, burn_y, label="burn-in", color="blue")
-scatter(sample_x, sample_y, label="sampling", color="red")
+plot(burn_x, burn_y, label="burn-in")
+plot(sample_x, sample_y, label="sampling")
 legend(loc=1)
-title("sigma=%.1f, number of samples=%d, burn-in=%d" % (sigma, N, BURNIN))
 show()
