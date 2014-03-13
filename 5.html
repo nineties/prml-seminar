@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第5回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第5回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年3月13日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 線形識別モデル(続き) </h2>
+        </section>
+
+        <section>
+        <p>
+        前回に引き続き線形識別モデル(PRML第4章)を進めていきます. 
+        </p>
+        </section>
+
+        <section>
+        <p>
+        前回は
+        </p>
+        <ul>
+          <li> 線形識別関数の最適化に最小二乗法を用いるのは不適切である. </li>
+          <li> そこで, 目標ベクトル $\mathbf{t}$ の確率的生成モデルを考えると, </li>
+          <li> 2クラスの場合, ロジスティック・シグモイド関数 $\sigma$ でモデル化出来る事がわかった. </li>
+          \[ p(C_1|\mathbf{x})=\sigma(\mathbf{w}^T\Psi(\mathbf{x})) \]
+        </ul>
+        <p>
+        という話をしました. 
+        </section>
+
+        <section>
+        <p>
+        続いてこのモデルに基づく回帰分析の手法の解説をします.
+        </p>
+        <p>
+        少し難しめですが, 非線形回帰は初登場の話題なので頑張りましょう.
+        </p>
+        </section>
+
+        <section>
+        <h3> 2クラスロジスティック回帰 </h3>
+        <p>
+        まず２クラスの場合に, ロジスティックモデル
+          \[ p(C_1|\mathbf{x})=\sigma(\mathbf{w}^T\Psi(\mathbf{x})) \]
+        のパラメータ $\mathbf{w}$ を最尤法で決定する問題を考えます.
+        </p>
+        <p>
+        以下, 簡単の為 $\boldsymbol{\phi} = \Psi(\mathbf{x})$ と書きます.
+        </p>
+        </section>
+        <section>
+        <p>
+        まず,
+        \[ p(C_1|\boldsymbol{\phi})=\sigma(\mathbf{w}^T\boldsymbol{\phi}) \]
+        の時,
+        \[ p(C_2|\boldsymbol{\phi})=1-p(C_1|\boldsymbol{\phi}) \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        学習データの一組 $(\boldsymbol{\phi}, t)\,(t\in\{0,1\})$ を, $\mathbf{x}$ がクラス $C_1$ の時に $t=1$ となるように定めれば, 尤度は
+        \[ L(\mathbf{w}|\boldsymbol{\phi},t) = \left\{\begin{array}{cc}
+        \sigma(\mathbf{w}^T\boldsymbol{\phi}) & (t = 1\text{のとき}) \\
+        1-\sigma(\mathbf{w}^T\boldsymbol{\phi}) & (t = 0\text{のとき})
+        \end{array}\right.\]
+        となりますが, これは
+        \[ L(\mathbf{w}|\boldsymbol{\phi},t) = \sigma(\mathbf{w}^T\boldsymbol{\phi})^t\left\{1-\sigma(\mathbf{w}^T\boldsymbol{\phi})\right\}^{1-t} \]
+        と書くことが出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        よって, 学習データ $D=\{(\boldsymbol{\phi}_1,t_1),(\boldsymbol{\phi}_2,t_2),\ldots,(\boldsymbol{\phi}_n,t_n)\}$ に対する対数尤度は
+        \[ L(\mathbf{w}|D) = \prod_{i}\sigma(\mathbf{w}^T\boldsymbol{\phi}_i)^{t_i}\left\{1-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i)\right\}^{1-t_i} \]
+        より
+        \[ \ln L(\mathbf{w}|D) = \sum_i\left[t_i\ln\sigma(\mathbf{w}^T\boldsymbol{\phi}_i)+(1-t_i)\ln\left\{1-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i)\right\}\right] \]
+        となります. これを最大にする $\mathbf{w}$ を求める事が目標です. しかし, これは非線形な関数 $\sigma$ を含むので最小二乗法のように簡単には解けません.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        その為に対数尤度を $\mathbf{w}$ で微分しましょう. 順番にやってみると
+        \[ \begin{aligned}
+        \frac{\mathrm{d}}{\mathrm{d}x}\sigma(x) &= \frac{\mathrm{d}}{\mathrm{d}x}\frac{1}{1+\exp(-x)} \\
+        &= \frac{\exp(-x)}{(1+\exp(-x))^2} \\
+        &= \frac{1}{1+\exp(-x)}\left\{1-\frac{1}{1+\exp(-x)}\right\} \\
+        &= \sigma(x)(1-\sigma(x))
+        \end{aligned} \]
+        なので
+        </p>
+        </section>
+
+        <section>
+        <p>
+        \[ \begin{aligned}
+        \frac{\mathrm{d}}{\mathrm{d}\mathbf{w}}\ln \sigma(\mathbf{w}^T\boldsymbol{\phi}) 
+        &= \frac{1}{\sigma(\mathbf{w}^T\boldsymbol{\phi})}\frac{\mathrm{d}}{\mathrm{d}\mathbf{w}}\sigma(\mathbf{w}^T\boldsymbol{\phi}) \\
+        &= \frac{1}{\sigma(\mathbf{w}^T\boldsymbol{\phi})}\sigma(\mathbf{w}^T\boldsymbol{\phi})\left\{1-\sigma(\mathbf{w}^T\boldsymbol{\phi})\right\}\frac{\mathrm{d}}{\mathrm{d}\mathbf{w}}\mathbf{w}^T\boldsymbol{\phi} \\
+        &= \{1-\sigma(\mathbf{w}^T\boldsymbol{\phi})\}\boldsymbol{\phi}
+        \end{aligned} \]
+        となります. 同様に
+        \[ \frac{\mathrm{d}}{\mathrm{d}\mathbf{w}}\ln \{1-\sigma(\mathbf{w}^T\boldsymbol{\phi})\} = -\sigma(\mathbf{w}^T\boldsymbol{\phi})\boldsymbol{\phi} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        よって
+        \[ \begin{aligned}
+        &\frac{\mathrm{d}}{\mathrm{d}\mathbf{w}}\ln L(\mathbf{w}|D) \\
+        =&\sum_i\left[t_i(1-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i))\boldsymbol{\phi}_i+(1-t_i)(0-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i))\boldsymbol{\phi}_i\right]
+        \end{aligned} \]
+        となりますが, これをよく見ると
+        \[ \frac{\mathrm{d}}{\mathrm{d}\mathbf{w}}\ln L(\mathbf{w}|D) = \sum_i (t_i-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i))\boldsymbol{\phi}_i \]
+        と書けます. 
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さらに,
+        \[ \begin{aligned}
+        \mathbf{t}&=(t_1,t_2,\ldots,t_n)^T\\
+        \mathbf{y}&=(\sigma(\mathbf{w}^T\boldsymbol{\phi}_1),\sigma(\mathbf{w}^T\boldsymbol{\phi}_2),\ldots,\sigma(\mathbf{w}^T\boldsymbol{\phi}_n))^T\\
+        \mathbf{X}&=(\boldsymbol{\phi}_1,\boldsymbol{\phi}_2,\ldots,\boldsymbol{\phi}_n)^T
+        \end{aligned} \]
+        と置けば,
+        \[ \frac{\mathrm{d}}{\mathrm{d}\mathbf{w}}\ln L(\mathbf{w}|D) = \mathbf{X}^T(\mathbf{t}-\mathbf{y}) \]
+        となります. これが対数尤度の勾配 $\nabla\ln L$ です.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        \[ \frac{\mathrm{d}}{\mathrm{d}\mathbf{w}}\ln L(\mathbf{w}|D) = \sum_i (t_i-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i))\boldsymbol{\phi}_i \]
+        を再び $\mathbf{w}$ で微分すれば <strong> ヘッセ行列 (Hessian matrix) </strong>
+        \[ \mathbf{H}=-\sum_i\sigma(\mathbf{w}^T\boldsymbol{\phi}_i)(1-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i))\boldsymbol{\phi}_i\boldsymbol{\phi}_i^T \] 
+        が得られます.
+        </p>
+        <p class="fragment">
+        整理すれば以下の様になります.
+        \[ \begin{aligned}
+        \mathbf{H}&=-\mathbf{X}^T\mathbf{R}\mathbf{X}\\
+        \mathbf{R}&=\begin{pmatrix}
+        \sigma(\mathbf{w}^T\boldsymbol{\phi}_1)(1-\sigma(\mathbf{w}^T\boldsymbol{\phi}_1)) & \cdots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \cdots & \sigma(\mathbf{w}^T\boldsymbol{\phi}_n)(1-\sigma(\mathbf{w}^T\boldsymbol{\phi}_n)) 
+        \end{pmatrix}
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        前頁の $\mathbf{H}$ は $\mathbf{R}$ の対角成分が全て正であることに注意すると,
+        \[ \text{任意の $\mathbf{x}$ に対して $\mathbf{x}^T\mathbf{H}\mathbf{x} &lt; 0$} \]
+        が成り立つので, <strong> 負定値 (negative definite)</strong> である事が分かります.
+        これは 「$\ln L$ は極大値を唯一つ持ち,極小値は持たない」という事を示します
+        </p>
+        <p style="font-size:70%">
+        高校数学で学んだ $f''(x) &lt; 0$ ならばグラフは上に凸という事の一般化です.
+        </p>
+        <div align="center"> <img width="600px" src="fig/hessian-matrix.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        まとめましょう.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> ロジスティックモデルにおける対数尤度 $\ln L$ </h4>
+        <p>
+        $\ln L$ は唯一つの極大値を持ち極小値は持たない.
+        </p>
+        <ul>
+          <li> 勾配: $\nabla \ln L = \mathbf{X}^T(\mathbf{t}-\mathbf{y})$ </li>
+          <li> ヘッセ行列: $\mathbf{H} = -\mathbf{X}^T\mathbf{R}\mathbf{X}$ </li>
+        </ul>
+        <p style="font-size:90%">
+        ここで
+        \[ \begin{aligned}
+        \mathbf{t}&=(t_1,t_2,\ldots,t_n)^T\\
+        \mathbf{y}&=(\sigma(\mathbf{w}^T\boldsymbol{\phi}_1),\sigma(\mathbf{w}^T\boldsymbol{\phi}_2),\ldots,\sigma(\mathbf{w}^T\boldsymbol{\phi}_n))^T\\
+        \mathbf{X}&=(\boldsymbol{\phi}_1,\boldsymbol{\phi}_2,\ldots,\boldsymbol{\phi}_n)^T
+        \end{aligned} \]
+        $\mathbf{R}$ は対角行列で
+        \[ R_{ii} = \sigma(\mathbf{w}^T\boldsymbol{\phi}_i)(1-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i)) \]
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        さて, $\ln L$ の最大化を行うために本日は基本的な３つの手法の紹介を行います.
+        </p>
+        <ol>
+          <li> ニュートン・ラフソン法 </li>
+          <li> 最急降下法 </li>
+          <li> 確率的勾配降下法 </li>
+        </ol>
+        </section>
+
+        <section>
+        <h3> ニュートン・ラフソン法 </h3>
+        <p>
+        $\ln L$ は凸関数なので $\ln L$ を最大にする $\mathbf{w}$ を求める事を,
+        $\nabla \ln L = \mathbf{0}$ を満たす $\mathbf{w}$ を求める問題に帰着して解くことが出来ます.
+        </p>
+        <p>
+        非線形方程式の反復解法では <strong> ニュートン・ラフソン法 (Newton-Raphson method) </strong> が有名です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ニュートン・ラフソン法では, 適当な初期値 $\mathbf{w}_0$ を定め,
+        \[ \mathbf{w}_{k+1} = \mathbf{w}_k - \mathbf{H}_k^{-1}\nabla \ln L \]
+        によって反復を行い $\mathbf{w}$ を収束させます.
+        </p>
+        <p class="fragment" style="font-size:80%">
+        一変数方程式 $f'(x)=0$ のニュートン・ラフソン法(<a href="http://nineties.github.io/math-seminar/4.html">参考</a>) を適用すると
+        \[ x_{k+1} = x_k - \frac{f'(x_k)}{f''(x_k)} \]
+        という反復公式が得られますが, これを多変数に拡張したものです. 二次収束します.
+        </p>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        先ほどの式を代入すると
+        \[ \mathbf{w}_{k+1} = \mathbf{w}_k + (\mathbf{X}^T\mathbf{R}_k\mathbf{X})^{-1}\mathbf{X}^T(\mathbf{t}-\mathbf{y}_k) \]
+        となります. 行列 $\mathbf{R}$ は $\mathbf{w}$ を含むので反復の度に計算が必要である事に注意しましょう.
+        </p>
+        <p>
+        $\mathbf{R}$ は重み付け行列と呼ばれるので, 上記のアルゴリズムは <strong> 反復再重み付け最小二乗法 (iterative reweighted least squares method, IRLS) </strong> と呼ばれます.
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue;font-size:90%">
+          <h4> IRLS法による2クラスロジスティック回帰 </h4>
+          <p> 適当な初期値 $\mathbf{w}_0$ から始め
+        \[ \mathbf{w}_{k+1} = \mathbf{w}_k + (\mathbf{X}^T\mathbf{R}_k\mathbf{X})^{-1}\mathbf{X}^T(\mathbf{t}-\mathbf{y}_k) \]
+        となります. 行列 $\mathbf{R}$ は $\mathbf{w}$ を含むので反復の度に計算が必要である事に注意しましょう.
+        で反復を行って $\mathbf{w}$ を求める. </p>
+        <p>
+        ここで
+        \[ \begin{aligned}
+        \mathbf{t}&=(t_1,t_2,\ldots,t_n)^T\\
+        \mathbf{y}_k&=(\sigma(\mathbf{w}_k^T\boldsymbol{\phi}_1),\sigma(\mathbf{w}_k^T\boldsymbol{\phi}_2),\ldots,\sigma(\mathbf{w}_k^T\boldsymbol{\phi}_n))^T\\
+        \mathbf{X}&=(\boldsymbol{\phi}_1,\boldsymbol{\phi}_2,\ldots,\boldsymbol{\phi}_n)^T
+        \end{aligned} \]
+        $\mathbf{R}$ は対角行列で
+        \[ R_{ii} = \sigma(\mathbf{w}_k^T\boldsymbol{\phi}_i)(1-\sigma(\mathbf{w}_k^T\boldsymbol{\phi}_i)) \]
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        細かい話の前に, 簡単な実装例をお見せします.以下を学習データとします.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-training.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        ガウス基底を以下のように配置して使う事にしました. 各円の半径は基底の標準偏差パラメータの値です.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-bases.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        初期状態では $\mathbf{w}=\mathbf{0}$ としました.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter0.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復1回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter1.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復2回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter2.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復3回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter3.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復4回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter4.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復5回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter5.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復6回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter6.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復7回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter7.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復8回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter8.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復9回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter9.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+        <section>
+        <p> 反復10回目. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-1-iter10.png"> <a href="prog/prog5-1.py" style="font-size:60%">prog5-1.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 計算上の注意 </h3>
+        <p>
+        シグモイド関数
+        \[ \sigma(a) = \frac{1}{1+\exp(-a)} \]
+        は指数関数 $\exp$ を含む為, 簡単にオーバーフロー・アンダーフロー・情報落ちを起こします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        倍精度の場合, オーバーフロー・アンダーフローを防ぐ為には, 引数は大体 $[-709, 745]$ の範囲内になければいけません.
+        </p>
+<pre><code class="python" style="max-height:400px">>>> from math import exp
+>>> exp(709)
+8.218407461554972e+307
+>>> exp(710)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+OverflowError: math range error
+>>> exp(-745)
+5e-324
+>>> exp(-746)
+0.0
+</code></pre>
+        </section>
+
+        <section>
+        <p>
+        また, $[-36, 36]$ あたりを外れると完全に情報が落ちます.
+        </p>
+<pre><code class="python" style="max-height:400px">>>> from math import exp
+>>> (1 + exp(36)) - exp(36)
+1.0
+>>> (1 + exp(37)) - exp(37)
+0.0
+>>> (1 + exp(-36)) - 1
+2.220446049250313e-16
+>>> (1 + exp(-37)) - 1
+0.0
+</code></pre>
+        </section>
+
+        <section>
+        <p>
+        オーバーフローやアンダーフローは例えば
+        \[ \sigma(a) = \frac{1}{2}(1+\tanh (a/2)) \]
+        などの等式を用いると回避する事が出来ますが, それでも情報落ちは起きてしまいます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        引数$a$ についてアンダーフローや情報落ちが起きると,
+        \[ \sigma(a) = 0 \text{または} 1 \]
+        になってしまうため, $\mathbf{R}$ が特異行列になってしまいます. すると $(\mathbf{X}^T\mathbf{R}\mathbf{X})^{-1}$ が存在しないので, アルゴリズムを実行する事ができなくなります.
+        </p>
+        <p>
+        行列の条件数を追跡スルなどして, 大きな誤差が生じた場合に検出出来るようにする工夫があります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 停止条件について </h3>
+        <p>
+        IRLSの反復を停止する一般的な方法もありません.
+        </p>
+        <p>
+        通常のニュートン・ラプソン法では $\mathbf{w}_n$ と $\mathbf{w}_{n+1}$ の相対誤差
+        \[ \frac{||\mathbf{w}_n-\mathbf{w}_{n+1}||}{||\mathbf{w}_n||} \]
+        がある値以下である事を停止条件としますが, IRLSではその前に $(\mathbf{X}^T\mathbf{R}\mathbf{X})^{-1}$ が特異行列になってしまったりします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        現実には以下の様な複数の終了条件を組合せてアルゴリズムを実行する事になると思います.
+        </p>
+        <ul>
+          <li> 相対誤差 $||\mathbf{w}_n-\mathbf{w}_{n+1}||/||\mathbf{w}_n||$ がある値以下の時に停止. </li>
+          <li> 残差平方和 $\sum_i||t_i-\sigma(\mathbf{w}_n^T\boldsymbol{\phi}_i)||$ がある値以下の時に停止. </li>
+          <li> $(\mathbf{X}^T\mathbf{R}\mathbf{X})^{-1}$ が特異行列に近づいてしまったら停止. </li>
+          <li> 反復回数上限に達したら停止. </li>
+        </ul>
+        </section>
+
+        <section>
+        <h3> 多クラスロジスティック回帰 </h3>
+        <p>
+        クラス数 $K$ が $3$ 以上の場合を考えます.
+        \[ p(C_i|\mathbf{x}) = \frac{\pi(\mathbf{x}|C_i)p(C_i)}{\pi(\mathbf{x})} = \frac{\pi(\mathbf{x}|C_i)p(C_i)}{\sum_jg \pi(\mathbf{x}|C_j)p(C_j)} \]
+        において,
+        \[ a_i = \ln\pi(\mathbf{x}|C_i)p(C_i) \]
+        と置けば,
+        \[ p(C_i|\mathbf{x}) = \frac{\exp(a_i)}{\sum_j\exp(a_j)} \]
+        となります. この関数は <strong> ソフトマックス (softmax function) </strong> と呼ばれます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ソフトマックス関数と呼ばれるのは, 全ての $j\neq i$ に対して $a_i \gg a_j$ の時には
+        \[ \exp(a_j-a_i) \approx 0 \]
+        となるので
+        \[ p(C_i|\mathbf{x}) \approx 1 \]
+        となり, そうでなければ
+        \[ p(C_i|\mathbf{x}) \approx 0 \]
+        となるからです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        多クラスの場合も同様に
+        \[ a_i = \mathbf{w}_i^T\boldsymbol{\phi} \]
+        とモデル化します.
+        </p>
+        <p>
+        学習データの一組 $(\boldsymbol{\phi}, \mathbf{t})$ は 1-of-K符号化によって定めます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        学習データ $D=\{(\boldsymbol{\phi}_1,\mathbf{t}_1),\ldots,(\boldsymbol{\phi}_n,\mathbf{t}_n)\}$ に対する尤度関数は
+        \[ L(\mathbf{w}_1,\ldots,\mathbf{w}_K|D) = \prod_{i=1}^n\prod_{k=1}^K p(C_k|\boldsymbol{\phi}_i)^{t_{ik}} \]
+        となるので対数尤度は
+        \[ \ln L(\mathbf{w}_1,\ldots,\mathbf{w}_K|D) = \sum_{i=1}^n\sum_{k=1}^K t_{ik}\ln p(C_k|\boldsymbol{\phi}_i) \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これを $\mathbf{w}_j$ で微分すると, 先ほどと同様にして
+        \[ \frac{\partial}{\partial\mathbf{w}_j}\ln L = \sum_{i=1}^n(t_{ik}-p(C_j|\boldsymbol{\phi}_i))\boldsymbol{\phi}_i \]
+        となるので, これを $\mathbf{w}_1,\mathbf{w}_2,\ldots,\mathbf{w}_K$ について縦に並べたものが対数尤度の勾配となります.
+        \[ \begin{pmatrix}
+\frac{\partial}{\partial\mathbf{w}_1}\ln L  \\
+\vdots \\
+\frac{\partial}{\partial\mathbf{w}_K}\ln L  \\
+\end{pmatrix} \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さらにもう一度 $\mathbf{w}_k$ で微分すると
+        \[ \begin{aligned}
+        &\mathbf{H}_{jk} = \frac{\partial^2}{\partial\mathbf{w}_k\partial\mathbf{w}_j}\ln L = -\sum_{i=1}^np(C_k|\boldsymbol{\phi}_i)(\delta_{jk}-p(C_j|\boldsymbol{\phi}_i))\boldsymbol{\phi}_i\boldsymbol{\phi}_i^T \\
+        &\qquad\qquad\text{($\delta_{jk}$はディラックの $\delta$ 関数)}
+        \end{aligned} \]
+        となるので, これを並べたブロック行列
+        \[ \mathbf{H} = \begin{pmatrix}
+        \mathbf{H}_{11} & \mathbf{H}_{12} & \cdots & \mathbf{H}_{1K} \\
+        \mathbf{H}_{21} & \mathbf{H}_{22} & \cdots & \mathbf{H}_{2K} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        \mathbf{H}_{K1} & \mathbf{H}_{K2} & \cdots & \mathbf{H}_{KK}
+        \end{pmatrix} \]
+        がヘッセ行列となります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 勾配法 </h3>
+        <p>
+        非線形関数の最小値もしくは最大値を求める手法のつに <strong> 勾配法 (gradient method) </strong> があります.
+        </p>
+        <p>
+        勾配法とは,勾配 $\nabla f(\mathbf{x})$ を参考にして局面を下っていくもしくは登っていく手法です. 移動先をどのように決定するかによって幾つかの手法があります.
+        </p>
+        <div align="center"> <img width="500px" src="fig/gradient-method.png"> </div>
+        </section>
+
+        <section>
+        <h3> 最急降下法 </h3>
+        <p>
+        勾配 $\nabla \ln L = \mathbf{X}^T(\mathbf{t}-\mathbf{y})$ は, 点$\mathbf{w}$における $\ln L$ の増加率の最も急な方向を向いています.
+        その反対方向に向かって進んでいく方法を <strong> 最急降下法 (steepest descent method) </strong> と呼びます. 今回は最大値を求めたいので
+        勾配の方向に進みます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        具体的には,適当なパラメータ $\alpha$ を用意して
+        \[ \begin{aligned}
+        \mathbf{w}_{n+1} &= \mathbf{w}_n + \alpha\nabla \ln L \\
+        &= \mathbf{w}_n + \alpha\mathbf{X}^T(\mathbf{t}-\mathbf{y})
+        \end{aligned} \]
+        によって進んでいきます. 最大値では 勾配が $\mathbf{0}$ になるので, 
+
+        </p>
+        </section>
+
+
+        <section>
+        <h3> 第5回はここで終わります </h3>
+        <p>
+        資料の作成が追いつかなかったのでここで一旦終了します. 次回はベイジアンロジスティック回帰に進みます.
+        テキストではラプラス近似を利用した手法を紹介していますが, この勉強会ではMCMCを利用して解いてみます.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
