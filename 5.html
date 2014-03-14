@@ -210,7 +210,7 @@
 
         <section>
         <p>
-        その為に対数尤度を $\mathbf{w}$ で微分しましょう. 順番にやってみると
+        まず $\ln L$ の微分係数を調べておきましょう. 順番にやってみると
         \[ \begin{aligned}
         \frac{\mathrm{d}}{\mathrm{d}x}\sigma(x) &= \frac{\mathrm{d}}{\mathrm{d}x}\frac{1}{1+\exp(-x)} \\
         &= \frac{\exp(-x)}{(1+\exp(-x))^2} \\
@@ -450,6 +450,15 @@
         </section>
 
         <section>
+        <p>
+        この様に, IRLS は収束が非常に速いという事が特徴です.
+        </p>
+        <p>
+        一方で, 次頁以降で説明するような事柄に注意が必要です.
+        </p>
+        </section>
+
+        <section>
         <h3> 計算上の注意 </h3>
         <p>
         シグモイド関数
@@ -502,12 +511,11 @@ OverflowError: math range error
 
         <section>
         <p>
-        引数$a$ についてアンダーフローや情報落ちが起きると,
-        \[ \sigma(a) = 0 \text{または} 1 \]
-        になってしまうため, $\mathbf{R}$ が特異行列になってしまいます. すると $(\mathbf{X}^T\mathbf{R}\mathbf{X})^{-1}$ が存在しないので, アルゴリズムを実行する事ができなくなります.
+        アンダーフローや情報落ちが起きると, 本来 $0 &lt; \sigma(a) &lt; 1$ であるシグモイド関数の値が $0$ や $1$ になってしまいます.
+        このとき, $(\mathbf{X}^T\mathbf{R}\mathbf{X})^{-1}$ が特異行列になってしまうので, アルゴリズムを実行する事ができなくなります.
         </p>
         <p>
-        行列の条件数を追跡スルなどして, 大きな誤差が生じた場合に検出出来るようにする工夫があります.
+        誤差が出やすい事を理解し, 行列の条件数を追跡するなど大きな誤差が生じた場合に検出出来るようにする工夫が必要です.
         </p>
         </section>
 
@@ -529,10 +537,142 @@ OverflowError: math range error
         </p>
         <ul>
           <li> 相対誤差 $||\mathbf{w}_n-\mathbf{w}_{n+1}||/||\mathbf{w}_n||$ がある値以下の時に停止. </li>
-          <li> 残差平方和 $\sum_i||t_i-\sigma(\mathbf{w}_n^T\boldsymbol{\phi}_i)||$ がある値以下の時に停止. </li>
+          <li> 残差平方和 $\sum_i||t_i-\sigma(\mathbf{w}_n^T\boldsymbol{\phi}_i)||^2$ がある値以下の時に停止. </li>
           <li> $(\mathbf{X}^T\mathbf{R}\mathbf{X})^{-1}$ が特異行列に近づいてしまったら停止. </li>
           <li> 反復回数上限に達したら停止. </li>
         </ul>
+        </section>
+
+        <section>
+        <h3> 勾配法 </h3>
+        <p>
+        IRLSよりも一般に収束が遅いですが使いやすい手法に <strong> 勾配法 (gradient method) </strong> があります.
+        </p>
+        <p>
+        勾配法とは,勾配 $\nabla f(\mathbf{x})$ を参考にして局面を下っていくもしくは登っていく手法です. 移動先をどのように決定するかによって幾つかの手法があります.
+        </p>
+        <div align="center"> <img width="500px" src="fig/gradient-method.png"> </div>
+        </section>
+
+        <section>
+        <h3> 最急降下法 </h3>
+        <p>
+        勾配 $\nabla \ln L = \mathbf{X}^T(\mathbf{t}-\mathbf{y})$ は, 点$\mathbf{w}$における $\ln L$ の増加率の最も急な方向を向いています.
+        その反対方向に向かって進んでいけば極小値にたどり着くことができます. これを <strong> 最急降下法 (steepest descent method) </strong> と呼びます. (今回は最大値を求めたいので勾配の方向に進みます.)
+        </p>
+        </section>
+
+        <section>
+        <p>
+        具体的には,適当なパラメータ $\alpha$ を用意して
+        \[ \begin{aligned}
+        \mathbf{w}_{k+1} &= \mathbf{w}_k + \alpha\nabla \ln L \\
+        &= \mathbf{w}_k + \alpha\mathbf{X}^T(\mathbf{t}-\mathbf{y})
+        \end{aligned} \]
+        によって進んでいきます. 最大値では 勾配が $\mathbf{0}$ になるので, 
+        適当なノルムを用いて $||\nabla \ln L||&lt;\varepsilon$ という条件で終了します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        先ほどと同様のデータに適用してみます.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig5-2-training.png"> <a href="prog/prog5-2.py" style="font-size:60%">prog5-2.py</a> </div>
+        </section>
+
+        <section>
+        <p> 反復10回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-2-iter10.png"> <a href="prog/prog5-2.py" style="font-size:60%">prog5-2.py</a> </div>
+        </section>
+        <section>
+        <p> 反復20回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-2-iter20.png"> <a href="prog/prog5-2.py" style="font-size:60%">prog5-2.py</a> </div>
+        </section>
+        <section>
+        <p> 反復30回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-2-iter30.png"> <a href="prog/prog5-2.py" style="font-size:60%">prog5-2.py</a> </div>
+        </section>
+        <section>
+        <p> 反復40回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-2-iter40.png"> <a href="prog/prog5-2.py" style="font-size:60%">prog5-2.py</a> </div>
+        </section>
+        <section>
+        <p> 反復50回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-2-iter50.png"> <a href="prog/prog5-2.py" style="font-size:60%">prog5-2.py</a> </div>
+        </section>
+        <section>
+        <p> 反復100回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-2-iter100.png"> <a href="prog/prog5-2.py" style="font-size:60%">prog5-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        簡単なアルゴリズムである反面、IRLSに比べると収束が大分遅いという事が分かると思います. 今回は $\alpha = 0.2$ と固定して使いましたが, これをを動的に変更するなどのバリエーションもあります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 確率的勾配降下法 </h3>
+        <p>
+        再急降下法では 学習データを全て使って $\nabla \ln L$ を計算しました. これを $i$ 回目の更新において $i$ 番目の学習データだけを利用するように変更した物を <strong> 確率的勾配降下法 (stochastic gradient descent) </strong> と呼びます.
+        </p>
+        <p>
+        学習データを先頭から順番に処理出来るオンラインアルゴリズムになっています.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        つまり,
+        \[ \mathbf{w}_{k+1} = \mathbf{w}_k + \eta_k (t_{k+1}-\sigma(\mathbf{w}_k^T\boldsymbol{\phi}_{k+1}))\boldsymbol{\phi}_{k+1} \]
+        によって更新を行います. $\eta_k$ は学習率を調整するパラメータで, 徐々に小さくしていきます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        先ほどと同様のデータに適用してみます.今回は $n$ 個のデータセット全体を2週する形で, トータル $2n$ 回の反復を行ってみました.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-training.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+        <section>
+        <p> 反復10回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-iter10.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+        <section>
+        <p> 反復20回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-iter20.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+        <section>
+        <p> 反復30回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-iter30.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+        <section>
+        <p> 反復40回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-iter40.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+        <section>
+        <p> 反復50回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-iter50.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+        <section>
+        <p> 反復100回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-iter100.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+        <section>
+        <p> 反復150回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-iter150.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+        <section>
+        <p> 反復200回目の様子. </p>
+        <div align="center"> <img width="700px" src="prog/fig5-3-iter200.png"> <a href="prog/prog5-3.py" style="font-size:60%">prog5-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今回は単純にデータ全体を順番に回すという方法を使いましたが, 実際には学習データからランダムに $n$ 個をサンプリングして学習を行うといった形になると思います.
+        </p>
         </section>
 
         <section>
@@ -612,37 +752,10 @@ OverflowError: math range error
         </section>
 
         <section>
-        <h3> 勾配法 </h3>
         <p>
-        非線形関数の最小値もしくは最大値を求める手法のつに <strong> 勾配法 (gradient method) </strong> があります.
-        </p>
-        <p>
-        勾配法とは,勾配 $\nabla f(\mathbf{x})$ を参考にして局面を下っていくもしくは登っていく手法です. 移動先をどのように決定するかによって幾つかの手法があります.
-        </p>
-        <div align="center"> <img width="500px" src="fig/gradient-method.png"> </div>
-        </section>
-
-        <section>
-        <h3> 最急降下法 </h3>
-        <p>
-        勾配 $\nabla \ln L = \mathbf{X}^T(\mathbf{t}-\mathbf{y})$ は, 点$\mathbf{w}$における $\ln L$ の増加率の最も急な方向を向いています.
-        その反対方向に向かって進んでいく方法を <strong> 最急降下法 (steepest descent method) </strong> と呼びます. 今回は最大値を求めたいので
-        勾配の方向に進みます.
+        多クラスの場合のサンプルコードはまだ作っていないので, 後で更新します.
         </p>
         </section>
-
-        <section>
-        <p>
-        具体的には,適当なパラメータ $\alpha$ を用意して
-        \[ \begin{aligned}
-        \mathbf{w}_{n+1} &= \mathbf{w}_n + \alpha\nabla \ln L \\
-        &= \mathbf{w}_n + \alpha\mathbf{X}^T(\mathbf{t}-\mathbf{y})
-        \end{aligned} \]
-        によって進んでいきます. 最大値では 勾配が $\mathbf{0}$ になるので, 
-
-        </p>
-        </section>
-
 
         <section>
         <h3> 第5回はここで終わります </h3>

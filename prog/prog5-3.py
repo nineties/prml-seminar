@@ -12,7 +12,9 @@ BASIS_SIGMA = 3.0
 BASIS_COUNT = 4
 DIM = BASIS_COUNT*BASIS_COUNT # 特徴空間の次元
 
-NUM_ITERATIONS = 10 # 反復回数
+NUM_ITERATIONS = 100 # 反復回数
+
+ETA=1.0 # 学習率はETA/(利用したデータ数)で調整
 
 #=== 学習データ ===
 # クラス1: y<5-x^2 or (x-5)^2+(y-5)^2<2
@@ -24,7 +26,7 @@ xlim(xmin, xmax)
 ylim(ymin, ymax)
 scatter(train_x, train_y, c=train_t, s=50, cmap=cm.cool)
 title("Training data")
-savefig("fig5-1-training.png")
+savefig("fig5-3-training.png")
 
 #=== 基底 ===
 # ガウス基底を BASIS_COUNT^2 個等間隔で配置することにする
@@ -45,19 +47,11 @@ ylim(ymin, ymax)
 for cx,cy in basis_center:
     gcf().gca().add_artist(Circle((cx, cy), BASIS_SIGMA, fill=False))
 title("Placement of gaussian bases")
-savefig("fig5-1-bases.png")
+savefig("fig5-3-bases.png")
 
 #=== シグモイド関数 ===
 def sigmoid(x):
     return 1/(1+exp(-x))
-
-#=== 計画行列 ===
-X = array([phi(train_x[i], train_y[i]) for i in range(N)])
-
-#=== yとRの計算 ===
-def yR(w):
-    s = sigmoid(X.dot(w))
-    return (s, diag(s*(1-s)))
 
 #=== p(C_1|x)のプロット ===
 def show_iteration(i, w):
@@ -68,13 +62,19 @@ def show_iteration(i, w):
     ylim(ymin, ymax)
     pcolor(X, Y, Z, alpha=0.3)
     scatter(train_x, train_y, c=train_t, s=50, cmap=cm.cool)
-    title("IRLS (iteration=%d)" % i)
-    savefig("fig5-1-iter%d.png" % i)
+    title(u"stochastic gradient descent (number of data=%d)" % i)
+    savefig("fig5-3-iter%d.png" % i)
 
-#==== IRLS法 ====
+#==== 確率的勾配降下法 ====
 w = zeros(DIM)
+eta = 10.0
 show_iteration(0, w)
-for i in range(NUM_ITERATIONS):
-    y, R = yR(w)
-    w += LA.solve(X.T.dot(R).dot(X), X.T.dot(train_t-y))
-    show_iteration(i+1, w)
+for i in range(2*N):
+    if i%10 == 0:
+        show_iteration(i, w)
+    x = train_x[i%N]
+    y = train_y[i%N]
+    t = train_t[i%N]
+    grad = (t - sigmoid(phi(x,y).dot(w)))* phi(x, y)
+    w += eta/(i+1) * grad
+show_iteration(2*N, w)
