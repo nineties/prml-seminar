@@ -346,11 +346,11 @@
         <section>
         <p>
         ニュートン・ラフソン法では, 適当な初期値 $\mathbf{w}_0$ を定め,
-        \[ \mathbf{w}_{k+1} = \mathbf{w}_k - \mathbf{H}_k^{-1}\nabla \ln L \]
+        \[ \mathbf{w}_{k+1} = \mathbf{w}_k - \mathbf{H}_k^{-1}\nabla \ln L_k \]
         によって反復を行い $\mathbf{w}$ を収束させます.
         </p>
         <p class="fragment" style="font-size:80%">
-        一変数方程式 $f'(x)=0$ のニュートン・ラフソン法(<a href="http://nineties.github.io/math-seminar/4.html">参考</a>) を適用すると
+        一変数方程式 $f'(x)=0$ にニュートン・ラフソン法(<a href="http://nineties.github.io/math-seminar/4.html">参考</a>) を適用すると
         \[ x_{k+1} = x_k - \frac{f'(x_k)}{f''(x_k)} \]
         という反復公式が得られますが, これを多変数に拡張したものです. 二次収束します.
         </p>
