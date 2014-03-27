@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第6回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第6回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年3月27日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 線形識別モデル:ベイズロジスティック回帰 </h2>
+        </section>
+
+        <section>
+        <p>
+        前回・前々回に引き続き線形識別モデル(PRML第4章)を進めていきます. 
+        </p>
+        <p>
+        今回はロジスティック回帰のベイズ的な取り扱いについて紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        パラメータ $\mathbf{w}$ の事前分布を $\pi(\mathbf{w})$ とすれば ベイズの定理より 事後分布は
+        \[ \pi(\mathbf{w}|D) \propto L(\mathbf{w}|D)\pi(\mathbf{w}) \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        前回, ロジスティック回帰の計算において「正則化項を付与する場合もあるか？」という質問がありましたが,
+        \[ \pi(\mathbf{w}) = \mathcal{N}(\mathbf{0}, \sigma^2\mathbf{I}) \]
+        であるならば,
+        \[ \ln\pi(\mathbf{w}|D)=\ln L(\mathbf{w}|D) - \color{yellow}{\frac{1}{2\sigma^2}||\mathbf{w}||^2} + \mathrm{const}. \]
+        となるので, ベイズロジスティックモデルの特別な場合として正則化項が現れます.
+        </p>
+        </section>
+
+        <section>
+        <p> 
+        さて,
+        \[ \pi(\mathbf{w}|D) \propto L(\mathbf{w}|D)\pi(\mathbf{w}) \]
+        における事後分布 $\pi(\mathbf{w}|D)$ は一般に複雑な形の関数になり解析的に調べる事が難しいですが, MCMC法を使うと $\pi(\mathbf{w}|D)$ から直接サンプリングを行う事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ランダム・ウォークによるMH法を利用する事にすると, 推移 $\mathbf{w} \rightarrow \mathbf{w}'$ の採択確率が
+        \[ \min\left\{\frac{\pi(\mathbf{w}'|D)}{\pi(\mathbf{w}|D)}, 1\right\} \]
+        となるのでした.
+        </p>
+        <p>
+        定数倍はキャンセルされるのでこれは
+        \[ \min\left\{\frac{L(\mathbf{w}'|D)\pi(\mathbf{w}')}{L(\mathbf{w}|D)\pi(\mathbf{w})}, 1\right\} \]
+        と等しいです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        アンダーフローを回避する為に一旦
+        \[ \ln L(\mathbf{w}'|D) + \ln\pi(\mathbf{w}') - \ln L(\mathbf{w}|D) - \ln\pi(\mathbf{w}) \]
+        を求める事にします.
+        </p>
+        <p class="fragment">
+        前回説明したように2クラスの場合には
+        \[ \ln L(\mathbf{w}|D) = \sum_i\left[t_i\ln\sigma(\mathbf{w}^T\boldsymbol{\phi}_i)+(1-t_i)\ln\left\{1-\sigma(\mathbf{w}^T\boldsymbol{\phi}_i)\right\}\right] \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        また例えば, 事前分布が
+        \[ \pi(\mathbf{w}) = \mathcal{N}(\mathbf{w}_0,\mathbf{\Sigma}) \]
+        の時には
+        \[ \ln \pi(\mathbf{w}) = -\frac{1}{2}(\mathbf{w}-\mathbf{w}_0)^T\mathbf{\Sigma}^{-1}(\mathbf{w}-\mathbf{w}_0)+\mathrm{const}. \]
+        となりますので, これで計算しましょう.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        前回と同じく以下を学習データとします. 基底も前回と同じく $4\times 4$ 個のガウス基底を配置します.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-training.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        パラメータは以下のようにしました.
+        </p>
+        <ul>
+          <li> マルコフ連鎖の初期状態: $\mathbf{w}^{(0)} = \mathbf{0}$ </li>
+          <li> ランダム・ウォークの標準偏差パラメータ: $1$ </li>
+          <li> バーンイン期間: $1000$ </li>
+          <li> 事前分布の平均: $\mathbf{w}_0 = \mathbf{0}$ </li>
+          <li> 事前分布の分散: $\mathbf{\Sigma} = 100\mathbf{I}$ </li>
+        </ul>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        初期状態.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter0.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        初期状態.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter0.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        (バーンイン後)1000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter1000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        2000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter2000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        3000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter3000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        4000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter4000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        5000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter5000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        6000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter6000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        7000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter7000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        8000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter8000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        9000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter9000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+        <section>
+        <p>
+        10000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-1-iter10000.png"> <a href="prog/prog6-1.py" style="font-size:60%">prog6-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        多クラスの場合も試してみましょう.
+        前回説明したように, 多クラスの場合の対数尤度は
+        \[ \ln L(\mathbf{w}_1,\ldots,\mathbf{w}_K|D) = \sum_{i=1}^n\sum_{k=1}^K t_{ik}\ln p(C_k|\boldsymbol{\phi}_i) \]
+        となります. ここで  $p(C_k|\boldsymbol{\phi}_i)$ はソフトマックス関数
+        \[ p(C_k|\boldsymbol{\phi}_i) = \frac{\exp(\mathbf{w}_k^T\boldsymbol{\phi}_i)}{\sum_j \exp(\mathbf{w}_j^T\boldsymbol{\phi}_i)} \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        計算上の注意ですが, ソフトマックス関数の対数は
+        \[ \ln p(C_k|\boldsymbol{\phi}_i) = \mathbf{w}_k^T\boldsymbol{\phi}_i - \ln \sum_j \exp(\mathbf{w}_j^T\boldsymbol{\phi}_i) \]
+        となるので, 右辺第２項の部分にはより数値的に安定な $\mathrm{logsumexp}$ 関数を利用する事が出来ます.
+        \[ \ln p(C_k|\boldsymbol{\phi}_i) = \mathbf{w}_k^T\boldsymbol{\phi} - \mathrm{logsumexp}_j(\mathbf{w}_j^T\boldsymbol{\phi}_i) \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        また $\sum_{k=1}^Kt_{ik}=1$ である事に注意すれば
+        \[ \sum_{k=1}^Kt_{ik}\ln p(C_k|\boldsymbol{\phi}_i) = \sum_{k=1}^Kt_{ik}\mathbf{w}_k^T\boldsymbol{\phi}_i - \mathrm{logsumexp}_j(\mathbf{w}_j^T\boldsymbol{\phi}_i) \]
+        というシンプルな形に変形出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下を学習データとします. 3クラスのケースです.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-training.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        パラメータは以下のようにしました.
+        </p>
+        <ul>
+          <li> マルコフ連鎖の初期状態: $\mathbf{w}^{(0)} = \mathbf{0}$ </li>
+          <li> ランダム・ウォークの標準偏差パラメータ: $0.5$ </li>
+          <li> バーンイン期間: $1000$ </li>
+          <li> 事前分布の平均: $\mathbf{w}_{k,0} = \mathbf{0}$ </li>
+          <li> 事前分布の分散: $\mathbf{\Sigma}_k = 100\mathbf{I}$ </li>
+        </ul>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        初期状態.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter0.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        初期状態.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter0.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        (バーンイン後)1000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter1000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        2000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter2000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        3000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter3000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        4000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter4000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        5000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter5000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        6000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter6000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        7000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter7000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        8000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter8000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        9000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter9000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+        <section>
+        <p>
+        10000ステップ.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig6-2-iter10000.png"> <a href="prog/prog6-2.py" style="font-size:60%">prog6-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今回はランダムウォークに基づくMH法を利用してある程度上手く行きましたが, ランダムウォークの一歩の大きさをどの程度にするかなど自明でない問題があります. 一歩を大きく取り過ぎるとなかなか収束せず, 小さく取り過ぎると偏ったサンプリングになってしまいます.
+        </p>
+        <p>
+        PRMLの11.4節ではより良い手法として <strong>スライスサンプリング (Slice sampling) </strong> という手法が紹介されています. こちらも参照してください.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 線形識別モデル:フィッシャーの線形判別 </h2>
+        </section>
+
+        <section>
+        <p>
+        ロジスティックモデルはデータの確率的生成モデルに基づくかなり厳密な方法であると言えますが, それ以外の考え方も面白いので是非知っておきましょう.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        特徴ベクトルの次元が $D$ 次元であるならば
+        \[ \mathbf{w}^T\boldsymbol{\phi} \]
+        は $D$ 次元空間から1次元空間への射影であると考える事が出来ます.
+        </p>
+        <p>
+        2クラスの判別は, この射影がある閾値 $\theta$ を超えるか否かで判別しているという事に他なりません.
+        <p>
+        <div align="center"> <img width="400px" src="fig/fisher-linear-discriminant.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この時, 2つのクラスが出来るだけ射影された軸上で分離されるように $\mathbf{w}$ を調整する事が目標となります.
+        </p>
+        <div align="center"> <img width="400px" src="fig/fisher-linear-discriminant2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        一つの考え方として２つのクラスの重心が十分に離れるように射影するという方法が考えられます.
+        </p>
+        <p class="fragment">
+        クラス $C_i$ に属す学習データの数を $N_i$ とすると, 各クラスの重心は
+        \[ \boldsymbol{\mu}_1 = \frac{1}{N_1}\sum_{\boldsymbol{\phi}_i \in C_1}\boldsymbol{\phi}_i, \boldsymbol{\mu}_2 = \frac{1}{N_2}\sum_{\boldsymbol{\phi}_i \in C_2}\boldsymbol{\phi}_i \]
+        となりますので, この場合
+        \[ \mathbf{w}\boldsymbol{\mu}_1 - \mathbf{w}\boldsymbol{\mu}_2 \]
+        を最大化する事となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        しかし, この方法は単純すぎて上手く行きません.
+        </p>
+        <div align="center"> <img width="400px" src="fig/fisher-linear-discriminant3.png"> </div>
+        </section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
