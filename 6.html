@@ -157,7 +157,7 @@
         前回, ロジスティック回帰の計算において「正則化項を付与する場合もあるか？」という質問がありましたが,
         \[ \pi(\mathbf{w}) = \mathcal{N}(\mathbf{0}, \sigma^2\mathbf{I}) \]
         であるならば,
-        \[ \ln\pi(\mathbf{w}|D)=\ln L(\mathbf{w}|D) - \color{yellow}{\frac{1}{2\sigma^2}||\mathbf{w}||^2} + \mathrm{const}. \]
+        \[ \ln\pi(\mathbf{w}|D)=\ln L(\mathbf{w}|D) - \color{red}{\frac{1}{2\sigma^2}||\mathbf{w}||^2} + \mathrm{const}. \]
         となるので, ベイズロジスティックモデルの特別な場合として正則化項が現れます.
         </p>
         </section>
@@ -459,7 +459,7 @@
 
         <section>
         <p>
-        この時, 2つのクラスが出来るだけ射影された軸上で分離されるように $\mathbf{w}$ を調整する事が目標となります.
+        この時, 2つのクラスが出来るだけ分離されるように $\mathbf{w}$ を調整する事が目標となります.
         </p>
         <div align="center"> <img width="400px" src="fig/fisher-linear-discriminant2.png"> </div>
         </section>
@@ -472,7 +472,7 @@
         クラス $C_i$ に属す学習データの数を $N_i$ とすると, 各クラスの重心は
         \[ \boldsymbol{\mu}_1 = \frac{1}{N_1}\sum_{\boldsymbol{\phi}_i \in C_1}\boldsymbol{\phi}_i, \boldsymbol{\mu}_2 = \frac{1}{N_2}\sum_{\boldsymbol{\phi}_i \in C_2}\boldsymbol{\phi}_i \]
         となりますので, この場合
-        \[ \mathbf{w}\boldsymbol{\mu}_1 - \mathbf{w}\boldsymbol{\mu}_2 \]
+        \[ |\mathbf{w}\boldsymbol{\mu}_1 - \mathbf{w}\boldsymbol{\mu}_2|^2 \]
         を最大化する事となります.
         </p>
         </section>
@@ -484,6 +484,138 @@
         <div align="center"> <img width="400px" src="fig/fisher-linear-discriminant3.png"> </div>
         </section>
 
+        <section>
+        <p>
+        実際には射影軸上でのデータの分散を考慮する事が必要です.
+        </p>
+        <div align="center"> <img width="600px" src="fig/fisher-linear-discriminant4.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        そこで, 以下の量を最大化する事を考えます. これは, 重心が出来るだけ離れ, 分散が出来るだけ小さい時に最大になります.
+        これを <strong> フィッシャーの判別基準 (Fisher's criterion) </strong> と呼びます.
+        </p>
+        \[ J(\mathbf{w}) = \frac{|\mu_1-\mu_2|^2}{\sigma_1^2 + \sigma_2^2}  \]
+        \[ \mu_i = \frac{1}{N_i}\sum_{\boldsymbol{\phi} \in C_i}\boldsymbol{\phi},\quad \sigma_i^2 = \sum_{\boldsymbol{\phi}\in C_i}|\mathbf{w}^T\boldsymbol{\phi}-\mu_i|^2 \]
+        </section>
+
+        <section>
+        <p>
+        ベクトル・行列を用いて書き直せば
+        \[ J(\mathbf{w}) = \frac{\mathbf{w}^T\mathbf{S}_B\mathbf{w}}{\mathbf{w}^T\mathbf{S}_W\mathbf{w}} \]
+        \[ \begin{aligned}
+        \mathbf{S}_B &= (\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)^T \\
+        \mathbf{S}_W &= \sum_{\boldsymbol{\phi}\in C_1}(\boldsymbol{\phi}-\boldsymbol{\mu}_1)(\boldsymbol{\phi}-\boldsymbol{\mu}_1)^T
+        + \sum_{\boldsymbol{\phi}\in C_2}(\boldsymbol{\phi}-\boldsymbol{\mu}_2)(\boldsymbol{\phi}-\boldsymbol{\mu}_2)^T
+        \end{aligned} \]
+        となります. $\mathbf{S}_B$ を <strong>クラス間共分散 (between-class covariance)</strong>, $\mathbf{S}_W$ を <strong> クラス内共分散 (within-class covariance)</strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $J(\mathbf{w})$ の勾配を求めてみると, 分数関数の微分公式によって
+        \[ \nabla J(\mathbf{w}) = \frac{2(\mathbf{w}^T\mathbf{S}_W\mathbf{w})\mathbf{S}_B\mathbf{w}-2(\mathbf{w}^T\mathbf{S}_B\mathbf{w})\mathbf{S}_W\mathbf{w}}{(\mathbf{w}^T\mathbf{S}_W\mathbf{w})^2} \]
+        となりますので,
+        \[ (\mathbf{w}^T\mathbf{S}_W\mathbf{w})\mathbf{S}_B\mathbf{w}=(\mathbf{w}^T\mathbf{S}_B\mathbf{w})\mathbf{S}_W\mathbf{w} \]
+        を解けば良いという事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これは固有値問題に帰着して解くことが出来ます(勉強会当日は数値解法が必要と言ってしまいました.すみません.).
+        </p>
+        <p>
+        実は $\mathbf{S}_W^{-1}\mathbf{S}_B$ の最大固有値に対応する固有ベクトルが求める $\mathbf{w}$ となります.
+        </p>
+        <p class="fragment">
+        詳しくは省略しますが,$\mathbf{S}_W^{-1}\mathbf{S}_B$ の固有ベクトルと固有値の組 $\mathbf{a},\lambda$ に対して
+        \[ (\mathbf{a}^T\mathbf{S}_W\mathbf{a})\mathbf{S}_B\mathbf{a}=\frac{1}{\lambda}(\mathbf{a}^T\mathbf{S}_B\mathbf{a})\mathbf{S}_W\lambda\mathbf{a} = (\mathbf{a}^T\mathbf{S}_B\mathbf{a})\mathbf{S}_W\mathbf{a} \]
+        \[ \frac{\mathbf{a}^T\mathbf{S}_B\mathbf{a}}{\mathbf{a}^T\mathbf{S}_W\mathbf{a}} = \lambda\]
+        が成立します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        しかし, 今は$\mathbf{w}$ の方向だけわかれば良いのでもっと簡単な方法があります.
+        </p>
+        <p>
+        \[ \mathbf{S}_B\mathbf{w}=(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)^T\mathbf{w} \propto \boldsymbol{\mu}_1-\boldsymbol{\mu}_2\]
+        より
+        \[ \begin{aligned}
+        &(\mathbf{w}^T\mathbf{S}_W\mathbf{w})\mathbf{S}_B\mathbf{w}=(\mathbf{w}^T\mathbf{S}_B\mathbf{w})\mathbf{S}_W\mathbf{w} \\
+        \Leftrightarrow& \mathbf{S}_W\mathbf{w} \propto \boldsymbol{\mu}_1-\boldsymbol{\mu}_2 \\
+        \Leftrightarrow& \mathbf{w} \propto\mathbf{S}_W^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)\\
+        \end{aligned} \]
+        と書くことが出来ます. これを <strong>フィッシャーの線形判別 (Fisher's linear discriminant) </strong> と呼びます.
+        </p>
+        </section>
+        <section>
+        <p>
+        簡単な計算例は以下の様になります. 青い矢印が重心の分離のみを考えた射影方向, 赤い矢印がフィッシャーの線形判別による射影方向です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig6-4.png"> <a href="prog/prog6-4.py" style="font-size:60%">prog6-4.py</a> </div>
+        </section>
+        <section>
+        <p>
+        ここで, フィッシャーの線形判別は実際には判別を行っているのではなくて射影の方向のみを与えている事に注意して下さい.
+        射影した後に改めて何らかの識別を行う必要があります.
+        </p>
+        <p>
+        フィッシャーの線形判別は次元を削減する手法として見なす事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 多クラスへの一般化 </h3>
+        <p>
+        $K &gt; 2$ クラスの場合に, 特徴空間の次元 $D$ を $D'$ 次元に削減する事を考えます.
+        これを $D'\times D$ 行列 $\mathbf{W}$ によって
+        \[ \mathbf{y} = \mathbf{W}\boldsymbol{\phi} \]
+        で行う事にします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\boldsymbol{\mu}_k$ をクラス $C_k$ の重心とすると, クラス内共分散 $\mathbf{S}_W$ は
+        \[ \mathbf{S}_W = \sum_{k=1}^K\sum_{\boldsymbol{\phi}\in C_k}(\boldsymbol{\phi}-\boldsymbol{\mu}_k)(\boldsymbol{\phi}-\boldsymbol{\mu}_k)^T \]
+        と一般化する事が出来ます.
+        </p>
+        <p>
+        クラス間共分散は $\boldsymbol{\mu}$ を全特徴ベクトルの平均として
+        \[ \mathbf{S}_B = \sum_{k=1}^KN_k(\boldsymbol{\mu}_k-\boldsymbol{\mu})(\boldsymbol{\mu}_k-\boldsymbol{\mu})^T \]
+        と一般化する事が出来ます. ここで $N_k$ は $C_k$ に属す標本の数です. 詳しくは PRMLの4.1.6節を参照して下さい.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        この $\mathbf{S}_W,\mathbf{S}_B$ を用いてフィッシャーの判別基準を一般化したものは
+        \[ J(\mathbf{W}) = \mathrm{Tr}\{(\mathbf{W}^T\mathbf{S}_W\mathbf{W})^{-1}(\mathbf{W}^T\mathbf{S}_B\mathbf{W})\} \]
+        と書くことが出来ます. これを最大化する為にはやはり固有値計算を行います.
+        </p>
+        <p>
+        $\mathbf{S}_W^{-1}\mathbf{S}_B$ の固有ベクトルを固有値の大きい方から順番に $D'$ 個取り列に並べたものが求める $\mathbf{W}$ です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下は5次元の4クラスからなるデータ(<a href="prog/prog6-5.dat">prog6-5.dat</a>)を2次元平面に射影した例です.(ファイル中の最後の列の値はクラスの番号.) この例では次元を減らしても各クラスを上手く分離する事が出来ました.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig6-5.png"> <a href="prog/prog6-5.py" style="font-size:60%">prog6-5.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 第6回はここで終わります </h3>
+        <p>
+        次回からPRML第5章のニューラルネットワークに進みます. 第4章のパーセプトロンはニューラルネットワークの一種なので5章でまとめて説明する事にします.
+        </p>
+        </section>
 			</div>
 		</div>
 
