@@ -486,7 +486,7 @@
 
         <section>
         <p>
-        実際には射影軸上でのデータの分散を考慮する事が必要です.
+        射影軸上での重心が離れていても, 下図のようにデータの分散が大きいならば上手く分離されないという事が起こります.
         </p>
         <div align="center"> <img width="600px" src="fig/fisher-linear-discriminant4.png"> </div>
         </section>
@@ -533,8 +533,9 @@
         <p class="fragment">
         詳しくは省略しますが,$\mathbf{S}_W^{-1}\mathbf{S}_B$ の固有ベクトルと固有値の組 $\mathbf{a},\lambda$ に対して
         \[ (\mathbf{a}^T\mathbf{S}_W\mathbf{a})\mathbf{S}_B\mathbf{a}=\frac{1}{\lambda}(\mathbf{a}^T\mathbf{S}_B\mathbf{a})\mathbf{S}_W\lambda\mathbf{a} = (\mathbf{a}^T\mathbf{S}_B\mathbf{a})\mathbf{S}_W\mathbf{a} \]
+        と
         \[ \frac{\mathbf{a}^T\mathbf{S}_B\mathbf{a}}{\mathbf{a}^T\mathbf{S}_W\mathbf{a}} = \lambda\]
-        が成立します.
+        が成立する事から理解出来るかと思います.
         </p>
         </section>
 
@@ -594,7 +595,8 @@
         <p>
         クラス間共分散は $\boldsymbol{\mu}$ を全特徴ベクトルの平均として
         \[ \mathbf{S}_B = \sum_{k=1}^KN_k(\boldsymbol{\mu}_k-\boldsymbol{\mu})(\boldsymbol{\mu}_k-\boldsymbol{\mu})^T \]
-        と一般化する事が出来ます. ここで $N_k$ は $C_k$ に属す標本の数です. 詳しくは PRMLの4.1.6節を参照して下さい.
+        と一般化する事が出来ます. 詳しくは PRMLの4.1.6節を参照して下さい.
+        ここで $N_k$ は $C_k$ に属す標本の数です.
         </p>
         </section>
 
