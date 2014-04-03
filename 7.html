@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第7回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第7回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年4月3日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ニューラルネットワーク </h2>
+        </section>
+
+        <section>
+        <p>
+        本日はPRML第5章に進みます.
+        </p>
+        <p>
+        第1回に紹介したように, ニューラルネットワークとは例えば下図のような素子を複数接続して出来る識別器です.
+        </p>
+        <div align="center"> <img width="400px" src="fig/neural-net-element.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        一般化すると, 入力が $m$ 次元である素子は
+        </p>
+        <ul>
+          <li> <strong> 重みパラメータ (weight parameter) </strong>: $w_0,w_1,w_2,\ldots,w_m$ </li>
+          <li> <strong> 活性化関数 (activation function) </strong>: $h$ </li>
+        </ul>
+        <p>
+        から構成され
+        \[ f(x_1,x_2,\ldots,x_m) = h(w_1x_1+w_2x_2+\cdots+w_mx_m+w_0) \]
+        という関数を表します.
+        </p>
+        <div align="center"> <img width="300px" src="fig/neural-net-element2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        例えば $h$ を <strong> ヘヴィサイド関数 (Heaviside function) </strong>
+        \[ h(a) = \left\{\begin{array}{cc}
+        0 & (a &lt; 0) \\
+        1 & (a &gt; 0)
+        \end{array}\right. \]
+        とし, $w_0 = -\theta$ とおけば最初に紹介した素子となります.
+        <p>
+        <div align="center"> <img width="300px" src="fig/neural-net-element.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この素子を一つだけ用いた識別器は <strong> 単純パーセプトロン (simple perceptron) </strong> と呼ばれます.
+        </p>
+        <p>
+        興味のある方はテキストを参照して下さい. 今回は, より一般的な多層のニューラルネットワークに絞って解説を行います.
+        </p>
+        </section>
+
+
+        <section>
+        <p>
+        ヘヴィサイド関数は不連続なので数学的な取り扱いが面倒です.
+        </p>
+        <p>
+        そこで活性化関数としてはロジスティックシグモイド関数
+        \[ h(a) = \frac{1}{1+\exp(-a)} \]
+        や
+        \[ h(a) = \tanh a \]
+        やソフトマックス関数などが使われる事が多いです. 詳しくは後で説明します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さて, このような素子を多段に接続すると一体何が起こるのでしょうか.
+        </p>
+        <div align="center"> <img width="500px" src="fig/neural-network.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        ダミー変数 $x_0 = 1$ を使う事にすると, $m$入力の 素子一つは
+        \[ y = h\left(\sum_{i=0}^m w_ix_i\right) \]
+        と書けます.
+        </p>
+        <p>
+        前回までに説明した線形識別モデルは
+        \[ y=f\left(\sum_i w_i\phi_i(\mathbf{x})\right) \]
+        という形で表せるので, ニューラルネットワークの素子一つだけの場合に対応する事が分かります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        2層の場合を考えます.
+        </p>
+        <p>
+        1層目に $m$ 個の素子を用意した場合, 入力が $D$ 次元ならば
+        \[ y = h_2\left(\sum_{i=0}^{m} w^{(2)}_ih_1\left(\sum_{j=0}^{D}w^{(1)}_{ij} x_j\right)\right) \]
+        となります. ただし $w^{(1)}_{ij}$ は1層目の $i$ 番目の素子の入力 $j$ の重み, $w^{(2)}_i$ は2層目の素子の入力 $i$ の重み, $h_1,h_2$ はそれぞれの層の活性化関数です.
+        </p>
+        <div align="center"> <img width="500px" src="fig/neural-network2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        線形識別モデル
+        \[ y=f\left(\sum_i w_i\phi_i(\mathbf{x})\right) \]
+        と2層のニューラルネットワーク
+        \[ y = h_2\left(\sum_{i=0}^{m} w^{(2)}_ih_1\left(\sum_{j=0}^{D}w^{(1)}_{ij} x_j\right)\right) \]
+        を見比べると, 基底 $\phi_i(\mathbf{x})$ が
+$\displaystyle h_1\left(\sum_{j=0}^{D}w^{(1)}_{ij} x_j\right)$ に置き換わっています.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        つまり,
+        </p>
+        <ul>
+          <li> 線形識別モデルでは基底関数があらかじめ固定されている. </li>
+        </ul>
+        <p>
+        のに対して,
+        </p>
+        <ul>
+          <li> 多層ニューラルネットワークでは基底関数自体も学習の対象である. </li>
+        </ul>
+        <p>
+        という一般化が行われています.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        以上の考察から素子の数や活性化関数についてより良く理解出来ます.
+        </p>
+        <p class="fragment">
+        例えば, 2層のネットワークにおいて第1層の活性化関数は基底の形状を定めます. 青い素子が4つなので基底は4つです.
+        </p>
+        <p class="fragment">
+        第2層の活性化関数は線形識別モデルにおける $f$ に相当します. 従って識別の問題ではロジスティックシグモイド関数などを使う事になります.
+        </p>
+        <div align="center"> <img width="400px" src="fig/neural-network3.png"> </div>
+        </section>
+
+        <section>
+        <h3> 誤差逆伝播法 </h3>
+        <p>
+        続いて, ネットワークの訓練方法について説明します.
+        </p>
+        <p class="fragment">
+        これまでと同様に, 最小二乗法や最尤法やMAP推定法などを利用します. とりあえずここでは何らかの関数 $E(\mathbf{w})$ の最小化をしたいとしましょう.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $E(\mathbf{w})$ は非線形な関数となりますので, 勾配 $\nabla E(\mathbf{w})$ やヘッセ行列 $\mathbf{H}(\mathbf{w})=\nabla\nabla E(\mathbf{w})$ を是非使いたいですが, ニューラルネットワークは複雑なのでこの計算が面倒です.
+        </p>
+        <p class="fragment">
+        <strong> 誤差逆伝播法 </strong> もしくは <strong> バックプロパゲーション (backpropagation) </strong> とはニューラルネットワークの偏微分係数を効率的に計算する為の手法です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        基本的なアイデアは合成微分則の利用です.
+        </p>
+        <p class="fragment">
+        例えば
+        \[ F(x) = f(g(h(x))) \]
+        の導関数は, 具体的な関数形を求めなくてもその導関数を計算する事が出来ます.
+        </p>
+        <p class="fragment">
+        つまり,
+        \[ \frac{\mathrm{d} F(x)}{\mathrm{d} x} = \frac{\mathrm{d}f(z)}{\mathrm{d}z}\frac{\mathrm{d}z}{\mathrm{d}y}\frac{\mathrm{d}y}{\mathrm{d}x}\quad (z = g(y), y=h(x)) \]
+        という形にして, $f,g,h$ それぞれに関する微分係数の計算に帰着する事が出来ます.
+        </section>
+
+        <section>
+        <p>
+        $E(\mathrm{w})$ が個々の学習データ毎の誤差の和
+        \[ E(\mathbf{w}) = \sum_{n=1}^N E_n(\mathbf{w}) \]
+        に分解出来るとして, $\nabla E_n(\mathbf{w})$ について考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        素子 $i$ から素子 $j$ への接続の重みを $w_{ji}$ として, 全ての $i,j$ の組合せに対して
+        \[ \frac{\partial E_n}{\partial w_{ji}} \]
+        を計算する事が目標です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        素子 $i$ の出力を $z_i$, 素子 $j$ への入力和を $a_j$ とします.
+        </p>
+        <div align="center"> <img width="250px" src="fig/neural-network4.png"> </div>
+        <p>
+        $E_n$ は $a_j$ を介してのみ $w_{ji}$ に依存する事に注意すれば
+        \[ \frac{\partial E_n}{\partial w_{ji}} = \frac{\partial E_n}{\partial a_j}\frac{\partial a_j}{\partial w_{ji}} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今後 $\delta_j = \partial E_n/\partial a_j$ と書くことにします. また,  $a_j = \sum_i w_{ji} a_i$ なので $\partial a_j/\partial w_{ji} = z_i$ ですから
+        \[ \frac{\partial E_n}{\partial w_{ji}} = \delta_j z_i \]
+        となります.
+        </p>
+        <p>
+        ある入力 $\mathbf{x}$ に対して各 $z_i$ は簡単に計算する事が出来ますから, 各 $\delta_j$ を計算する事が出来れば十分です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで $\delta_i$ について考えると, $E_n$ は素子 $i$ の出力を受け取る素子 $j$ の入力 $a_j$ を介して $a_i$ に依存するので合成微分則より
+        \[ \delta_i = \frac{\partial E_n}{\partial a_i} = \sum_j \frac{\partial E_n}{\partial a_j}\frac{\partial a_j}{\partial a_i} = \sum_j\delta_j\frac{\partial a_j}{\partial a_i}\]
+        となります.
+        </p>
+        <div align="center"> <img width="300px" src="fig/neural-network5.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        さらに, 素子 $i$ の活性化関数を $h_i$ とすると
+        \[ a_j = \sum_i w_{ji} h_i(a_i) \]
+        であったので,
+        \[ \frac{\partial a_j}{\partial a_i} = w_{ji} h_i'(a_i) \]
+        となります.
+        </p>
+        <div align="center"> <img width="300px" src="fig/neural-network5.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        以上をまとめると, 誤差 $\delta_i$ の<strong>逆伝播公式</strong>
+        \[ \delta_i = h_i'(a_i) \sum_j w_{ji}\delta_j \]
+        が得られます.
+        </p>
+        <p>
+        ネットワークの出力部における $\delta$ の値は直接計算する事が出来るので, そこから逆にネットワークを辿りながら各 $\delta$ を計算する事になります.
+        </p>
+        </section>
+
+        <section>
+        <p> まとめましょう. </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> 誤差逆伝播法 </h4>
+        <ol>
+          <li> データ $\mathbf{x}_n$ を入力した時の, 各素子への入力 $a_i$, 出力 $z_i$ を求める. </li>
+          <li> ネットワークの出力部における誤差 $\delta_i$ を計算する. </li>
+          <li> 逆伝播公式を利用して各素子における $\delta_i$ を計算する. 
+          \[ \delta_i = h_i'(a_i) \sum_j w_{ji}\delta_j \]
+          </li>
+          <li> 以下を利用して必要な偏微分係数を求める.
+          \[ \frac{\partial E_n}{\partial w_{ji}} = \delta_j z_i \]
+          </li>
+        </ol>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        逆伝播法の計算量は重みパラメータの数 $W$ が十分大きい場合には $\mathcal{O}(W)$ となります.
+        </p>
+        <p>
+        各 $w_{ji}$ に対する $W$個の偏導関数を一回の誤差伝播で求めてしまう事が出来る大変効率の良いアルゴリズムとなっています.
+        </p>
+        </section>
+
+        <section>
+        <h3> 例 </h3>
+        <p>
+        以下のような2層のネットワークを考えます. 入力は $D$ 次元, 第1層(隠れ層)の素子は $M$ 個で活性化関数は $\tanh$, 第2層(出力層)の素子は $K$ 個で活性化関数は恒等関数とします.
+        </p>
+        <div align="center"> <img width="400px" src="fig/neural-network6.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        誤差関数には残差平方和の半分
+        \[ E_n = \frac{1}{2}\sum_{k=1}^K(y_k-t_k)^2 \]
+        を使う事にします.
+        </p>
+        <p>
+        すると, 出力ユニット $k$ に対する誤差は
+        \[ \delta_k = \frac{1}{2}\frac{\partial }{\partial a_k} \sum_{k=1}^K(y_k-t_k)^2 = y_k-t_k \qquad(\because y_k=a_k)\]
+        となります. これは出力の誤差に他なりません. これが$\delta_i$ を「誤差」と呼ぶ理由です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        隠れユニット $j$ に対する誤差は
+        \[ (\tanh x)' = 1-\tanh^2 x \]
+        である事に注意すると
+        \[ \delta_j = (1-\tanh^2 a_j)\sum_{k=1}^K w_{jk}\delta_k \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今のモデルを用いてテキスト5.1節の図5.3を再現してみたいと思います.
+        </p>
+        <p>
+        隠れ層は3素子, 出力層は1素子です. ダミー変数も考慮して最適化するパラメータは10個となります.
+        </p>
+        <div align="center"> <img width="400px" src="fig/neural-network7.png"> </div>
+        </section>
+
+        <section>
+        <h3> 第7回はここで終わります </h3>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
