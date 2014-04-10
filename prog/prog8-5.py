@@ -13,11 +13,10 @@ W1  = M*(D+1) # 第1層の重みパラメータ数
 W2  = K*(M+1) # 第2層の重みパラメータ数
 W   = W1 + W2 # 重みパラメータ数
 
-STEEPST_ALPHA = 0.01      # 最急降下法の勾配係数
+STEEPEST_ALPHA = 0.01      # 最急降下法の勾配係数
 INIT_COUNT = 100  # 最急降下法によるならし回数
-ITER_MAX = 5000   # 最大反復回数
-STEEPEST_EPS = 1.0e-3  # 最急降下法の停止パラメータ
-NEWTON_EPS   = 1.0e-2  # 準ニュートン法の停止パラメータ
+ITER_MAX = 5000   # 準ニュートン法の最大反復回数
+ITER_EPS = 1.0e-2 # 準ニュートン法の停止パラメータ
 HESSIAN_ALPHA = 1.0e-2 # ヘッセ行列の初期値パラメータ
 
 #=== 重みパラメータ ===
@@ -63,8 +62,8 @@ def steepest_step(x, t, w1, w2):
         a1, a2 = forward(x[i], w1, w2)
         # i番目のデータに対する誤差関数の a1, a2 での微分係数
         d1, d2 = diffcoef(x[i], a1, a2, w1, w2, a2-t[i])
-        diff1 -= STEEPST_ALPHA*d1
-        diff2 -= STEEPST_ALPHA*d2
+        diff1 -= STEEPEST_ALPHA*d1
+        diff2 -= STEEPEST_ALPHA*d2
     return (diff1, diff2)
 
 # 最急降下法
@@ -76,7 +75,7 @@ def steepest_descent_method(x, t):
         d1, d2 = steepest_step(x, t, w1, w2)
         w1 += d1
         w2 += d2
-        if LA.norm(d1) < STEEPEST_EPS and LA.norm(d2) < STEEPEST_EPS:
+        if LA.norm(d1) < ITER_EPS and LA.norm(d2) < ITER_EPS:
             break
     return (w1, w2, i+1)
 
@@ -112,42 +111,22 @@ def quasi_newton_method(x, t):
         d1, d2 = quasi_newton_step(x, t, w1, w2)
         w1 += d1
         w2 += d2
-        if LA.norm(d1) < NEWTON_EPS and LA.norm(d2) < NEWTON_EPS:
+        if LA.norm(d1) < ITER_EPS and LA.norm(d2) < ITER_EPS:
             break
     return (w1, w2, i+1)
 
-#=== 準ニュートン法 ===
-def fit(outname, expr, f):
-    print expr
-    x = linspace(-1, 1, N)
-    t = vectorize(f)(x)
+#=== 局所解を見るための実験 ===
 
-    xlim(-1, 1)
-    scatter(x, t)
+x = linspace(-1, 1, N)
+t = sin(pi*x)
 
-    # 再急降下法で適当回数慣らす
-    w1, w2, count = steepest_descent_method(x, t)
-    y = vectorize(lambda x: forward(x, w1, w2)[1][0])(x)
-    plot(x, y, label="steepest descent (iteration=%d)" % count)
+xlim(-1, 1)
+scatter(x, t)
 
+for i in range(10):
     # 準ニュートン法
     w1, w2, count = quasi_newton_method(x, t)
     y = vectorize(lambda x: forward(x, w1, w2)[1][0])(x)
-    plot(x, y, label="quasi newton (iteration=%d)" % count)
+    plot(x, y)
 
-    title("%s" % expr)
-    legend(loc=4, prop={'size':12})
-    savefig("fig8-4-%s.png" % outname)
-    clf()
-
-fit("quadratic", "y=x^2", lambda x: x**2)
-fit("sin", u"y=sin(πx)", lambda x: sin(pi*x))
-fit("abs", "y=|x|", abs)
-
-def heaviside(x):
-    if x < 0:
-        return 0
-    else:
-        return 1
-
-fit("heaviside", "y=H(x) (Heaviside function)", heaviside)
+savefig("fig8-5.png")

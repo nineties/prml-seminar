@@ -13,12 +13,19 @@ W1  = M*(D+1) # 第1層の重みパラメータ数
 W2  = K*(M+1) # 第2層の重みパラメータ数
 W   = W1 + W2 # 重みパラメータ数
 
-STEEPST_ALPHA = 0.01      # 最急降下法の勾配係数
-INIT_COUNT = 100  # 最急降下法によるならし回数
-ITER_MAX = 5000   # 最大反復回数
-STEEPEST_EPS = 1.0e-3  # 最急降下法の停止パラメータ
-NEWTON_EPS   = 1.0e-2  # 準ニュートン法の停止パラメータ
-HESSIAN_ALPHA = 1.0e-2 # ヘッセ行列の初期値パラメータ
+SD_ALPHA = 0.01      # 最急降下法の勾配係数
+QN_INIT_COUNT = 100  # 最急降下法によるならし回数
+QN_ITER_MAX = 100    # 準ニュートン法の最大反復回数
+QN_ITER_EPS = 1.0e-2 # 準ニュートン法の停止パラメータ
+QN_HESSE0 = 1.0e-2   # ヘッセ行列の初期値パラメータ
+
+# 直線探索のパラメータ
+LS_C1 = 1.0e-4
+LS_C2 = 0.9
+LS_SCALE_UP   = 2.0
+LS_SCALE_DOWN = 0.6
+LS_ITER_MAX = 100
+LS_STEP0 = 2
 
 #=== 重みパラメータ ===
 # 隠れ層の重みは M*(D+1) 行列w1で表現.
@@ -63,8 +70,8 @@ def steepest_step(x, t, w1, w2):
         a1, a2 = forward(x[i], w1, w2)
         # i番目のデータに対する誤差関数の a1, a2 での微分係数
         d1, d2 = diffcoef(x[i], a1, a2, w1, w2, a2-t[i])
-        diff1 -= STEEPST_ALPHA*d1
-        diff2 -= STEEPST_ALPHA*d2
+        diff1 -= SD_ALPHA*d1
+        diff2 -= SD_ALPHA*d2
     return (diff1, diff2)
 
 # 最急降下法
@@ -72,27 +79,69 @@ def steepest_step(x, t, w1, w2):
 def steepest_descent_method(x, t):
     w1 = random.uniform(-1, 1, (M, D+1))
     w2 = random.uniform(-1, 1, (K, M+1))
-    for i in range(ITER_MAX):
+    for i in range(QN_ITER_MAX):
         d1, d2 = steepest_step(x, t, w1, w2)
         w1 += d1
         w2 += d2
-        if LA.norm(d1) < STEEPEST_EPS and LA.norm(d2) < STEEPEST_EPS:
+        if LA.norm(d1) < QN_ITER_EPS and LA.norm(d2) < QN_ITER_EPS:
             break
     return (w1, w2, i+1)
 
 #=== 準ニュートン法の1ステップ
+
+# 誤差関数と勾配
+def error_grad(x, t, w1, w2):
+    E = 0
+    gradE1 = 0
+    gradE2 = 0
+    for i in range(N):
+        a1, a2 = forward(x[i], w1, w2)
+        d1, d2 = diffcoef(x[i], a1, a2, w1, w2, a2-t[i])
+        E += sum((a2-t[i])**2)/2
+        gradE1 += d1
+        gradE2 += d2
+    return (E, gradE1, gradE2)
+
+# 直線探索
+# w1, w2: 現在の位置 (重み)
+# p1, p2: 探索方向
+def line_search(x, t, w1, w2, p1, p2):
+    # 方向ベクトルを正規化した状態での初期stepを設定
+    # 傾き緩やかなほど大きく移動.
+    step = LS_STEP0/(LA.norm(p1) + LA.norm(p2))
+
+    E, gradE1, gradE2 = error_grad(x, t, w1, w2)
+    for c in range(LS_ITER_MAX):
+        new_w1 = w1 + step*p1
+        new_w2 = w2 + step*p2
+        new_E, new_gradE1, new_gradE2 = error_grad(x, t, new_w1, new_w2)
+
+        # armijoの条件
+        if new_E > E + LS_C1*step*(sum(p1*gradE1) + sum(p2*gradE2)):
+            # stepは大きすぎる
+            step *= LS_SCALE_DOWN
+            continue
+
+        # wolfeの条件
+        if sum(p1*new_gradE1)+sum(p2*new_gradE2) <\
+                LS_C2*(sum(p1*gradE1) + sum(p2*gradE2)):
+            # stepは小さすぎる
+            step *= LS_SCALE_UP
+        break
+    return step
+
 def quasi_newton_step(x, t, w1, w2):
     # 誤差関数のa1,a2での微分係数
     diff1 = zeros((M, D+1))
     diff2 = zeros((K, M+1))
 
     # B = H^-1 (ヘッセ行列の逆行列)
-    B = identity(W)/HESSIAN_ALPHA
+    B = identity(W)/QN_HESSE0
 
     for i in range(N):
         a1, a2 = forward(x[i], w1, w2)
 
-        d1, d2 = diffcoef(x[i] , a1, a2, w1, w2, a2-t[i])
+        d1, d2 = diffcoef(x[i], a1, a2, w1, w2, a2-t[i])
         diff1 += d1
         diff2 += d2
 
@@ -108,46 +157,28 @@ def quasi_newton_step(x, t, w1, w2):
 def quasi_newton_method(x, t):
     w1 = random.uniform(-1, 1, (M, D+1))
     w2 = random.uniform(-1, 1, (K, M+1))
-    for i in range(ITER_MAX):
+    for i in range(QN_ITER_MAX):
         d1, d2 = quasi_newton_step(x, t, w1, w2)
-        w1 += d1
-        w2 += d2
-        if LA.norm(d1) < NEWTON_EPS and LA.norm(d2) < NEWTON_EPS:
+        step = line_search(x, t, w1, w2, d1, d2)
+        w1 += step*d1
+        w2 += step*d2
+        if LA.norm(d1) < QN_ITER_EPS and LA.norm(d2) < QN_ITER_EPS:
             break
     return (w1, w2, i+1)
 
-#=== 準ニュートン法 ===
-def fit(outname, expr, f):
-    print expr
-    x = linspace(-1, 1, N)
-    t = vectorize(f)(x)
+#=== 局所解を見るための実験 ===
 
-    xlim(-1, 1)
-    scatter(x, t)
+x = linspace(-1, 1, N)
+t = sin(pi*x)
 
-    # 再急降下法で適当回数慣らす
-    w1, w2, count = steepest_descent_method(x, t)
-    y = vectorize(lambda x: forward(x, w1, w2)[1][0])(x)
-    plot(x, y, label="steepest descent (iteration=%d)" % count)
+xlim(-1, 1)
+scatter(x, t)
 
+for i in range(50):
     # 準ニュートン法
+    print "sample ",i
     w1, w2, count = quasi_newton_method(x, t)
     y = vectorize(lambda x: forward(x, w1, w2)[1][0])(x)
-    plot(x, y, label="quasi newton (iteration=%d)" % count)
+    plot(x, y)
 
-    title("%s" % expr)
-    legend(loc=4, prop={'size':12})
-    savefig("fig8-4-%s.png" % outname)
-    clf()
-
-fit("quadratic", "y=x^2", lambda x: x**2)
-fit("sin", u"y=sin(πx)", lambda x: sin(pi*x))
-fit("abs", "y=|x|", abs)
-
-def heaviside(x):
-    if x < 0:
-        return 0
-    else:
-        return 1
-
-fit("heaviside", "y=H(x) (Heaviside function)", heaviside)
+savefig("fig8-6.png")

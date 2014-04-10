@@ -252,7 +252,7 @@
         <section>
         <h3> 準ニュートン法 </h3>
         <p>
-        前回は最急降下法を実装しましたが, これは収束するまでの反復回数が多く性能が低くなってしまいます.
+        前回は最急降下法を実装しましたが. これは1ステップの更新に掛かる時間が $\mathcal{O}(W)$ で済む一方, 収束するまでの反復回数が多くなってしまいます.
         </p>
         <p class="fragment">
         より効率的な手法として <strong> 共役勾配法 (conjugate gradient method) </strong> や <strong> 準ニュートン法 (quasi-Newton method) </strong> などがあります.
@@ -302,6 +302,14 @@
 
         <section>
         <p>
+        出力が $K &gt; 1$ 個の場合も同様にして
+        \[ \mathbf{H} \approx \sum_{n=1}^N\sum_{i=1}^K\nabla y_{ni} (\nabla y_{ni})^T \]
+        と近似出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
         今,
         \[ \mathbf{H}_N = \sum_{n=1}^N\mathbf{b}_n\mathbf{b}_n^T \qquad (\mathbf{b}_n = \nabla y_n)\]
         とおきます.
@@ -317,7 +325,7 @@
         <p>
         ここで
         \[ (\mathbf{H}+\mathbf{b}\mathbf{b}^T)^{-1} = \mathbf{H}^{-1} - \frac{\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}}{1+\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}} \]
-        が成立するので(実際に掛けてみて下さい),
+        が成立するので(次頁),
         \[ \mathbf{H}_{L+1}^{-1} = \mathbf{H}_L^{-1}-\frac{\mathbf{H}_L^{-1}\mathbf{b}_{L+1}\mathbf{b}_{L+1}^T\mathbf{H}_L^{-1}}{1+\mathbf{b}^T_{L+1}\mathbf{H}_L^{-1}\mathbf{b}_{L+1}} \]
         となります.
         </p>
@@ -326,10 +334,262 @@
         </p>
         </section>
 
+        <section style="font-size:80%">
+        <p>
+        【前頁の等式の証明】<br>
+        まず
+        \[ \mathbf{H}^{-1}(\mathbf{H}+\mathbf{b}\mathbf{b}^T) = I + \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T \qquad\cdots(1)\]
+        また,
+        \[ \begin{aligned}
+        \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}(\mathbf{H}+\mathbf{b}\mathbf{b}^T) &=
+        \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T+\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\\
+        &= \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T+(\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b})\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\\
+        &  \qquad\qquad \text{($\because\, \mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}$はスカラー)} \\
+        &= (1+\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b})\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T
+        \end{aligned} \]
+        より
+        \[ \frac{\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}}{1+\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}}(\mathbf{H}+\mathbf{b}\mathbf{b}^T) = \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T \qquad\cdots(2)\]
+        $(1)$から$(2)$を引いて終了.
+        </p>
+        </section>
+
+        <section>
+        <h3> 準ニュートン法の計算量 </h3>
+        <p>
+        $\mathbf{A},\mathbf{B}$ が $n\times n$ 行列, $\mathbf{x},\mathbf{y}$ が $n$次元ベクトルの時のこれら積の計算量は以下のようになります.
+        </p>
+        <ul>
+          <li> $\mathbf{A}\mathbf{B}$ は $\mathcal{O}(n^3)$ 時間 </li>
+          <li> $\mathbf{A}\mathbf{x}, \mathbf{x}^T\mathbf{A}$ は $\mathcal{O}(n^2)$ 時間 </li>
+          <li> $\mathbf{x}\mathbf{x}^T$ は $\mathbf{O}(n^2)$ 時間 </li>
+        </ul>
+        <p>
+        従って, 準ニュートン法の1ステップの更新は
+        \[ \mathbf{H}_{L+1}^{-1} = \mathbf{H}_L^{-1}-\frac{((\mathbf{H}_L^{-1}\mathbf{b}_{L+1})\mathbf{b}_{L+1}^T)\mathbf{H}_L^{-1}}{1+(\mathbf{b}^T_{L+1}\mathbf{H}_L^{-1})\mathbf{b}_{L+1}} \]
+        という順序で積を計算すると $\mathcal{O}(W^2)$ となります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 注意 </h3>
+        <p>
+        \[ \mathbf{H} \approx \sum_{n=1}^N\nabla y_n (\nabla y_n)^T \]
+        という近似が出来るのは誤差関数 $E$ の値がある程度極大値・極小値付近に近づいた場合です. そこで, 準ニュートン法の前に再急降下法で適当回数慣らし運転を行う事にしました.
+        </p>
+        </section>
+
+        <section>
+        <p> 前回の問題に適用してみます. </p>
+        <div align="center"> <img width="700px" src="prog/fig8-4-quadratic.png"> <a href="prog/prog8-4.py" style="font-size:60%">prog8-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="700px" src="prog/fig8-4-sin.png"> <a href="prog/prog8-4.py" style="font-size:60%">prog8-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="700px" src="prog/fig8-4-abs.png"> <a href="prog/prog8-4.py" style="font-size:60%">prog8-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="700px" src="prog/fig8-4-heaviside.png"> <a href="prog/prog8-4.py" style="font-size:60%">prog8-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今紹介した手法では, 局所解に陥ってしまう可能性がある事に注意する必要があります. 現在の点に関する局所的な情報しか見ていないからです. それ以前に収束するか否かも保証されません.
+        </p>
+        <div align="center"> <img width="500px" src="fig/local_optimal.png"> </div>
+        </section>
+
+        <section>
+        <p style="font-size:80%">
+        以下のグラフは先ほどの手法で $y=\sin \pi x$ のフィッティングを10回行ったものです. $\mathbf{w}$ の初期値をランダムに決めているので毎回結果が異なりますが, 2種類の曲線(実際には4種類が重なっている)に収束しています. これらが局所解の例.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig8-5.png"> <a href="prog/prog8-5.py" style="font-size:60%">prog8-5.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 直線探索の利用 </h3>
+        <p>
+        局所解を避ける為には大域的な情報を利用する必要があります.
+        </p>
+        <p>
+        しかし全空間を調べあげる事はとても出来ません. そこで <strong>線形探索 (line search)</strong>という手法が使えます.
+        これは,方向を決めた後進む距離だけを大域的な探索によって決定するというものです.
+        </p>
+        <div align="center"> <img width="500px" src="fig/local_optimal2.png"> </div>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> 直線探索の併用 </h4>
+        <ol>
+          <li> 次に進む方向 $\mathbf{p}^{(k)}$ を何らかの方法(準ニュートン法など)で決める. ($\mathbf{p}^{(k)}$ は $E$ の降下方向を向いていなければいけない.) </li>
+          <li> $E(\mathbf{w}^{(k)}+\alpha\mathbf{p}^{(k)})$ が最小となるステップ幅 $\alpha$ を何らかの直線探索で求める. </li>
+          <li> $\mathbf{w}^{(k+1)} = \mathbf{w}^{(k)}+\alpha\mathbf{p}^{(k)}$ とする. </li>
+        </ol>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        ここで, $E(\mathbf{w}+\alpha\mathbf{p})$ が最小となるステップ幅 $\alpha$ を厳密に求める必要はありません. <strong> Armijoの条件 (Armijoの条件)</strong> と <strong> Wolfeの条件 (Wolfe condition) </strong> と呼ばれるものを満たせば大域的な収束性が証明されます.
+        </p>
+        <div align="center"> <img width="600px" src="fig/local_optimal3.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        $f(\alpha) = E(\mathbf{w}+\alpha\mathbf{p})$ とおきます.
+        </p>
+        <p>
+        まず, $0 &lt; c_1 &lt; 1$ を満たす小さな $c_1$に対して
+        \[ \frac{f(\alpha)-f(0)}{\alpha} \leq c_1 f'(0) \]
+        が成立する必要があります. これは $\alpha$ の上限を定め, Armijoの条件と呼ばれます.
+        </p>
+        <div align="center"> <img width="600px" src="fig/armijo-rule.png"> </div>
+        </section>
+
+        <section>
+        $f(\alpha)=E(\mathbf{w}+\alpha\mathbf{p})$ を代入すると
+        \[ f'(0) = \lim_{\alpha\rightarrow 0}\frac{E(\mathbf{w}+\alpha\mathbf{p})-E(\mathbf{w})}{\alpha} = \mathbf{p}^T\nabla E(\mathbf{w}) \]
+        となるので(<a href="http://nineties.github.com/math-seminar/3.html#/58">参考</a>), Armijoの条件を整理すると
+        \[ E(\mathbf{w}+\alpha\mathbf{p})\leq E(\mathbf{w})+c_1\alpha\mathbf{p}^T\nabla E(\mathbf{w}) \]
+        となります.
+        </section>
+
+        <section>
+        <p>
+        続いて $0 &lt; c_1 &lt; c_2 &lt; 1$ を満たす比較的大きい $c_2$ に対して
+        \[ f'(\alpha) \geq c_2f'(0) \]
+        を満たす必要があります. これは $\alpha$ の下限を定め, Wolfeの条件と呼ばれます.  こちらも整理すると
+        \[ \mathbf{p}^T\nabla E(\mathbf{w}+\alpha\mathbf{p}) \geq c_2\mathbf{p}^T\nabla E(\mathbf{w}) \]
+        となります.
+        </p>
+        <div align="center"> <img width="600px" src="fig/wolfe-rule.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        まとめると以下の様になります.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> Armijo,Wolfeの条件によるステップサイズの決定</h4>
+        <ol>
+          <li> $\alpha &gt; 0$ を適当に決める. </li>
+          <li> Armijoの条件を満たさないなら $\alpha$ は大きすぎるのでより小さくし最初に戻る.
+          \[ E(\mathbf{w}+\alpha\mathbf{p})\leq E(\mathbf{w})+c_1\alpha\mathbf{p}^T\nabla E(\mathbf{w}) \]
+          </li>
+          <li> Wolfeの条件を満たさないなら $\alpha$ は小さすぎるのでより大きくし最初に戻る.
+          \[ \mathbf{p}^T\nabla E(\mathbf{w}+\alpha\mathbf{p}) \geq c_2\mathbf{p}^T\nabla E(\mathbf{w}) \]
+          </li>
+        </ol>
+        </div>
+        </section>
+
+        <section>
+        <p style="font-size:80%">
+        $y=\sin \pi x$ の例に適用して見ました. 準ニュートン法と同じく $\mathbf{p}=-\mathbf{H}^{-1}\nabla E$ としました.
+        以下のグラフでは50回のフィッティングを行っていますが局所解を回避する事が出来ました.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig8-6.png"> <a href="prog/prog8-6.py" style="font-size:60%">prog8-6.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 不変性 </h3>
+        <p>
+        続いて, 先ほどヤコビ行列の所で紹介した <strong>不変性 (invariance)</strong> について詳しく説明します.
+        </p>
+        <div align="center"> <img width="900px" src="fig/invariance.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        不変性をネットワークの学習に取り入れるには以下の方法があります.
+        </p>
+        <ul>
+          <li> 対応する変換を用いて訓練パターンを複数生成して学習を行わせる. 例えば画像が回転に関して不変なら, 元画像を回転させた訓練データを複数用いる. </li>
+          <li> 対応する変換に関して出力が変化してしまう事に対してペナルティを付与し学習を行わせる. </li>
+          <li> 前処理の特徴抽出の段階でこのような不変性は除去しておく. </li>
+          <li> ネットワークの構造自体に不変性を組み込む. </li>
+        </ul>
+        </section>
+
+        <section>
+        <h3> 接線伝播法 </h3>
+        <p>
+        「出力が変化してしまう事に対するペナルティ」の考え方に基づく <strong> 接線伝播法 (tangent propagation) </strong> を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今, 入力画像 $\mathbf{x}_n$ に変換 $\mathbf{s}(\mathbf{x},\boldsymbol{\theta})$ を施しても出力が不変だとしましょう. ここで $\boldsymbol{\theta}$ は変換のパラメータであり, 例えば回転角や平行移動の差分ベクトルなどです. 但し, $\mathbf{s}(\mathbf{x},\mathbf{0})=\mathbf{x}$ とします.
+        </p>
+        <div align="center"> <img width="500px" src="fig/tangent_propagation.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この時, ニューラルネットワーク
+        \[ \mathbf{y} = f(\mathbf{x},\mathbf{w}) \]
+        の学習データ $\mathbf{x}_n$ と変換 $\mathbf{s}$ に対する不変性は, $\boldsymbol{\theta}$ を変えても出力が変化しない事. すなわち,
+        \[ \nabla \mathbf{y} = \frac{\partial\mathbf{y}}{\partial\boldsymbol{\theta}} = \frac{\partial}{\partial\boldsymbol{\theta}}f\left(\mathbf{s}(\mathbf{x}_n,\boldsymbol{\theta}),\mathbf{w}\right) = \mathbf{O} \]
+        と表現する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        合成微分則を用いて書き直せば, 出力 $y_j$ と $\boldsymbol{\theta}$ の成分 $\theta_i$ について
+        \[ \frac{\partial y_j}{\partial \theta_i} = \sum_{k=1}^D\frac{\partial y_j}{\partial x_k}\frac{\partial x_k}{\partial \theta_i} \]
+        ヤコビ行列を用いて
+        \[ \frac{\partial y_j}{\partial \theta_i} = \sum_{k=1}^D\mathbf{J}_{jk}\frac{\partial x_k}{\partial \theta_i} \]
+        と書くことが出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        更に $x_k = s_k(\mathbf{x}_n,\boldsymbol{\theta})$ だったので
+        \[ \frac{\partial y_j}{\partial \theta_i} = \sum_{k=1}^D\mathbf{J}_{jk}\frac{\partial s_k}{\partial \theta_i} \]
+        という形になります.
+        </p>
+        <p>
+        もっと簡潔に書けば
+        \[ \frac{\partial\mathbf{y}}{\partial\boldsymbol{\theta}}=\mathbf{J}\frac{\partial\mathbf{s}}{\partial\boldsymbol{\theta}} \]
+        という形になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで $\mathbf{x}_n$ を固定して, $\boldsymbol{\theta}$ を動かすと
+        \[ \mathbf{x} = s(\mathbf{x}_n, \boldsymbol{\theta}) \]
+        は入力空間内の何らかの多様体(曲線,曲面,$\cdots$)を描きますが, $\partial\mathbf{s}/\partial\boldsymbol{\theta}$ はこの多様体に接するベクトルとなります. これが「接線伝播」という名前の由来です.
+        </p>
+        <div align="center"> <img width="500px" src="fig/tangent_propagation2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        さて, $\boldsymbol{\theta}$ 全体で
+        \[ \frac{\partial\mathbf{y}}{\partial\boldsymbol{\theta}}=\mathbf{O} \]
+        を満たすようにするのは困難なので, $\boldsymbol{\theta}=\mathbf{0}$ の周辺(つまり入力 $\mathbf{x}_n$ の周辺)だけ考え,
+        \[ E(\mathbf{w}) + \lambda \left\Vert\mathbf{J}\frac{\partial\mathbf{s}}{\partial\boldsymbol{\theta}}\right\Vert^2 \]
+        という量を最小化する事にします. $E(\mathbf{w})$ は誤差関数, $\lambda$ は適当な正の値, $\Vert \cdot \Vert^2$ は各成分の二乗和(フロベニウスノルム)です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        資料作成途中.
+        </p>
+        </section>
+
+        <!--
         <section>
         <h3> 正則化 </h3>
         <p>
-        ニューラルネットワークによって表されるモデルの複雑さは隠れ層の数 $M$ によって決まります. 既に説明したように, $M$ の大小によって汎化性能が変わります.
+        さて, ニューラルネットワークによって表されるモデルの複雑さは隠れ層の素子の数 $M$ によって決まります. 既に説明したように, $M$ の大小によって汎化性能が変わります.
         </p>
         </section>
 
@@ -349,34 +609,16 @@
         <div align="center"> <img width="700px" src="prog/fig8-3-2.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
         </section>
         <section>
-        <p> $M = 3$ </p>
+        <p> $M = 3$, 過学習が始まっています. </p>
         <div align="center"> <img width="700px" src="prog/fig8-3-3.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
         </section>
-        <section>
-        <p> $M = 4$ </p>
-        <div align="center"> <img width="700px" src="prog/fig8-3-4.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
-        </section>
-        <section>
-        <p> $M = 5$ </p>
-        <div align="center"> <img width="700px" src="prog/fig8-3-5.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
-        </section>
-        <section>
-        <p> $M = 6$ </p>
-        <div align="center"> <img width="700px" src="prog/fig8-3-6.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
-        </section>
-        <section>
-        <p> $M = 7$ </p>
-        <div align="center"> <img width="700px" src="prog/fig8-3-7.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
-        </section>
-        <section>
-        <p> $M = 8$ </p>
-        <div align="center"> <img width="700px" src="prog/fig8-3-8.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
-        </section>
-        <section>
-        <p> $M = 9$ </p>
-        <div align="center"> <img width="700px" src="prog/fig8-3-9.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
-        </section>
 
+        <section>
+        <p>
+        この対策としては既に説明したような
+        </p>
+        </section>
+        -->
 			</div>
 		</div>
 
