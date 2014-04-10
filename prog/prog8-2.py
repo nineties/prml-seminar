@@ -36,55 +36,52 @@ def backpropagation(x, t, w1, w2):
     a1, a2 = forward(x, w1, w2)  # 順伝播
     delta2 = a2 - t              # 出力の誤差
     tanh_a1 = tanh(a1)
+
+    # 逆伝播
     delta1 = (1- tanh_a1**2)*w2[:,0:M].T.dot(delta2) # 隠れ層の誤差
 
     ## 偏微分係数の計算
     diff1 = zeros((M, D+1))
     diff2 = zeros((K, M+1))
-
-    # 隠れ層
     diff1 = outer(delta1, [x, 1])
-    # 出力層
     diff2 = outer(delta2, append(tanh_a1, 1))
     return (diff1, diff2)
 
-#=== 最急勾配降下法
-def fit(outname, expr, f):
-    print expr
-    x = linspace(-1, 1, N)
-    t = vectorize(f)(x)
+#=== 学習データ ===
+x = linspace(-1, 1, N)
+t = x**2
 
-    w1 = random.uniform(-1, 1, (M, D+1))
-    w2 = random.uniform(-1, 1, (K, M+1))
-    for i in range(ITER_MAX):
-        finish = True
-        for j in range(N):
-            d1, d2 = backpropagation(x[j], t[j], w1, w2)
-            w1 -= ALPHA*d1
-            w2 -= ALPHA*d2
-            if LA.norm(d1) >= ITER_EPS or LA.norm(d2) >= ITER_EPS:
-                finish = False
-        if finish: break
-    count = i
+w1 = random.uniform(-1, 1, (M, D+1))
+w2 = random.uniform(-1, 1, (K, M+1))
+for i in range(ITER_MAX):
+    finish = True
+    for j in range(N):
+        d1, d2 = backpropagation(x[j], t[j], w1, w2)
+        w1 -= ALPHA*d1
+        w2 -= ALPHA*d2
+        if LA.norm(d1) >= ITER_EPS or LA.norm(d2) >= ITER_EPS:
+            finish = False
+    if finish: break
+count = i
 
-    test_x = linspace(-1, 1, N)
-    test_y = vectorize(lambda x: forward(x, w1, w2)[1][0])(test_x)
+#=== ヤコビ行列 ===
+# 入力に対する出力の偏微分係数を計算
+def jacobian(x, w1, w2):
+    a1, a2 = forward(x, w1, w2)  # 順伝播
+    delta2 = ones(K)             # 出力の誤差
+    tanh_a1 = tanh(a1)
+    delta1 = (1- tanh_a1**2)*w2[:,0:M].T.dot(delta2) # 隠れ層の誤差
 
-    xlim(-1, 1)
-    scatter(x, t)
-    plot(test_x, test_y)
-    title("%s (iteration=%d)" % (expr, count))
-    savefig("fig7-1-%s.png" % outname)
-    clf()
+    # ヤコビ行列の計算
+    return w1[:,0].dot(delta1)
 
-fit("quadratic", "y=x^2", lambda x: x**2)
-fit("sin", u"y=sin(πx)", lambda x: sin(pi*x))
-fit("abs", "y=|x|", abs)
+test_x = linspace(-1, 1, N)
+test_y = vectorize(lambda x: forward(x, w1, w2)[1][0])(test_x)
+test_diffy = vectorize(lambda x: jacobian(x, w1, w2))(test_x)
 
-def heaviside(x):
-    if x < 0:
-        return 0
-    else:
-        return 1
-
-fit("heaviside", "y=H(x) (Heaviside function)", heaviside)
+xlim(-1, 1)
+scatter(x, t)
+plot(test_x, test_y)
+plot(test_x, test_diffy)
+title("y=x^2 (iteration=%d)" % count)
+savefig("fig8-2.png")

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第8回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第8回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年4月10日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ニューラルネットワーク </h2>
+        </section>
+
+        <section>
+        <p>
+        前回に続きニューラルネットワークの解説を行います. 5.3節以降技術的な話題が多くなりますが、特に重要なものに絞ります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 実装の検証 </h3>
+        <p>
+        誤差逆伝播法はニューラルネットワークに対する何らかの誤差関数 $E(\mathbf{x},\mathbf{w})$ の, 重み $w_{ji}$ に関する微分係数
+        \[ \frac{\partial E}{\partial w_{ji}} \]
+        を計算するものでした.
+        </p>
+        <p class="fragment">
+        一方, <strong> 数値微分法 (numerical differentiation) </strong> によってこれを近似的に計算する事も出来ます. 2つの結果を比較する事によって実装の検証を行います.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば, <strong> 中心差分法 (central difference) </strong> では, 微小量 $\varepsilon &gt; 0$ に対して
+        \[ \frac{\partial E}{\partial w_{ji}} = \frac{E(w_{ji} + \varepsilon)-E(w_{ji} - \varepsilon)}{\varepsilon^2} + O(\varepsilon^2) \]
+        となります(<a href="http://nineties.github.io/math-seminar/3.html#/39">参考</a>).
+        </p>
+        <p class="fragment">
+        各微分係数の計算に2回の順伝播が必要なので, 計算量は重みの数 $W$ に対して $\mathcal{O}(W^2)$ となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        前回実装したものを中心差分の結果と比較した所以下のようになりました。実装は誤っていないようです。 (<a href="prog/prog8-1.py" style="font-size:80%">prog8-1.py</a>)
+        </p>
+<pre><code class="python" style="max-height:400px">誤差逆伝播で求めた微分係数
+[  3.40753294  27.62924471   4.04890811 -14.67453553  -5.83120129
+  32.10422817  40.14607951  40.10717238  24.84976142  58.85584348]
+中心差分 (eps=0.010000) で求めた微分係数
+[  3.40736966  27.62873587   4.04890491 -14.67486427  -5.83108375
+  32.10315101  40.14607951  40.10717238  24.84976142  58.85584348]
+</code></pre>
+        </section>
+
+        <section>
+        <h3> ヤコビ行列 </h3>
+        <p>
+        ニューラルネットワーク $\mathbf{y}=f(\mathbf{x},\mathbf{w})$ に対して,
+        \[ J_{ij} = \frac{\partial y_i}{\partial x_j} \]
+        という微分係数, は入力の変動に対する, 出力の変動を表します.
+        </p>
+        <p>
+        $J_{ij}$ を $(i,j)$ 成分にもつ行列は <strong> ヤコビ行列 (Jacobian matrix) </strong> と呼ばれます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ヤコビ行列が必要となる典型的な場面は <strong> 不変性 (invariance) </strong> の評価です.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        例えば文字認識の問題を考えましょう. 文字画像(入力)に平行移動・回転・拡大などの変換を行ってもそのクラス(出力)は不変です.
+        </p>
+        <div class="fragment" data-fragment-index="1" align="center"> <img width="900px" src="fig/invariance.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        出力 $y_k$ は, 入力 $x_i$ に $x_i$ と直接接続する素子の入力 $a_j$ を介してのみ依存するので
+        \[ J_{ki} = \frac{\partial y_k}{\partial x_i} = \sum_j \frac{\partial a_j}{\partial x_i}\frac{\partial y_k}{\partial a_j} = \sum_j w_{ji}\frac{\partial y_k}{\partial a_j} \]
+        となります.
+        </p>
+        <div align="center"> <img width="400px" src="fig/neural-network8.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        誤差逆伝播法によって $\delta_{ji} = \partial y_j/\partial a_i$ を計算することは出来るので, 以下の手順でヤコビ行列を計算出来ます.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> ヤコビ行列の計算 </h4>
+        <p>
+        誤差逆伝播法によって
+        \[ \delta_{ji} = \frac{\partial y_j}{\partial a_i} \]
+        を求める. 続いて各入力素子 $i$ と出力素子 $k$ に対して
+        \[ J_{ki} = \sum_j w_{ji}\delta_{kj} \]
+        を求める. 但し 素子 $j$ は入力 $i$ に接続する素子の番号.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        $y=x^2$ を学習させた例で試してみましょう.
+        \[ \frac{\mathrm{d} y}{\mathrm{d} x} = 2x \]
+        となるはずです.
+        </p>
+        <div align="center"> <img width="500px" src="prog/fig7-1-quadratic.png"> <a href="prog/prog7-1.py" style="font-size:60%">prog7-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        以下のようなネットワークでしたので, 出力層については
+        \[ \frac{\partial y}{\partial a} = 1 \]
+        で計算します.
+        </p>
+        <div align="center"> <img width="400px" src="fig/neural-network6.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        以下が計算結果のプロットです. 確かに $y=2x$ になっている事が分かります. 定義域の境界では関数が不連続であるので誤差が大きくなります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig8-2.png"> <a href="prog/prog8-2.py" style="font-size:60%">prog8-2.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 準ニュートン法 </h3>
+        <p>
+        前回は最急降下法を実装しましたが, これは収束するまでの反復回数が多く性能が低くなってしまいます.
+        </p>
+        <p class="fragment">
+        より効率的な手法として <strong> 共役勾配法 (conjugate gradient method) </strong> や <strong> 準ニュートン法 (quasi-Newton method) </strong> などがあります.
+        </p>
+        <p class="fragment">
+        第５回にニュートン・ラフソン法を解説しましたので, 今回はそれに基づく準ニュートン法を説明します. 共役勾配法については各自調べて下さい.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ニュートン・ラフソン法を復習すると, 適当な初期値 $\mathbf{w}_0$ を定め,
+        \[ \mathbf{w}^{(k+1)} = \mathbf{w}^{(k)} - \left(\mathbf{H}^{(k)}\right)^{-1}\nabla \mathbf{E}^{(k)} \]
+        によって反復を行う方法でした. $\nabla \mathbf{E}^{(k)}$ はステップ $k$ での誤差関数の勾配, $\mathbf{H}^{(k)}$ はステップ $k$ での誤差関数のヘッセ行列です.
+        </p>
+        <p class="fragment">
+        パラメータ数が $W$ の時, $\mathbf{H}^{(k)}$ は $W\times W$ 行列になるので計算量が問題となります. そこで $\left(\mathbf{H}^{(k)}\right)^{-1}$ を別の近似行列に置き換えたものが 準ニュートン法です.
+        </p>
+        </section>
+
+        <section>
+        <h3> ヘッセ行列の近似 </h3>
+        <p>
+        テキスト 5.4 節にはヘッセ行列 $\left(\mathbf{H}^{(k)}\right)^{-1}$ の各種近似計算法が紹介されていますが, ここでは <strong> 外積による近似 (outer product approximation) </strong> を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        出力が1つの場合を考えると, 誤差関数が残差平方和の半分
+        \[ E = \frac{1}{2}\sum_{n=1}^N (y_n-t_n)^2 \]
+        の場合
+        \[ \nabla E = \sum_{n=1}^N (y_n-t_n)\nabla y_n \]
+        なので
+        \[ \mathbf{H} = \nabla\nabla E = \sum_{n=1}^N \nabla y_n (\nabla y_n)^T + \sum_{n=1}^N (y_n-t_n)\nabla\nabla y_n \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで, $E$ の最小値の付近では $\nabla y_n \approx \mathbf{0}$ になっているので $\nabla \nabla y_n \approx \mathbf{O}$ ですから
+        \[ \mathbf{H} \approx \sum_{n=1}^N\nabla y_n (\nabla y_n)^T \]
+        と近似出来ます. これを外積による近似と言います.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今,
+        \[ \mathbf{H}_N = \sum_{n=1}^N\mathbf{b}_n\mathbf{b}_n^T \qquad (\mathbf{b}_n = \nabla y_n)\]
+        とおきます.
+        </p>
+        <p>
+        これをデータ1つずつについて漸進的に計算出来るように
+        \[ \mathbf{H}_{L+1} = \mathbf{H}_L + \mathbf{b}_{L+1}\mathbf{b}_{L+1}^T \]
+        という形に直します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで
+        \[ (\mathbf{H}+\mathbf{b}\mathbf{b}^T)^{-1} = \mathbf{H}^{-1} - \frac{\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}}{1+\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}} \]
+        が成立するので(実際に掛けてみて下さい),
+        \[ \mathbf{H}_{L+1}^{-1} = \mathbf{H}_L^{-1}-\frac{\mathbf{H}_L^{-1}\mathbf{b}_{L+1}\mathbf{b}_{L+1}^T\mathbf{H}_L^{-1}}{1+\mathbf{b}^T_{L+1}\mathbf{H}_L^{-1}\mathbf{b}_{L+1}} \]
+        となります.
+        </p>
+        <P>
+        但し, $\mathbf{H}_0$ は小さい $\alpha$ に対して $\mathbf{H}_0 \approx \alpha I$ と近似します.
+        </p>
+        </section>
+
+        <section>
+        <h3> 正則化 </h3>
+        <p>
+        ニューラルネットワークによって表されるモデルの複雑さは隠れ層の数 $M$ によって決まります. 既に説明したように, $M$ の大小によって汎化性能が変わります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下のデータで見てみましょう.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-training.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+
+        <section>
+        <p> $M = 1$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-1.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 2$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-2.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 3$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-3.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 4$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-4.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 5$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-5.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 6$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-6.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 7$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-7.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 8$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-8.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 9$ </p>
+        <div align="center"> <img width="700px" src="prog/fig8-3-9.png"> <a href="prog/prog8-3.py" style="font-size:60%">prog8-3.py</a> </div>
+        </section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>

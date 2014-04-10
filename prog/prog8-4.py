@@ -9,9 +9,15 @@ D = 1   # 入力の次元
 M = 3   # 隠れ層の数
 K = 1   # 出力層の数
 
+W1  = M*(D+1) # 第1層の重みパラメータ数
+W2  = K*(M+1) # 第2層の重みパラメータ数
+W   = W1 + W2 # 重みパラメータ数
+
 ALPHA = 0.3       # 最急降下法の勾配係数
-ITER_MAX = 5000   # 最急降下法の反復回数上限
-ITER_EPS = 5.0e-2 # 再急降下法の停止パラメータ
+INIT_COUNT = 100  # 最急降下法によるならし回数
+ITER_MAX = 2      # 準ニュートン法の最大反復回数
+ITER_EPS = 5.0e-2 # 準ニュートン法の停止パラメータ
+HESSIAN_ALPHA = 1.0e-2 # ヘッセ行列の初期値パラメータ
 
 #=== 重みパラメータ ===
 # 隠れ層の重みは M*(D+1) 行列w1で表現.
@@ -32,9 +38,9 @@ def forward(x, w1, w2):
 
 #=== 誤差逆伝播法 ===
 # 各重みに関する偏微分係数を計算
-def backpropagation(x, t, w1, w2):
+def backpropagation1(x, t, w1, w2):
     a1, a2 = forward(x, w1, w2)  # 順伝播
-    delta2 = a2 - t              # 出力の誤差
+    delta2 = a2-t                # 出力の誤差
     tanh_a1 = tanh(a1)
     delta1 = (1- tanh_a1**2)*w2[:,0:M].T.dot(delta2) # 隠れ層の誤差
 
@@ -48,25 +54,66 @@ def backpropagation(x, t, w1, w2):
     diff2 = outer(delta2, append(tanh_a1, 1))
     return (diff1, diff2)
 
-#=== 最急勾配降下法
+def backpropagation2(x, t, w1, w2):
+    a1, a2 = forward(x, w1, w2)  # 順伝播
+    delta2 = ones(K)             # 出力の誤差
+    tanh_a1 = tanh(a1)
+    delta1 = (1- tanh_a1**2)*w2[:,0:M].T.dot(delta2) # 隠れ層の誤差
+
+    ## 偏微分係数の計算
+    diff1 = zeros((M, D+1))
+    diff2 = zeros((K, M+1))
+
+    # 隠れ層
+    diff1 = outer(delta1, [x, 1])
+    # 出力層
+    diff2 = outer(delta2, append(tanh_a1, 1))
+    return (diff1, diff2)
+
+#=== 準ニュートン法
 def fit(outname, expr, f):
     print expr
     x = linspace(-1, 1, N)
     t = vectorize(f)(x)
 
+    # 再急降下法で適当回数ならし運転
     w1 = random.uniform(-1, 1, (M, D+1))
     w2 = random.uniform(-1, 1, (K, M+1))
-    for i in range(ITER_MAX):
-        finish = True
+    for i in range(INIT_COUNT):
         for j in range(N):
-            d1, d2 = backpropagation(x[j], t[j], w1, w2)
+            d1, d2 = backpropagation1(x[j], t[j], w1, w2)
+            print d1, d2
             w1 -= ALPHA*d1
             w2 -= ALPHA*d2
+
+    # 準ニュートン法
+    w = append(w1.flatten(), w2.flatten())
+    for i in range(ITER_MAX):
+        finish = True
+        # 以降 H は H^(-1) の事
+        H = identity(W)/HESSIAN_ALPHA
+        diff = zeros(W)
+        for j in range(N):
+            d1, d2 = backpropagation2(x[j], t[j], w1, w2)
+            print d1
+            print d2
+
             if LA.norm(d1) >= ITER_EPS or LA.norm(d2) >= ITER_EPS:
                 finish = False
+
+            b = append(d1.flatten(), d2.flatten())
+            H -= H.dot(outer(b, b)).dot(H)/(1+b.dot(H.dot(b)))
+            diff += b
+
         if finish: break
+
+        w -= H.dot(diff)
+        print w
     count = i
 
+    w1 = w[0:W1].reshape((M, D+1))
+    w2 =w[W1:W].reshape((K, M+1))
+    
     test_x = linspace(-1, 1, N)
     test_y = vectorize(lambda x: forward(x, w1, w2)[1][0])(test_x)
 
@@ -74,7 +121,7 @@ def fit(outname, expr, f):
     scatter(x, t)
     plot(test_x, test_y)
     title("%s (iteration=%d)" % (expr, count))
-    savefig("fig7-1-%s.png" % outname)
+    savefig("fig8-4-%s.png" % outname)
     clf()
 
 fit("quadratic", "y=x^2", lambda x: x**2)
