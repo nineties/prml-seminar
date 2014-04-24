@@ -13,8 +13,6 @@ W1  = M*(D+1) # 第1層の重みパラメータ数
 W2  = K*(M+1) # 第2層の重みパラメータ数
 W   = W1 + W2 # 重みパラメータ数
 
-SD_ALPHA = 0.01      # 最急降下法の勾配係数
-QN_INIT_COUNT = 100  # 最急降下法によるならし回数
 QN_ITER_MAX = 100    # 準ニュートン法の最大反復回数
 QN_ITER_EPS = 1.0e-2 # 準ニュートン法の停止パラメータ
 QN_HESSE0 = 1.0e-2   # ヘッセ行列の初期値パラメータ
@@ -43,7 +41,7 @@ LS_STEP0 = 2
 # a1[i]: 隠れ層iへの入力
 # a2[i]: 出力層iへの入力
 def forward(x, w1, w2):
-    a1 = w1.dot([x, 1])         # 隠れ層への入力
+    a1 = w1.dot(append(x, 1))         # 隠れ層への入力
     a2 = w2.dot(append(tanh(a1), 1))  # 出力層への入力
     return (a1, a2)
 
@@ -53,7 +51,7 @@ def forward(x, w1, w2):
 # delta2: 出力層の誤差
 # 戻り値: 隠れ層の誤差
 def backprop(a1, a2, w1, w2, delta2):
-    return (1- tanh(a1)**2)*w2[:,0:M].T.dot(delta2) # 隠れ層の誤差
+    return ((1- tanh(a1)**2)*w2[:,0:M]).T.dot(delta2) # 隠れ層の誤差
 
 # 偏微分係数の計算
 def diffcoef(x, a1, a2, w1, w2, delta2):
@@ -61,31 +59,6 @@ def diffcoef(x, a1, a2, w1, w2, delta2):
     diff1 = outer(delta1, append(x, 1))
     diff2 = outer(delta2, append(tanh(a1), 1))
     return (diff1, diff2)
-
-#=== 最急降下法の1ステップの更新 ===
-def steepest_step(x, t, w1, w2):
-    diff1 = zeros((M, D+1))
-    diff2 = zeros((K, M+1))
-    for i in range(N):
-        a1, a2 = forward(x[i], w1, w2)
-        # i番目のデータに対する誤差関数の a1, a2 での微分係数
-        d1, d2 = diffcoef(x[i], a1, a2, w1, w2, a2-t[i])
-        diff1 -= SD_ALPHA*d1
-        diff2 -= SD_ALPHA*d2
-    return (diff1, diff2)
-
-# 最急降下法
-# 学習結果 w1, w2 と反復回数を返す
-def steepest_descent_method(x, t):
-    w1 = random.uniform(-1, 1, (M, D+1))
-    w2 = random.uniform(-1, 1, (K, M+1))
-    for i in range(QN_ITER_MAX):
-        d1, d2 = steepest_step(x, t, w1, w2)
-        w1 += d1
-        w2 += d2
-        if LA.norm(d1) < QN_ITER_EPS and LA.norm(d2) < QN_ITER_EPS:
-            break
-    return (w1, w2, i+1)
 
 #=== 準ニュートン法の1ステップ
 

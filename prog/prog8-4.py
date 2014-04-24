@@ -14,7 +14,6 @@ W2  = K*(M+1) # 第2層の重みパラメータ数
 W   = W1 + W2 # 重みパラメータ数
 
 STEEPST_ALPHA = 0.01      # 最急降下法の勾配係数
-INIT_COUNT = 100  # 最急降下法によるならし回数
 ITER_MAX = 5000   # 最大反復回数
 STEEPEST_EPS = 1.0e-3  # 最急降下法の停止パラメータ
 NEWTON_EPS   = 1.0e-2  # 準ニュートン法の停止パラメータ
@@ -36,7 +35,7 @@ HESSIAN_ALPHA = 1.0e-2 # ヘッセ行列の初期値パラメータ
 # a1[i]: 隠れ層iへの入力
 # a2[i]: 出力層iへの入力
 def forward(x, w1, w2):
-    a1 = w1.dot([x, 1])         # 隠れ層への入力
+    a1 = w1.dot(append(x, 1))         # 隠れ層への入力
     a2 = w2.dot(append(tanh(a1), 1))  # 出力層への入力
     return (a1, a2)
 
@@ -46,7 +45,7 @@ def forward(x, w1, w2):
 # delta2: 出力層の誤差
 # 戻り値: 隠れ層の誤差
 def backprop(a1, a2, w1, w2, delta2):
-    return (1- tanh(a1)**2)*w2[:,0:M].T.dot(delta2) # 隠れ層の誤差
+    return ((1- tanh(a1)**2)*w2[:,0:M]).T.dot(delta2) # 隠れ層の誤差
 
 # 偏微分係数の計算
 def diffcoef(x, a1, a2, w1, w2, delta2):
@@ -125,7 +124,7 @@ def fit(outname, expr, f):
     xlim(-1, 1)
     scatter(x, t)
 
-    # 再急降下法で適当回数慣らす
+    # 再急降下法
     w1, w2, count = steepest_descent_method(x, t)
     y = vectorize(lambda x: forward(x, w1, w2)[1][0])(x)
     plot(x, y, label="steepest descent (iteration=%d)" % count)

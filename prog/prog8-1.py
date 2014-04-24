@@ -24,7 +24,7 @@ DIFF_EPS = 1.0e-2 # 中心差分法の摂動の大きさ
 # a1[i]が隠れ層の素子 i への入力, a2[i]が出力層の素子 i への入力
 
 def forward(x, w1, w2):
-    a1 = w1.dot([x, 1])         # 隠れ層への入力
+    a1 = w1.dot(append(x, 1))         # 隠れ層への入力
     a2 = w2.dot(append(tanh(a1), 1))  # 出力層への入力
     return (a1, a2)
 
@@ -34,14 +34,14 @@ def backpropagation(x, t, w1, w2):
     a1, a2 = forward(x, w1, w2)  # 順伝播
     delta2 = a2 - t              # 出力の誤差
     tanh_a1 = tanh(a1)
-    delta1 = (1- tanh_a1**2)*w2[:,0:M].T.dot(delta2) # 隠れ層の誤差
+    delta1 = ((1-tanh_a1**2)*w2[:,0:M]).T.dot(delta2) # 隠れ層の誤差
 
     ## 偏微分係数の計算
     diff1 = zeros((M, D+1))
     diff2 = zeros((K, M+1))
 
     # 隠れ層
-    diff1 = outer(delta1, [x, 1])
+    diff1 = outer(delta1, append(x, 1))
     # 出力層
     diff2 = outer(delta2, append(tanh_a1, 1))
     return (diff1, diff2)

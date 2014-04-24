@@ -32,7 +32,7 @@
      id="namedview168"
      showgrid="false"
      inkscape:zoom="1.6870313"
-     inkscape:cx="394.94784"
+     inkscape:cx="430.58551"
      inkscape:cy="262.78877"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
@@ -268,13 +268,13 @@
      id="text4008"
      sodipodi:linespacing="125%"><tspan
        sodipodi:role="line"
-       id="tspan4010"
        x="491.87595"
-       y="169.38528">この辺りまで</tspan><tspan
+       y="169.38528"
+       id="tspan4012">一歩で厳密な最小値を</tspan><tspan
        sodipodi:role="line"
        x="491.87595"
        y="190.77399"
-       id="tspan4012">進めればOK</tspan></text>
+       id="tspan3081">見つける必要はない</tspan></text>
   <path
      sodipodi:type="arc"
      style="fill:none;stroke:#008000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:6, 6;stroke-dashoffset:0"

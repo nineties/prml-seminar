@@ -33,7 +33,7 @@ ITER_EPS = 1.0e-3 # 勾配のノルムがこれかになったら停止
 # a1[i]: 隠れ層iへの入力
 # a2[i]: 出力層iへの入力
 def forward(x, w1, w2):
-    a1 = w1.dot([x, 1])         # 隠れ層への入力
+    a1 = w1.dot(append(x, 1))         # 隠れ層への入力
     a2 = w2.dot(append(tanh(a1), 1))  # 出力層への入力
     return (a1, a2)
 
@@ -43,7 +43,7 @@ def forward(x, w1, w2):
 # delta2: 出力層の誤差
 # 戻り値: 隠れ層の誤差
 def backprop(a1, a2, w1, w2, delta2):
-    return (1- tanh(a1)**2)*w2[:,0:M].T.dot(delta2) # 隠れ層の誤差
+    return ((1- tanh(a1)**2)*w2[:,0:M]).dot(delta2) # 隠れ層の誤差
 
 # 偏微分係数の計算
 def diffcoef(x, a1, a2, w1, w2, delta2):

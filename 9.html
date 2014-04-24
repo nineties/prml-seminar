@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第9回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第9回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年4月24日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ニューラルネットワーク </h2>
+        </section>
+
+        <section>
+        <p> 前回は資料作成が間に合わず大変申し訳ありませんでした。
+        本日もニューラルネットワークの解説を行います。
+        </p>
+        テキスト4章後半の非常に発展的な題材は, 後の回の手法の方が実装が優しいので後に回すことにし, 直線探索やBFGS法などに重点を置くことします.
+        </p>
+        </section>
+
+        <section>
+        <h3> 準ニュートン法 </h3>
+        <p>
+        前回は最急降下法を実装しましたが. これは1ステップの更新に掛かる時間が $\mathcal{O}(W)$ で済む一方, 収束するまでの反復回数が多くなってしまいます.
+        </p>
+        <p class="fragment">
+        より効率的な手法として <strong> 共役勾配法 (conjugate gradient method) </strong> や <strong> 準ニュートン法 (quasi-Newton method) </strong> などがあります.
+        </p>
+        <p class="fragment">
+        第５回にニュートン・ラフソン法を解説しましたので, 今回はそれに基づく準ニュートン法を説明します. 共役勾配法については各自調べて下さい.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ニュートン・ラフソン法を復習すると, 適当な初期値 $\mathbf{w}_0$ を定め,
+        \[ \mathbf{w}^{(k+1)} = \mathbf{w}^{(k)} - \left(\mathbf{H}^{(k)}\right)^{-1}\nabla \mathbf{E}^{(k)} \]
+        によって反復を行う方法でした. $\nabla \mathbf{E}^{(k)}$ はステップ $k$ での誤差関数の勾配, $\mathbf{H}^{(k)}$ はステップ $k$ での誤差関数のヘッセ行列です.
+        </p>
+        <p class="fragment">
+        パラメータ数が $W$ の時, $\mathbf{H}^{(k)}$ は $W\times W$ 行列になるので計算量が問題となります. そこで $\left(\mathbf{H}^{(k)}\right)^{-1}$ を別の近似行列に置き換えたものが 準ニュートン法です.
+        </p>
+        </section>
+
+        <section>
+        <h3> ヘッセ行列の近似 </h3>
+        <p>
+        テキスト 5.4 節にはヘッセ行列 $\left(\mathbf{H}^{(k)}\right)^{-1}$ の各種近似計算法が紹介されていますが, ここでは <strong> 外積による近似 (outer product approximation) </strong> を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        出力が1つの場合を考えると, 誤差関数が残差平方和の半分
+        \[ E = \frac{1}{2}\sum_{n=1}^N (y_n-t_n)^2 \]
+        の場合
+        \[ \nabla E = \sum_{n=1}^N (y_n-t_n)\nabla y_n \]
+        なので
+        \[ \mathbf{H} = \nabla\nabla E = \sum_{n=1}^N \nabla y_n (\nabla y_n)^T + \sum_{n=1}^N (y_n-t_n)\nabla\nabla y_n \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで, $E$ の最小値の付近では $\nabla y_n \approx \mathbf{0}$ になっているので $\nabla \nabla y_n \approx \mathbf{O}$ ですから
+        \[ \mathbf{H} \approx \sum_{n=1}^N\nabla y_n (\nabla y_n)^T \]
+        と近似出来ます. これを外積による近似と言います.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今,
+        \[ \mathbf{H}_N = \sum_{n=1}^N\mathbf{b}_n\mathbf{b}_n^T \qquad (\mathbf{b}_n = \nabla y_n)\]
+        とおきます.
+        </p>
+        <p>
+        これをデータ1つずつについて漸進的に計算出来るように
+        \[ \mathbf{H}_{L+1} = \mathbf{H}_L + \mathbf{b}_{L+1}\mathbf{b}_{L+1}^T \]
+        という形に直します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで, Woodburyの公式(の特別な場合である)
+        \[ (\mathbf{H}+\mathbf{b}\mathbf{b}^T)^{-1} = \mathbf{H}^{-1} - \frac{\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}}{1+\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}} \]
+        が成立するので(次頁),
+        \[ \mathbf{H}_{L+1}^{-1} = \mathbf{H}_L^{-1}-\frac{\mathbf{H}_L^{-1}\mathbf{b}_{L+1}\mathbf{b}_{L+1}^T\mathbf{H}_L^{-1}}{1+\mathbf{b}^T_{L+1}\mathbf{H}_L^{-1}\mathbf{b}_{L+1}} \]
+        となります.
+        </p>
+        <P>
+        但し, $\mathbf{H}_0$ は小さい $\alpha$ に対して $\mathbf{H}_0 \approx \alpha I$ と近似します.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        【前頁の等式の証明】<br>
+        まず
+        \[ \mathbf{H}^{-1}(\mathbf{H}+\mathbf{b}\mathbf{b}^T) = I + \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T \qquad\cdots(1)\]
+        また,
+        \[ \begin{aligned}
+        \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}(\mathbf{H}+\mathbf{b}\mathbf{b}^T) &=
+        \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T+\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\\
+        &= \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T+(\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b})\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\\
+        &  \qquad\qquad \text{($\because\, \mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}$はスカラー)} \\
+        &= (1+\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b})\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T
+        \end{aligned} \]
+        より
+        \[ \frac{\mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T\mathbf{H}^{-1}}{1+\mathbf{b}^T\mathbf{H}^{-1}\mathbf{b}}(\mathbf{H}+\mathbf{b}\mathbf{b}^T) = \mathbf{H}^{-1}\mathbf{b}\mathbf{b}^T \qquad\cdots(2)\]
+        $(1)$から$(2)$を引いて終了.
+        </p>
+        </section>
+
+        <section>
+        <h3> 準ニュートン法の計算量 </h3>
+        <p>
+        $\mathbf{A},\mathbf{B}$ が $n\times n$ 行列, $\mathbf{x},\mathbf{y}$ が $n$次元ベクトルの時のこれら積の計算量は以下のようになります.
+        </p>
+        <ul>
+          <li> $\mathbf{A}\mathbf{B}$ は $\mathcal{O}(n^3)$ 時間 </li>
+          <li> $\mathbf{A}\mathbf{x}, \mathbf{x}^T\mathbf{A}$ は $\mathcal{O}(n^2)$ 時間 </li>
+          <li> $\mathbf{x}\mathbf{x}^T$ は $\mathbf{O}(n^2)$ 時間 </li>
+        </ul>
+        <p>
+        従って, 準ニュートン法の1ステップの更新は
+        \[ \mathbf{H}_{L+1}^{-1} = \mathbf{H}_L^{-1}-\frac{((\mathbf{H}_L^{-1}\mathbf{b}_{L+1})\mathbf{b}_{L+1}^T)\mathbf{H}_L^{-1}}{1+(\mathbf{b}^T_{L+1}\mathbf{H}_L^{-1})\mathbf{b}_{L+1}} \]
+        という順序で積を計算すると $\mathcal{O}(W^2)$ となります.
+        </p>
+        </section>
+
+        <section>
+        <p> 前回の問題に適用してみます. </p>
+        <div align="center"> <img width="700px" src="prog/fig8-4-quadratic.png"> <a href="prog/prog8-4.py" style="font-size:60%">prog8-4.py</a> </div>
+        </section>
+        <section>
+        <p> 以下の例は上手くいかない場合もあります. 後で説明します. </p>
+        <div align="center"> <img width="700px" src="prog/fig8-4-sin.png"> <a href="prog/prog8-4.py" style="font-size:60%">prog8-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="700px" src="prog/fig8-4-abs.png"> <a href="prog/prog8-4.py" style="font-size:60%">prog8-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="700px" src="prog/fig8-4-heaviside.png"> <a href="prog/prog8-4.py" style="font-size:60%">prog8-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        今紹介した手法では, 局所解に陥ってしまう可能性がある事に注意する必要があります. 現在の点に関する局所的な情報しか見ていないからです. それ以前に収束するか否かも保証されません.
+        </p>
+        <div align="center"> <img width="500px" src="fig/local_optimal.png"> </div>
+        </section>
+
+        <section>
+        <p style="font-size:80%">
+        以下のグラフは先ほどの手法で $y=\sin \pi x$ のフィッティングを10回行ったものです. $\mathbf{w}$ の初期値をランダムに決めているので毎回結果が異なりますが, 最適解以外の曲線にも収束しています. これらが局所解です.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig8-5.png"> <a href="prog/prog8-5.py" style="font-size:60%">prog8-5.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 直線探索の利用 </h3>
+        <p>
+        局所解を避ける為には大域的な情報を利用する必要があります.
+        </p>
+        <p>
+        しかし全空間を調べあげる事はとても出来ません. そこで <strong>線形探索 (line search)</strong>という手法が使えます.
+        これは,方向を決めた後進む距離だけを(ある程度)大域的な探索によって決定するというものです. これで局所解に陥る可能性を下げる事が出来ます。
+        </p>
+        <div align="center"> <img width="500px" src="fig/local_optimal2.png"> </div>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> 直線探索の併用 </h4>
+        <ol>
+          <li> 次に進む方向 $\mathbf{p}^{(k)}$ を何らかの方法(準ニュートン法など)で決める. ($\mathbf{p}^{(k)}$ は $E$ の降下方向を向いていなければいけない.) </li>
+          <li> $E(\mathbf{w}^{(k)}+\alpha\mathbf{p}^{(k)})$ が最小となるステップ幅 $\alpha$ を何らかの直線探索で求める. </li>
+          <li> $\mathbf{w}^{(k+1)} = \mathbf{w}^{(k)}+\alpha\mathbf{p}^{(k)}$ とする. </li>
+        </ol>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        ここで, $E(\mathbf{w}+\alpha\mathbf{p})$ が最小となるステップ幅 $\alpha$ を厳密に求める代わりに, <strong> Armijoの条件 (Armijoの条件)</strong> と <strong> Wolfeの条件 (Wolfe condition) </strong> と呼ばれるものを満たせば大域的収束性が保証される事が分かっています.
+        </p>
+        <p>
+        大域的収束性とは簡単にいうと初期値を何処に取っても局所解のいずれかに必ず収束すると言う事です.
+        </p>
+        <div align="center"> <img width="700px" src="fig/local_optimal3.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        $f(\alpha) = E(\mathbf{w}+\alpha\mathbf{p})$ とおきます.
+        </p>
+        <p>
+        まず, $0 &lt; c_1 &lt; 1$ を満たす小さな $c_1$に対して
+        \[ \frac{f(\alpha)-f(0)}{\alpha} \leq c_1 f'(0) \]
+        が成立する必要があります. これは $\alpha$ の上限を定め, Armijoの条件と呼ばれます.
+        </p>
+        <div align="center"> <img width="600px" src="fig/armijo-rule.png"> </div>
+        </section>
+
+        <section>
+        $f(\alpha)=E(\mathbf{w}+\alpha\mathbf{p})$ を代入すると
+        \[ f'(0) = \lim_{\alpha\rightarrow 0}\frac{E(\mathbf{w}+\alpha\mathbf{p})-E(\mathbf{w})}{\alpha} = \mathbf{p}^T\nabla E(\mathbf{w}) \]
+        となるので(<a href="http://nineties.github.com/math-seminar/3.html#/58">参考</a>), Armijoの条件を整理すると
+        \[ E(\mathbf{w}+\alpha\mathbf{p})\leq E(\mathbf{w})+c_1\alpha\mathbf{p}^T\nabla E(\mathbf{w}) \]
+        となります.
+        </section>
+
+        <section>
+        <p>
+        続いて $0 &lt; c_1 &lt; c_2 &lt; 1$ を満たす比較的大きい $c_2$ に対して
+        \[ f'(\alpha) \geq c_2f'(0) \]
+        を満たす必要があります. これは $\alpha$ の下限を定め, Wolfeの条件と呼ばれます.  こちらも整理すると
+        \[ \mathbf{p}^T\nabla E(\mathbf{w}+\alpha\mathbf{p}) \geq c_2\mathbf{p}^T\nabla E(\mathbf{w}) \]
+        となります.
+        </p>
+        <div align="center"> <img width="600px" src="fig/wolfe-rule.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        まとめると以下の様になります.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> Armijo,Wolfeの条件によるステップサイズの決定</h4>
+        <ol>
+          <li> $\alpha &gt; 0$ を適当に決める. </li>
+          <li> Armijoの条件を満たさないなら $\alpha$ は大きすぎるのでより小さくし最初に戻る.
+          \[ E(\mathbf{w}+\alpha\mathbf{p})\leq E(\mathbf{w})+c_1\alpha\mathbf{p}^T\nabla E(\mathbf{w}) \]
+          </li>
+          <li> Wolfeの条件を満たさないなら $\alpha$ は小さすぎるのでより大きくし最初に戻る.
+          \[ \mathbf{p}^T\nabla E(\mathbf{w}+\alpha\mathbf{p}) \geq c_2\mathbf{p}^T\nabla E(\mathbf{w}) \]
+          </li>
+        </ol>
+        </div>
+        </section>
+
+        <section>
+        <p style="font-size:80%">
+        $y=\sin \pi x$ の例に適用して見ました. 準ニュートン法と同じく $\mathbf{p}=-\mathbf{H}^{-1}\nabla E$ としました.
+        以下のグラフでは50回のフィッティングを行っていますが局所解を回避する事が出来ました.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig8-6.png"> <a href="prog/prog8-6.py" style="font-size:60%">prog8-6.py</a> </div>
+        </section>
+
+        <section>
+        <h3> BFGS公式 </h3>
+        <p>
+        先ほどのWoodburyの公式は解りやすいのですが, 各$\mathbf{w}_k$に対してヘッセ行列の逆行列の近似計算を一から行うのでまだ効率が悪いです.
+        </p>
+        <p class="fragment">
+        $\mathbf{w}_k$ の時点で得られたヘッセ行列を元に次の時点でのヘッセ行列を近似計算すればもっと効率が良く, <strong>BFGS公式(Broyden-Fletcher-Goldfarb-Shanno公式) </strong> という手法が有名です.
+        </p>
+        <p class="fragment">
+        二次のテイラー展開を元に導出するのですが, 複数の段階を経るので面倒です.
+        (参考: <a href="http://terminus.sdsu.edu/SDSU/Math693a_f2013/Lectures/18/lecture.pdf">サンディエゴ大の講義ノート</a>)
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> BFGS公式 </h4>
+        $\mathbf{w}_k$ に対する $f(\mathbf{w}_k)$ のヘッセ行列 $\mathbf{H}_k$ の逆行列 $\mathbf{B}_k$ を求める.
+        <ol>
+          <li> $\mathbf{w}_0, \mathbf{B}_0$ を定める. </li>
+          <li> $\mathbf{w}_{k+1} = \mathbf{w}_k - \alpha\mathbf{B}_k\nabla f(\mathbf{w}_k)$ とする. $\alpha$ は直線探索で求める. </li>
+          <li> $\mathbf{s}_k = \mathbf{w}_{k+1}-\mathbf{w}_k,\,\mathbf{y}_k = \nabla f(\mathbf{w}_{k+1})-\nabla f(\mathbf{w}_k)$ とし,
+          \[ \begin{aligned}
+          \mathbf{B}_{k+1} &= \mathbf{B}_k + \frac{\mathbf{s}_k^T\mathbf{y}_k+\mathbf{y}_k^T\mathbf{B}_k\mathbf{y}_k}{(\mathbf{s}_k^T\mathbf{y}_k)^2}\mathbf{s}_k\mathbf{s}_k^T\\
+          &-\frac{1}{\mathbf{s}_k^T\mathbf{y}_k}\left(\mathbf{B}_k\mathbf{y}_k\mathbf{s}_k^T + (\mathbf{B}_k\mathbf{y}_k\mathbf{s}_k^T)^T  \right) 
+          \end{aligned} \]
+          によって更新し,1に戻る. </li>
+        </ol>
+        </div>
+        </section>
+
+        <section>
+        <h3> ロジスティック回帰 </h3>
+        <p> 続いて識別の問題にニューラルネットワークを利用する事を考えましょう. </p>
+        </section>
+
+        <section>
+        <p> 2クラス識別のモデルはロジスティックシグモイド関数 $\sigma$ によって
+        \[ y = \sigma(a(\mathbf{x},\mathbf{w})) \]
+        と表す事が出来るので, 出力層の活性化関数を $ y = \sigma(a)$ とします. 隠れ層は前と同じく $z = \tanh a$ としましょう.
+        </p>
+        <div align="center"> <img width="400px" src="fig/neural-network9.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        第5・6回に解説した様に, この場合最小化するものは
+        \[ E = - \sum_{n=1}^N\left\{t_n\ln y_n + (1-t_n)\ln(1-y_n)\right\} \]
+        です.
+        </p>
+        <p>
+        これらから誤差逆伝播法で使う出力層での誤差を計算すると
+        \[ \begin{aligned}
+        \frac{\partial y_n}{\partial a} &= y_n(1-y_n) \\
+        \frac{\partial E_n}{\partial a} &= y_n - t_n
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p> 以下はWoodburyの公式での実装例です. 隠れ層の素子数は $4$ です. </p>
+        <div align="center"> <img width="700px" src="prog/fig8-7.png"> <a href="prog/prog8-7.py" style="font-size:60%">prog8-7.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        多クラス $(K &gt; 2)$ の場合は, ソフトマックス関数を用いてクラス $k$ に関する出力が
+        \[ y_k(\mathbf{x},\mathbf{w})= p(C_k|\mathbf{x},\mathbf{w})=\frac{\exp(a_k(\mathbf{x},\mathbf{w}))}{\sum_i \exp(a_i(\mathbf{x},\mathbf{w}))} \]
+        とモデル化されるのでした.
+        </p>
+        <p>
+        最小化するものは
+        \[ E = -\sum_{n=1}^N\sum_{k=1}^Kt_{nk}\ln y_k \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        出力層での誤差を計算すると, $n$ 番目のデータに対して
+        \[ \begin{aligned}
+        \frac{\partial y_k}{\partial a_i} &= y_k(t_i-y_i) \\
+        \frac{\partial E_n}{\partial a_i} &= y_i-t_i
+        \end{aligned} \]
+        となりますので, これを使って誤差逆伝播を行います.
+        </p>
+        </section>
+
+        <section>
+        <p> 以下はBFGSの公式での実装例です. 隠れ層の素子数は $4$ です. </p>
+        <div align="center"> <img width="700px" src="prog/fig9-1.png"> <a href="prog/prog9-1.py" style="font-size:60%">prog9-1.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 正則化 </h3>
+        <p>
+        ニューラルネットワークによって表されるモデルの複雑さは隠れ層の素子の数 $M$ によって決まります. 既に説明したように, $M$ の大小によって汎化性能が変わります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下のデータで見てみましょう.
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig9-2-training.png"> <a href="prog/prog9-2.py" style="font-size:60%">prog9-2.py</a> </div>
+        </section>
+
+        <section>
+        <p> $M = 1$ </p>
+        <div align="center"> <img width="700px" src="prog/fig9-2-1.png"> <a href="prog/prog9-2.py" style="font-size:60%">prog9-2.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 2$ </p>
+        <div align="center"> <img width="700px" src="prog/fig9-2-2.png"> <a href="prog/prog9-2.py" style="font-size:60%">prog9-2.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 3$ </p>
+        <div align="center"> <img width="700px" src="prog/fig9-2-3.png"> <a href="prog/prog9-2.py" style="font-size:60%">prog9-2.py</a> </div>
+        </section>
+        <section>
+        <p> $M = 4$, 過学習が見られます. </p>
+        <div align="center"> <img width="700px" src="prog/fig9-2-4.png"> <a href="prog/prog9-2.py" style="font-size:60%">prog9-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        単純な対策は既に説明したように, 誤差関数に<strong>正則化項 (regularization term)</strong>
+        \[ \widetilde{E}(\mathbf{w}) = E(\mathbf{w}) + \frac{\lambda}{2}||\mathbf{w}||^2 \]
+        を付与する事です.
+        </p>
+        <p>
+        この時
+        \[ \nabla \widetilde{E}(\mathbf{w}) = \nabla E(\mathbf{w}) + \lambda\mathbf{w} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p> 以下は$M=4$において$\lambda=10^{-3}$の正規化項を付与した例です. </p>
+        <div align="center"> <img width="700px" src="prog/fig9-3-4.png"> <a href="prog/prog9-3.py" style="font-size:60%">prog9-3.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 第9回はここで終わります </h3>
+        <p>
+        次回からテキスト第5章のカーネル法に進みたいと思います.
+        </p>
+        </section>
+
+        <!--
+        <section>
+        <h3> 不変性 </h3>
+        <p>
+        続いて, 前回ヤコビ行列の所で紹介した <strong>不変性 (invariance)</strong> について詳しく説明します.
+        </p>
+        <div align="center"> <img width="900px" src="fig/invariance.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        不変性をネットワークの学習に取り入れるには以下の4通りの方法があります.
+        </p>
+        <ul>
+          <li> 対応する変換を用いて訓練パターンを複数生成して学習を行わせる. 例えば画像が回転に関して不変なら, 元画像を回転させた訓練データを複数用いる. </li>
+          <li> 対応する変換に関して出力が変化してしまう事に対してペナルティを付与し学習を行わせる. </li>
+          <li> 前処理の特徴抽出の段階でこのような不変性は除去しておく. </li>
+          <li> ネットワークの構造自体に不変性を組み込む. </li>
+        </ul>
+        </section>
+
+        <section>
+        <h3> 接線伝播法 </h3>
+        <p>
+        「出力が変化してしまう事に対するペナルティ」の考え方に基づく <strong> 接線伝播法 (tangent propagation) </strong> を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今, 入力画像 $\mathbf{x}_n$ に変換 $\mathbf{s}(\mathbf{x},\boldsymbol{\theta})$ を施しても出力が不変だとしましょう. ここで $\boldsymbol{\theta}$ は変換のパラメータであり, 例えば回転角や平行移動の差分ベクトルなどです. 但し, $\mathbf{s}(\mathbf{x},\mathbf{0})=\mathbf{x}$ とします.
+        </p>
+        <div align="center"> <img width="500px" src="fig/tangent_propagation.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この時, ニューラルネットワーク
+        \[ \mathbf{y} = f(\mathbf{x},\mathbf{w}) \]
+        の学習データ $\mathbf{x}_n$ と変換 $\mathbf{s}$ に対する不変性は, $\boldsymbol{\theta}$ を変えても出力が変化しない事. すなわち,
+        \[ \nabla \mathbf{y} = \frac{\partial\mathbf{y}}{\partial\boldsymbol{\theta}} = \frac{\partial}{\partial\boldsymbol{\theta}}f\left(\mathbf{s}(\mathbf{x}_n,\boldsymbol{\theta}),\mathbf{w}\right) = \mathbf{O} \]
+        と表現する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        合成微分則を用いて書き直せば, 出力 $y_j$ と $\boldsymbol{\theta}$ の成分 $\theta_i$ について
+        \[ \frac{\partial y_j}{\partial \theta_i} = \sum_{k=1}^D\frac{\partial y_j}{\partial x_k}\frac{\partial x_k}{\partial \theta_i} \]
+        つまりヤコビ行列を用いて
+        \[ \frac{\partial y_j}{\partial \theta_i} = \sum_{k=1}^D\mathbf{J}_{jk}\frac{\partial x_k}{\partial \theta_i} \]
+        と書くことが出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        更に $x_k = s_k(\mathbf{x}_n,\boldsymbol{\theta})$ だったので
+        \[ \frac{\partial y_j}{\partial \theta_i} = \sum_{k=1}^D\mathbf{J}_{jk}\frac{\partial s_k}{\partial \theta_i} \]
+        という形になります.
+        </p>
+        <p>
+        もっと簡潔に書けば
+        \[ \frac{\partial\mathbf{y}}{\partial\boldsymbol{\theta}}=\mathbf{J}\frac{\partial\mathbf{s}}{\partial\boldsymbol{\theta}} \]
+        という形です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\mathbf{x}_n$ を固定して, $\boldsymbol{\theta}$ を動かすと
+        \[ \mathbf{x} = s(\mathbf{x}_n, \boldsymbol{\theta}) \]
+        は入力空間内の何らかの多様体(曲線,曲面,$\cdots$)を描きますが, $\partial\mathbf{s}/\partial\boldsymbol{\theta}$ はこの多様体に接するベクトルです. これが「接線伝播」という名前の由来です.
+        </p>
+        <div align="center"> <img width="500px" src="fig/tangent_propagation2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        さて, $\boldsymbol{\theta}$ 全体で
+        \[ \frac{\partial\mathbf{y}}{\partial\boldsymbol{\theta}}=\mathbf{O} \]
+        を満たすようにするのは困難なので, $\boldsymbol{\theta}=\mathbf{0}$ の周辺(つまり入力 $\mathbf{x}_n$ の周辺)だけ考え,
+        \[ E(\mathbf{w}) + \frac{\lambda}{2} \left\Vert\mathbf{J}\frac{\partial\mathbf{s}}{\partial\boldsymbol{\theta}}\right\Vert^2_{\boldsymbol{\theta}=\mathbf{0}} \]
+        という量を最小化する事にします. $E(\mathbf{w})$ は誤差関数, $\lambda$ は適当な正の値, $\Vert \cdot \Vert^2$ は各成分の二乗和(フロベニウスノルム)です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例題として文字データの回転に対する不変性を実装し, NNの精度が向上するか実験して見ようと思います.
+        </p>
+        </section>
+
+        <section>
+        <h3> 混合密度ネットワーク </h3>
+        <p>
+        多くの学習問題では, 学習させたい分布 $p(\mathbf{t}|\mathbf{x})$ がガウス分布であると仮定されます. すなわち, ある平均値がありその周辺に分布するという事です.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        しかし, 現実には<strong>多峰性 (multimodality) </strong>を持つ分布が現れる事があり, その場合に既存の手法は上手く行きません.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="700px" src="fig/multimodality.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        多峰性は, ロボットアームの制御のような <strong> 逆問題 (inverse problem)</strong> などで表せます.
+        </p>
+        <div align="center"> <img width="700px" src="fig/multimodality2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この様な場合には <strong> 混合密度ネットワーク (mixture density network) </strong> という物を利用する事が出来ます.
+        これは(例えば)正規分布を複数足しあわせたもので
+        \[ p(\mathbf{t}|\mathbf{x}) = \sum_{k=1}^K \pi(\mathbf{x})\mathcal{N}(\mathbf{t}|\boldsymbol{\mu}_k(\mathbf{x}),\sigma^2_k\mathbf{I}) \]
+        と書き表す事が出来ます.
+        </p>
+        <div align="center"> <img width="500px" src="fig/mixture-distribution.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        $\pi_k(\mathbf{x})$ は混合係数と呼ばれ
+        \[ \sum_{k=1}^K\pi_k(\mathbf{x}) = 1\qquad 0\leq\pi_k(\mathbf{x}) \leq 1\]
+        を満たす必要がありますが, ソフトマックス関数
+        \[ \pi_k(\mathbf{x}) = \frac{\exp(a^pi_k)}{\sum_{i=1}^K\exp(a^pi_i)} \]
+        を用いればよいです.
+        </p>
+        <p>
+        同様に $\sigma^2_k &gt; 0$ である必要がありますが, これは
+        \[ \sigma^2_k(\mathbf{x}) = \exp(a^\sigma_k) \]
+        とすれば良いです.
+        </p>
+        </section>
+        -->
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
