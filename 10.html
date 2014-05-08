@@ -496,7 +496,7 @@
 
         <section>
         <p>
-        最小二乗法では $\mathbf{x}$ に対して $p(y|\mathbf{x})$ の平均値が $y$ の理論値となりますから
+        $x$ に対する $y$ の予測値として $p(y|\mathbf{x})$ の平均値を用いると
         \[ \begin{aligned}
         &y(\mathbf{x}) = \mathbf{E}[y|\mathbf{x}]= \int_{-\infty}^{\infty}yp(y|\mathbf{x})\mathrm{d} y\\
         =&\frac{\displaystyle\int_{-\infty}^{\infty}yp(y,\mathbf{x})\mathrm{d} y}
@@ -533,7 +533,22 @@
 
         <section>
         <p> 以下は $g(\mathbf{x})$ に正規分布 $\sigma=0.1$ を用いた場合のカーネル回帰の実装例です. </p>
-        <div align="center"> <img width="600px" src="prog/fig10-4.png"> <a href="prog/prog10-4.py" style="font-size:60%">prog10-4.py</a> </div>
+        <div align="center"> <img width="600px" src="prog/fig10-4-1.png"> <a href="prog/prog10-4.py" style="font-size:60%">prog10-4.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下はこの時の $p(x, y)$ の様子です. 各データ点を中心に正規分布が配置されています. </p>
+        <div align="center"> <img width="600px" src="prog/fig10-4-2.png"> <a href="prog/prog10-4.py" style="font-size:60%">prog10-4.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下は $p(y|x)$ の様子です. </p>
+        <div align="center"> <img width="600px" src="prog/fig10-4-3.png"> <a href="prog/prog10-4.py" style="font-size:60%">prog10-4.py</a> </div>
+        </section>
+
+        <section>
+        <p> そして予測値 $\pm$ 標準偏差は以下の様になります. </p>
+        <div align="center"> <img width="600px" src="prog/fig10-4-4.png"> <a href="prog/prog10-4.py" style="font-size:60%">prog10-4.py</a> </div>
         </section>
 
         <section>

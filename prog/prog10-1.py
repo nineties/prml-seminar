@@ -11,7 +11,7 @@ train_x = random.uniform(0, 1, N)
 train_y = random.normal(sin(2*pi*train_x), 0.1)
 
 # 多項式モデルの次数
-M = 10
+M = 3000
 
 # 正則化項の係数
 LAMBDA = 0.001
