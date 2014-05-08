@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第10回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第10回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年5月8日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> カーネル法 </h2>
+        </section>
+
+        <section>
+        <p>
+        本日はテキスト第6章の<strong> カーネル法 (kernel method)</strong> に進みます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        カーネル法とは <strong> カーネル関数 (kernel function) </strong>
+        \[ k(\mathbf{x}, \mathbf{x}') \]
+        を用いる統計的学習法の総称です.
+        </p>
+        <p class="fragment">
+        $k(\mathbf{x},\mathbf{x}')$ は<strong> 入力 $\mathbf{x},\mathbf{x}'$ の類似度</strong>を何らかの意味で数量化した物であると考える事が出来ます. 従って少なくとも
+        \[ k(\mathbf{x},\mathbf{x}') = k(\mathbf{x}',\mathbf{x}) \]
+        が成立する事が要請されます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        簡単なカーネル関数は, 特徴ベクトル $\Psi(\mathbf{x})$ の内積
+        \[ k(\mathbf{x},\mathbf{x}') = \Psi(\mathbf{x})^T\Psi(\mathbf{x}') \]
+        として定まるものです.
+        </p>
+        <p>
+        他にも様々なカーネル関数を構成する事が出来ますが, まずはどのようにしてカーネル関数が登場するのか簡単な例を見てみましょう.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        最小二乗法による正則化項付きの線形再帰, つまり
+        \[ E(\mathbf{w}) = \sum_{i=1}^n ||\mathbf{w}^T\Psi(\mathbf{x}_i)-y_i||^2 + \lambda||\mathbf{w}||^2 \]
+        の最小化問題を考えます.
+        </p>
+        <p class="fragment">
+        この勾配は
+        \[ \nabla E(\mathbf{w}) = 2\sum_{i=1}^n (\mathbf{w}^T\Psi(\mathbf{x}_i)-y_i)\Psi(\mathbf{x}_i) + 2\lambda\mathbf{w} \]
+        であるので, $\nabla E = \mathbf{0}$ と置くことにより
+        \[ \mathbf{w} = -\frac{1}{\lambda}\sum_{i=1}^n (\mathbf{w}^T\Psi(\mathbf{x}_i)-y_i)\Psi(\mathbf{x}_i) \]
+        が成立します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで新たなパラメータとして
+        \[ a_i = -\frac{1}{\lambda}(\mathbf{w}^T\Psi(\mathbf{x}_i)-y_i) \]
+        を導入すると
+        \[ \mathbf{w} = \sum_{i=1}^n a_i\Psi(\mathbf{x}_i) = \mathbf{X}^T\mathbf{a} \]
+        と置くことが出来ます. 但し $\mathbf{X}$ は計画行列で $X_{ij} = \psi_j(\mathbf{x}_i)$ です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これを元の誤差関数に代入すると
+        \[ \begin{aligned}
+        E(\mathbf{a}) &= \sum_{i=1}^n ||\mathbf{a}^T\mathbf{X}\Psi(\mathbf{x}_i)-y_i||^2 + \lambda||\mathbf{X}^T\mathbf{a}||^2  \\
+        &= \mathbf{a}^T\mathbf{X}\mathbf{X}^T\mathbf{X}\mathbf{X}^T\mathbf{a} - 2\mathbf{a}^T\mathbf{X}\mathbf{X}^T\mathbf{y} + \mathbf{y}^T\mathbf{y}+\lambda \mathbf{a}^T\mathbf{X}\mathbf{X}^T\mathbf{a} 
+        \end{aligned} \]
+        となるので, $\mathbf{K}=\mathbf{X}\mathbf{X}^T$ と置けば
+        \[ E(\mathbf{a}) = \mathbf{a}^T\mathbf{K}^2\mathbf{a} - 2\mathbf{a}^T\mathbf{K}\mathbf{y} + \mathbf{y}^T\mathbf{y}+\lambda \mathbf{a}^T\mathbf{K}\mathbf{a} \]
+        となります. これを誤差関数の <strong> 双対表現 (dual representation) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        行列 $\mathbf{K}$ は(線形代数の用語で)<strong>グラム行列 (Gram matrix)</strong> と呼ばれます.
+        </p>
+        <p class="fragment">
+        この$(i,j)$ 成分は
+        \[ K_{ij} = \Psi(\mathbf{x}_i)^T\Psi(\mathbf{x}_j) \]
+        となっているので, 先ほどのカーネル関数を用いれば以下のように表す事が出来ます.
+        \[ \mathbf{K} = \begin{pmatrix}
+        k(\mathbf{x}_1,\mathbf{x}_1) & k(\mathbf{x}_1,\mathbf{x}_2) & \cdots & k(\mathbf{x}_1,\mathbf{x}_n) \\
+        k(\mathbf{x}_2,\mathbf{x}_1) & k(\mathbf{x}_2,\mathbf{x}_2) & \cdots & k(\mathbf{x}_2,\mathbf{x}_n) \\
+        \vdots & \vdots & \ddots & \vdots \\
+        k(\mathbf{x}_n,\mathbf{x}_1) & k(\mathbf{x}_n,\mathbf{x}_2) & \cdots & k(\mathbf{x}_n,\mathbf{x}_n) \\
+        \end{pmatrix} \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        双対表現
+        \[ E(\mathbf{a}) = \mathbf{a}^T\mathbf{K}^2\mathbf{a} - 2\mathbf{a}^T\mathbf{K}\mathbf{y} + \mathbf{y}^T\mathbf{y}+\lambda \mathbf{a}^T\mathbf{K}\mathbf{a} \]
+        を $\mathbf{a}$ について微分すると $\mathbf{K}^T=\mathbf{K}$ である事に注意して
+        \[ \nabla E(\mathbf{a}) = 2\mathbf{K}^2\mathbf{a}-2\mathbf{K}\mathbf{y} + 2\lambda\mathbf{K}\mathbf{a} \]
+        となるので,
+        \[ (\mathbf{K}^2+\lambda\mathbf{K})\mathbf{a} = \mathbf{K}\mathbf{y} \]
+        を解けば $\mathbf{a}$ が求まります.
+        </p>
+        <p>
+        $\mathbf{K}$ 及び $\mathbf{K}+\lambda\mathbf{I}$ が正則ならば
+        \[ \mathbf{a} = (\mathbf{K}+\lambda\mathbf{I})^{-1}\mathbf{y} \]
+        です. <span style="font-size:80%">(これは$\mathbf{K}$ が正定値ならば十分です. 後述します.) </span>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以上の結果得られるモデルは
+        \[ y = \Psi(\mathbf{x})^T\mathbf{w} = \Psi(\mathbf{x})^T\mathbf{X}^T\mathbf{a} = \sum_{i=1}^n a_ik(\mathbf{x}_i,\mathbf{x}) \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まとめると以下の様になります.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> カーネル法による正則化項付き線形回帰 </h4>
+        <p>
+        学習データ $\{(\mathbf{x}_1,y_1),(\mathbf{x}_2,y_2),\ldots,(\mathbf{x}_n,y_n)\}$ に対して
+        </p>
+        <ol>
+          <li> $n\times n$ のグラム行列 $K_{ij} = k(\mathbf{x}_i,\mathbf{x}_j)$ を求める. </li>
+          <li> 以下を解いて $\mathbf{a}$ を求める.
+        \[ (\mathbf{K}^2+\lambda\mathbf{K})\mathbf{a} = \mathbf{K}\mathbf{y} \]
+          </li>
+          <li> 得られたモデルは以下の様に表現される.
+          \[ y = \sum_{i=1}^n a_ik(\mathbf{x}_i,\mathbf{x}) \]
+          </li>
+        </ol>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        以下は多項式フィッティングのカーネル法による実装例です.<br>
+        ($10$次式, $\lambda=0.001$)
+        </p>
+        <div align="center"> <img width="700px" src="prog/fig10-1.png"> <a href="prog/prog10-1.py" style="font-size:60%">prog10-1.py</a> </div>
+        </section>
+
+        <section>
+        <h3> カーネル法の利点 </h3>
+        <p>
+        先ほど使ったカーネル関数
+        \[ k(\mathbf{x},\mathbf{x}') = \Psi(\mathbf{x})^T\Psi(\mathbf{x}') \]
+        の値は $\Psi(\mathbf{x})$ が如何に高次元でもスカラーとなります.
+        </p>
+        <p class="fragment">
+        計画行列 $\mathbf{X}$ は特徴空間の次元 $M$ とデータ数 $N$ に対して $N\times M$ 行列なので, 計画行列を使う手法はモデルが複雑になるほど計算量が増えます.  一方, グラム行列 $\mathbf{K}$ は常に $N\times N$ 行列です.
+        </p>
+        <p class="fragment">
+        この仕組みによって, 非常に高次元もしくは無限次元の特徴ベクトルを利用する事が可能になります.
+        </p>
+        </section>
+
+        <section>
+        <h3> カーネル関数の満たす条件 </h3>
+        <p>
+        関数 $k(\mathbf{x},\mathbf{x}')$ が適切なカーネル関数である為には, 何らかの変換関数 $\Psi$ を用いて
+        \[ k(\mathbf{x},\mathbf{x}')  = \sum_{i=1}^\infty \psi_i(\mathbf{x})\psi_i(\mathbf{x}') \]
+        と表せる事が必要です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば, 2次元の入力ベクトルに対して
+        \[ k((x_1,x_2),(y_1,y_2)) = x_1^2y_1^2+2x_1y_1x_2y_2+x_2^2y_2^2 \]
+        はカーネル関数と見なす事が出来るでしょうか？
+        </p>
+        <p class="fragment">
+        これは
+        \[ k((x_1,x_2),(y_1,y_2)) = (x_1^2, \sqrt{2}x_1x_2, x_2^2)^T(y_1^2, \sqrt{2}y_1y_2, y_2^2) \]
+        と書き直す事が出来るので, 変換関数 $\Psi((x_1,x_2)) = (x_1^2, \sqrt{2}x_1x_2, x_2^2)^T$ に対するカーネル関数と見なす事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 正定値カーネル </h3>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <p>
+        連続な実数値関数 $k(\mathbf{x}, \mathbf{x}')$ が以下の条件を満たす時, これを<strong> 正定値カーネル (positive definite kernel) </strong> と呼ぶ. 2つめの条件に等号が着く場合には半正定値カーネルと呼ぶ.
+        </p>
+        <ol>
+          <li> $k(\mathbf{x}, \mathbf{x}') = k(\mathbf{x}',\mathbf{x})$ </li>
+          <li> 入力空間内の任意の $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ と任意の $a_1,a_2,\ldots,a_n$ について
+          \[ \sum_{i=1}^n\sum_{j=1}^n a_ia_jk(\mathbf{x}_i,\mathbf{x}_j) &gt; 0 \]
+        </ol>
+        </div>
+        <p>
+        Mercerの定理によって半正定値カーネルは前頁の条件を満たす事が保証されます.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        テキスト6.2節では半正定値カーネルを構成する技法が紹介されています.
+        </p>
+        \[ \begin{aligned}
+        k(\mathbf{x},\mathbf{x}') &= ck_1(\mathbf{x},\mathbf{x}') \\
+        k(\mathbf{x},\mathbf{x}') &= k_1(\mathbf{x},\mathbf{x}') + k_2(\mathbf{x},\mathbf{x}')\\
+        k(\mathbf{x},\mathbf{x}') &= k_1(\mathbf{x},\mathbf{x}')k_2(\mathbf{x},\mathbf{x}')\\
+        k(\mathbf{x},\mathbf{x}') &= f(\mathbf{x})k_1(\mathbf{x},\mathbf{x}')f(\mathbf{x}') \\
+        k(\mathbf{x},\mathbf{x}') &= q(k_1(\mathbf{x},\mathbf{x}')) \\
+        k(\mathbf{x},\mathbf{x}') &= \exp\left( k_1(\mathbf{x},\mathbf{x}')\right) \\
+        k(\mathbf{x},\mathbf{x}') &= k_3(\Psi(\mathbf{x}),\Psi(\mathbf{x}')) \\
+        k(\mathbf{x},\mathbf{x}') &= \mathbf{x}^T\mathbf{A}\mathbf{x}' \\
+        k(\mathbf{x},\mathbf{x}') &= k_a(\mathbf{x}_a,\mathbf{x}'_a) +  k_b(\mathbf{x}_b,\mathbf{x}'_b) \\
+        k(\mathbf{x},\mathbf{x}') &= k_a(\mathbf{x}_a,\mathbf{x}'_a) k_b(\mathbf{x}_b,\mathbf{x}'_b) \\
+        \end{aligned} \]
+        <p>
+        $k_1,k_2,k_3,k_a,k_b$ は既に与えられたカーネル関数, $c$ は実数定数, $\Psi$ は何らかの変換関数, $f$ は任意の連続関数, $q$ は非負係数の多項式関数, $A$ は半正定値対称行列, $\mathbf{x}_a,\mathbf{x}_b$ は $\mathbf{x}$ の成分を適当な２つの空間に分解した物.
+        </p>
+        </section>
+
+        <section>
+        <h3> 有名なカーネル関数 </h3>
+        <p>
+        <strong> 線形カーネル (Gaussian kernel) </strong>
+        \[ k(\mathbf{x},\mathbf{x}') = \mathbf{x}^T\mathbf{x}' \]
+        </p>
+        <p>
+        <strong> ガウスカーネル (Gaussian kernel) </strong>
+        \[ k(\mathbf{x},\mathbf{x}') = \exp\left(-\frac{||\mathbf{x}-\mathbf{x}'||^2}{2\sigma^2}\right) \]
+        </p>
+        <p>
+        <strong> 多項式カーネル (polynomial kernel) </strong>
+        \[ k(\mathbf{x},\mathbf{x}') = (\mathbf{x}^T\mathbf{x}'+c)^d,\quad c \geq 0, d \in \mathbb{N} \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        <strong> シグモイドカーネル (sigmoid kernel) </strong>
+        \[ k(\mathbf{x},\mathbf{x}') = \tanh (a\mathbf{x}^T\mathbf{x}'+b) \]
+        </p>
+        <p>
+        注: これは一般に半正定値カーネルではありませんが, ニューラルネットワークにおいて $\tanh$ が利用される事との関連から, 他のモデルにおいても利用される事があります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        他にも確率的生成モデルに基づいて
+        \[ k(\mathbf{x}, \mathbf{x}') = p(\mathbf{x}, \mathbf{x}') \]
+        を正定値カーネルとして扱う事もあります. 同時に出現する確率の高いデータは類似性が高いという考え方です.
+        </p>
+        <p class="fragment">
+        例えばデータ $\mathbf{x}$ の出現が, 何らかの状態変数 $\mathbf{z}$ に依存して決まるならば
+        \[ k(\mathbf{x}, \mathbf{x}') = \int p(\mathbf{x}|\mathbf{z})p(\mathbf{x}'|\mathbf{z})p(\mathbf{z})\mathrm{d}\mathbf{z} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        確率的生成モデルに基づいた他のカーネルに <strong> フィッシャーカーネル (Fisher kernel) </strong> があります.
+        </p>
+        <p class="fragment">
+        データ $\mathbf{x}$ の生成確率がパラメータ $\boldsymbol{\theta}$ によって $p(\mathbf{x}|\boldsymbol{\theta})$ と表される場合を考えます. この時
+        \[ \mathbf{g}(\boldsymbol{\theta},\mathbf{x})=\nabla_{\boldsymbol{\theta}}\ln p(\mathbf{x}|\boldsymbol{\theta}) \]
+        を <strong> フィッシャースコア (Fisher score) </strong> と呼びます.
+        </p>
+        <p class="fragment">
+        $\ln p(\mathbf{x}|\boldsymbol{\theta})$ は $\mathbf{x}$ から得る情報量(の $-1$ 倍)なので, $\mathbf{g}(\boldsymbol{\theta},\mathbf{x})$ は各パラメータ $\theta_i$ に関して得る情報の大きさを表しています. 従ってフィッシャースコアの類似度が高いならば $\mathbf{x},\mathbf{x}'$ の類似度も高いと考える事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        そこで,
+        \[ k(\mathbf{x}, \mathbf{x}') = \mathbf{g}(\boldsymbol{\theta},\mathbf{x})^T\mathbf{g}(\boldsymbol{\theta},\mathbf{x}') \]
+        をカーネル関数として利用する事が出来ます. もっと厳密には, 各ベクトルの共分散を考慮して
+        \[ k(\mathbf{x}, \mathbf{x}') = \mathbf{g}(\boldsymbol{\theta},\mathbf{x})^T\mathbf{F}^{-1}\mathbf{g}(\boldsymbol{\theta},\mathbf{x}') \]
+        とします. 但し $\mathbf{F}$ は <strong> フィッシャー情報行列 (Fisher information matrix) </strong> と呼ばれる共分散行列
+        \[ \mathbf{F} = \mathbb{E}_{\mathbf{x}}\left[\mathbf{g}(\boldsymbol{\theta},\mathbf{x})\mathbf{g}(\boldsymbol{\theta},\mathbf{x})\right] \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> カーネル密度推定法 </h2>
+        </section>
+
+        <section>
+        <p>
+        カーネル密度推定法は母集団の分布を推定するノンパラメトリックな手法です. カーネル法はカーネル密度推定法との関連で登場する事があるので, 先に進む前に簡単に紹介します.
+        </p>
+        <p>
+        但し,カーネル法の「カーネル」とカーネル密度推定法の「カーネル」は基本的に異なる概念ですので注意して下さい.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        カーネル密度推定法のアイデアは非常にシンプルです. 各データ点 $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ を中心に正規分布などを置き, それらを重ねあわせた分布によって母分布を近似します.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig10-3-1.png"> <a href="prog/prog10-3.py" style="font-size:60%">prog10-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        具体的には, サンプル $\{\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n\}$ に対して, その母分布を
+        \[ p(\mathbf{x}) = \frac{1}{nh^d}\sum_{i=1}^n K\left(\frac{\mathbf{x}-\mathbf{x}_i}{h}\right) \]
+        と近似します. $K$ を <strong> カーネル関数 (kernel function) </strong> , $h$ を平滑化パラメータと呼びます. $d$ は入力空間の次元です.
+        </p>
+        <p>
+        カーネル関数は
+        \[ \int K(\mathbf{x})\mathrm{d}\mathbf{x} = 1 \]
+        を満たす必要があります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        先ほどの例では標準正規分布
+        \[ K(\mathbf{x}) = \left(\frac{1}{\sqrt{2\pi}}\right)^D\exp\left(-\frac{||\mathbf{x}||^2}{2}\right) \]
+        をカーネルとして使いました.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig10-3-1.png"> <a href="prog/prog10-3.py" style="font-size:60%">prog10-3.py</a> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        他には窓関数
+        \[ K(\mathbf{x}) = \left\{\begin{array}{cl}
+        1 & (|x_i|\leq 1/2, i=1,2,\ldots,d) \\
+        0 & (\text{上記以外})
+        \end{array}\right. \]
+        を使う場合もあります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig10-3-2.png"> <a href="prog/prog10-3.py" style="font-size:60%">prog10-3.py</a> </div>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> カーネル回帰分析 </h2>
+        </section>
+
+        <section>
+        <p>
+        これまでは「何らかの基底関数を固定して」という形で基底関数を用いて来ましたが, 「どのような基底関数を用いるべきであるか？」という事については一切説明をしませんでした.
+        </p>
+        <p>
+        テキスト6.3節ではこの問題について解説していますが, その一部を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        どのような基底関数を用いるべきかについて厳密に考える為には, データの組 $\mathbf{x},y$ の生成モデル, つまり同時分布
+        \[ p(\mathbf{x}, y) \]
+        を考えます.
+        </p>
+        <p class="fragment">
+        カーネル密度推定法を用いるならば, 学習データ $\{(\mathbf{x}_1,y_1),(\mathbf{x}_2,y_2),\ldots,(\mathbf{x}_n,y_n)\}$ に対して
+        \[ p(\mathbf{x}, y) = \frac{1}{n}\sum_{i=1}^n f(\mathbf{x}-\mathbf{x}_i,y-y_i) \]
+        とモデル化されます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        最小二乗法では $\mathbf{x}$ に対して $p(y|\mathbf{x})$ の平均値が $y$ の理論値となりますから
+        \[ \begin{aligned}
+        &y(\mathbf{x}) = \mathbf{E}[y|\mathbf{x}]= \int_{-\infty}^{\infty}yp(y|\mathbf{x})\mathrm{d} y\\
+        =&\frac{\displaystyle\int_{-\infty}^{\infty}yp(y,\mathbf{x})\mathrm{d} y}
+                      {\displaystyle \int_{-\infty}^{\infty}p(y,\mathbf{x})\mathrm{d} y} = \displaystyle\frac{\displaystyle \sum_i\int_{-\infty}^{\infty}yf(\mathbf{x}-\mathbf{x}_i, y-y_i)\mathrm{d} y}
+                      {\displaystyle \sum_i\int_{-\infty}^{\infty}f(\mathbf{x}-\mathbf{x}_i, y-y_i)\mathrm{d} y} \\
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで
+        \[ \int_{-\infty}^{\infty}yf(\mathbf{x},y)\mathrm{d}y = 0 \]
+        が任意の $\mathbf{x}$ について成立する場合を考えると,
+        \[ \int_{-\infty}^{\infty}(y-y_i)f(\mathbf{x}-\mathbf{x}_i, y-y_i)\mathrm{d} y = 0 \]
+        なので
+        \[ \int_{-\infty}^{\infty}yf(\mathbf{x}-\mathbf{x}_i,y-y_i)\mathrm{d}y = y_i\int_{-\infty}^{\infty}f(\mathbf{x}-\mathbf{x}_i,y-y_i)\mathrm{d}y \]
+        となりますから
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        \[ y(\mathbf{x}) = \frac{\displaystyle \sum_i y_i g(\mathbf{x}-\mathbf{x}_i)}{\displaystyle \sum_i g(\mathbf{x}-\mathbf{x}_i)}\qquad\left(\text{但し} g(\mathbf{x}) = \int_{-\infty}^{\infty}f(\mathbf{x},y)\mathrm{d}y\right)
+        \]
+        となり, さらにカーネル関数 $k$ を
+        \[ k(\mathbf{x}, \mathbf{x}') = \frac{g(\mathbf{x}-\mathbf{x}')}{\displaystyle \sum_i g(\mathbf{x}-\mathbf{x}_i)} \]
+        と置けば
+        \[ y(\mathbf{x}) = \sum_i k(\mathbf{x},\mathbf{x}_i)y_i \]
+        となります. これを<strong>ナダラヤ=ワトソンモデル (Nadaraya-Watson model) </strong> または <strong> カーネル回帰モデル (kernel regression) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p> 以下は $g(\mathbf{x})$ に正規分布 $\sigma=0.1$ を用いた場合のカーネル回帰の実装例です. </p>
+        <div align="center"> <img width="600px" src="prog/fig10-4.png"> <a href="prog/prog10-4.py" style="font-size:60%">prog10-4.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        途中で
+        \[ \int_{-\infty}^{\infty}yf(\mathbf{x},y)\mathrm{d}y = 0 \]
+        という仮定が登場しましたが, $f(\mathbf{x}, y)$が$|y|$ のみに依存する時(つまり $y$ について偶関数の時)には常にこれが成立する事に注意しましょう.
+        </p>
+        <p class="fragment">
+        また、 $g(\mathbf{x}-\mathbf{x}_i)$ の値は $\mathbf{x}$ と $\mathbf{x}_i$ が近いほど大きな値を取るであろうと考える事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 放射基底関数 </h3>
+        <p>
+        その値がある点からの距離のみに依存して定まる関数を <strong> 放射基底関数 (radial basis function) </strong> と呼びます. つまり, 放射基底関数とは適当な関数 $h$ を用いて
+        \[ \psi_i(\mathbf{x}) = h(||\mathbf{x}-\boldsymbol{\mu}_i||) \]
+        と表されるものです.
+        </p>
+        <p class="fragment">
+        例えば, ガウス基底関数は放射基底関数の例です.
+        \[ \psi_i(\mathbf{x}) = \exp\left(-\frac{||\mathbf{x}-\boldsymbol{\mu}_i||^2}{2\sigma^2}\right) \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以上の議論より, 放射基底関数を基底に取った
+        \[ y = \sum_{i=1}^n w_i h(||\mathbf{x}-\boldsymbol{\mu}_i||) \]
+        というモデルが導出されます.
+        </p>
+        <p>
+        ガウス基底関数を用いた例はこれまでにも利用しましたが, その妥当性が確率的生成モデルの考察から示されました.
+        </p>
+        </section>
+
+        <section>
+        <h3> 第10回はここで終わります </h3>
+        <p>
+        次回はテキストの6.4節 ガウス過程・ガウシアンランダム場をやり第6章を終了します. 時間が余れば第7章スパースカーネルマシンに進みます.
+        </p>
+        </section>
+
+        <!--
+        <section>
+        <h2 class="chapter-title"> ガウス過程 </h2>
+        </section>
+
+        <section>
+        <p>
+        先ほど, 機械的な式変形により双対表現
+        \[ E(\mathbf{a}) = \mathbf{a}^T\mathbf{K}^2\mathbf{a} - 2\mathbf{a}^T\mathbf{K}\mathbf{y} + \mathbf{y}^T\mathbf{y}+\lambda \mathbf{a}^T\mathbf{K}\mathbf{a} \]
+        を得てカーネル法を導きましたが, ベイズ的なアプローチからも自然とカーネル法を導出する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        具体例として線形回帰モデル
+        \[ y = \mathbf{w}^T\Psi(\mathbf{x}) \]
+        を考えます.
+        </p>
+        <p>
+        また $\mathbf{w}$ の事前分布を
+        \[ \mathbf{w} \sim \mathcal{N}(\mathbf{0}, \alpha^{-1}\mathbf{I}) \]
+        とします. <span style="font-size:80%">( $\alpha$ は分散の逆数であって $\alpha$ が小さいほど $\mathbf{w}$ はより $\mathbf{0}$ に近いという事になります.)</span>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで, 入力データ $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ を与えると, $y_1,y_2,\ldots,y_n$ が得られますが, 今は $\mathbf{w}$ が確率変数であるので $y_i$ も確率変数となります.
+        </p>
+        <p class="fragment">
+        そこで $\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ すなわち,
+        \[ \mathbf{y} = \mathbf{X}\mathbf{w} \quad (\text{$\mathbf{X}$は計画行列})\]
+        が従う確率分布について考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\mathbf{w}$ が正規分布に従うので, その線形和で書ける$\mathbf{y}$ もやはり正規分布に従います. よって平均値と分散共分散行列だけ判れば良いです.
+        </p>
+        <p class="fragment">
+        計算してみると
+        \[ \mathbb{E}[\mathbf{y}] = \mathbb{E}[\mathbf{X}\mathbf{w}] = \mathbf{X}\mathbb{E}[\mathbf{w}] = \mathbf{0} \]
+        よって
+        \[ \mathrm{cov}[\mathbf{y}] = \mathbb{E}[\mathbf{y}\mathbf{y}^T] = \mathbf{X}\mathbb{E}[\mathbf{w}\mathbf{w}^T]\mathbf{X}^T = \frac{1}{\alpha}\mathbf{X}\mathbf{X}^T = \frac{1}{\alpha}\mathbf{K} \]
+        となります. つまり,
+        \[ \mathbf{y} \sim \mathcal{N}\left(\mathbf{0}, \frac{1}{\alpha}\mathbf{K}\right) \]
+        である事が分かりました.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        一般にどのような $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ を選んでも $\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ の従う分布が正規分布となるならば, このようなモデルを <strong>ガウシアンランダム場(Gaussian random field)</strong> と呼びます. 特に独立変数が１つである場合には <strong> ガウス過程 (Gaussian process)</strong> と呼びます.
+        </p>
+        </section>
+        -->
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
