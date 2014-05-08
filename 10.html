@@ -496,9 +496,9 @@
 
         <section>
         <p>
-        $\mathbf{x}$ に対する $y$ の予測値として $p(y|\mathbf{x})$ の平均値を用いると
+        $\mathbf{x}$ に対する $y$ の予測値として $p(y|\mathbf{x})$ の平均を用いると
         \[ \begin{aligned}
-        &y(\mathbf{x}) = \mathbf{E}[y|\mathbf{x}]= \int_{-\infty}^{\infty}yp(y|\mathbf{x})\mathrm{d} y\\
+        &y(\mathbf{x}) = \mathbb{E}[y|\mathbf{x}]= \int_{-\infty}^{\infty}yp(y|\mathbf{x})\mathrm{d} y\\
         =&\frac{\displaystyle\int_{-\infty}^{\infty}yp(y,\mathbf{x})\mathrm{d} y}
                       {\displaystyle \int_{-\infty}^{\infty}p(y,\mathbf{x})\mathrm{d} y} = \displaystyle\frac{\displaystyle \sum_i\int_{-\infty}^{\infty}yf(\mathbf{x}-\mathbf{x}_i, y-y_i)\mathrm{d} y}
                       {\displaystyle \sum_i\int_{-\infty}^{\infty}f(\mathbf{x}-\mathbf{x}_i, y-y_i)\mathrm{d} y} \\
