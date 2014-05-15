@@ -592,68 +592,9 @@
         <section>
         <h3> 第10回はここで終わります </h3>
         <p>
-        次回はテキストの6.4節 ガウス過程・ガウシアンランダム場をやり第6章を終了します. 時間が余れば第7章スパースカーネルマシンに進みます.
+        次回はテキストの6.4節 ガウス過程・ガウスランダム場をやり第6章を終了します. 時間が余れば第7章スパースカーネルマシンに進みます.
         </p>
         </section>
-
-        <!--
-        <section>
-        <h2 class="chapter-title"> ガウス過程 </h2>
-        </section>
-
-        <section>
-        <p>
-        先ほど, 機械的な式変形により双対表現
-        \[ E(\mathbf{a}) = \mathbf{a}^T\mathbf{K}^2\mathbf{a} - 2\mathbf{a}^T\mathbf{K}\mathbf{y} + \mathbf{y}^T\mathbf{y}+\lambda \mathbf{a}^T\mathbf{K}\mathbf{a} \]
-        を得てカーネル法を導きましたが, ベイズ的なアプローチからも自然とカーネル法を導出する事が出来ます.
-        </p>
-        </section>
-
-        <section>
-        <p>
-        具体例として線形回帰モデル
-        \[ y = \mathbf{w}^T\Psi(\mathbf{x}) \]
-        を考えます.
-        </p>
-        <p>
-        また $\mathbf{w}$ の事前分布を
-        \[ \mathbf{w} \sim \mathcal{N}(\mathbf{0}, \alpha^{-1}\mathbf{I}) \]
-        とします. <span style="font-size:80%">( $\alpha$ は分散の逆数であって $\alpha$ が小さいほど $\mathbf{w}$ はより $\mathbf{0}$ に近いという事になります.)</span>
-        </p>
-        </section>
-
-        <section>
-        <p>
-        ここで, 入力データ $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ を与えると, $y_1,y_2,\ldots,y_n$ が得られますが, 今は $\mathbf{w}$ が確率変数であるので $y_i$ も確率変数となります.
-        </p>
-        <p class="fragment">
-        そこで $\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ すなわち,
-        \[ \mathbf{y} = \mathbf{X}\mathbf{w} \quad (\text{$\mathbf{X}$は計画行列})\]
-        が従う確率分布について考えます.
-        </p>
-        </section>
-
-        <section>
-        <p>
-        $\mathbf{w}$ が正規分布に従うので, その線形和で書ける$\mathbf{y}$ もやはり正規分布に従います. よって平均値と分散共分散行列だけ判れば良いです.
-        </p>
-        <p class="fragment">
-        計算してみると
-        \[ \mathbb{E}[\mathbf{y}] = \mathbb{E}[\mathbf{X}\mathbf{w}] = \mathbf{X}\mathbb{E}[\mathbf{w}] = \mathbf{0} \]
-        よって
-        \[ \mathrm{cov}[\mathbf{y}] = \mathbb{E}[\mathbf{y}\mathbf{y}^T] = \mathbf{X}\mathbb{E}[\mathbf{w}\mathbf{w}^T]\mathbf{X}^T = \frac{1}{\alpha}\mathbf{X}\mathbf{X}^T = \frac{1}{\alpha}\mathbf{K} \]
-        となります. つまり,
-        \[ \mathbf{y} \sim \mathcal{N}\left(\mathbf{0}, \frac{1}{\alpha}\mathbf{K}\right) \]
-        である事が分かりました.
-        </p>
-        </section>
-
-        <section>
-        <p>
-        一般にどのような $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ を選んでも $\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ の従う分布が正規分布となるならば, このようなモデルを <strong>ガウシアンランダム場(Gaussian random field)</strong> と呼びます. 特に独立変数が１つである場合には <strong> ガウス過程 (Gaussian process)</strong> と呼びます.
-        </p>
-        </section>
-        -->
 			</div>
 		</div>
 

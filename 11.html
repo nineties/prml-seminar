@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第11回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第11回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年5月15日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ガウス過程 </h2>
+        </section>
+
+        <section>
+        <p>
+        前回は, 誤差関数の式変形により双対表現
+        \[ E(\mathbf{a}) = \mathbf{a}^T\mathbf{K}^2\mathbf{a} - 2\mathbf{a}^T\mathbf{K}\mathbf{y} + \mathbf{y}^T\mathbf{y}+\lambda \mathbf{a}^T\mathbf{K}\mathbf{a} \]
+        を得る事によって機械的にカーネル法を導きました.
+        </p>
+        <p class="fragment">
+        しかし, ベイズ的な考察によっても自然とカーネル関数が出てきます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例として線形回帰モデル
+        \[ y = \mathbf{w}^T\Psi(\mathbf{x}) \]
+        を考えます.
+        </p>
+        <p class="fragment">
+        これをベイズ的に扱うので, $\mathbf{w}$ の事前分布を設定します. まず
+        \[ \mathbf{w} \sim \mathcal{N}(\mathbf{0}, \alpha^{-1}\mathbf{I}) \]
+        である場合を考えます.$\alpha$は分散の逆数で,精度パラメータと呼びます.
+        </p>
+        </section>
+        <section>
+        <p>
+        ここで, 入力データ $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ を与えると, 理論値 $y_1,y_2,\ldots,y_n$ が得られますが, $\mathbf{w}$ が確率変数である事より $y_i$ も確率変数となります.
+        </p>
+        <p class="fragment">
+        そこで $\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ すなわち,
+        \[ \mathbf{y} = \mathbf{X}\mathbf{w} \quad (\text{$\mathbf{X}$は計画行列})\]
+        が従う確率分布について考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        各 $w_i$ が正規分布に従い互いに独立なので, その線形和で書ける $y_j$ もやはり正規分布に従います(正規分布の再生性). 従って平均と分散だけ判れば, $\mathbf{y}$ の分布が決定します.
+        </p>
+        <p class="fragment">
+        実際に計算してみると
+        \[ \mathbb{E}[\mathbf{y}] = \mathbb{E}[\mathbf{X}\mathbf{w}] = \mathbf{X}\mathbb{E}[\mathbf{w}] = \mathbf{0} \]
+        よって
+        \[ \mathrm{cov}[\mathbf{y}] = \mathbb{E}[\mathbf{y}\mathbf{y}^T] = \mathbf{X}\mathbb{E}[\mathbf{w}\mathbf{w}^T]\mathbf{X}^T = \frac{1}{\alpha}\mathbf{X}\mathbf{X}^T = \mathbf{K} \]
+        となります. つまり, $\mathbf{y}$ の事前分布が
+        \[ \mathbf{y} \sim \mathcal{N}\left(\mathbf{0}, \mathbf{K}\right) \]
+        となる事が分かりました.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ただし, $\mathbf{K}$ はカーネル関数
+        \[ K_{ij} = k(\mathbf{x}_i,\mathbf{x}_j)=\frac{1}{\alpha}\Psi(\mathbf{x}_i)^T\Psi(\mathbf{x}_j) \]
+        で定まるグラム行列です.
+        </p>
+        <p class="fragment">
+        このモデルのポイントはカーネル関数によって, $\mathbf{y}$ の事前分布が完全に決定されるという事です. この時,
+        \[ k(\mathbf{x},\mathbf{x}') = \mathbb{E}[y(\mathbf{x})y(\mathbf{x}')] \]
+        であるので, カーネル関数 $k(\mathbf{x},\mathbf{x}')$ を共分散関数として解釈する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これまでは $y$ と $\mathbf{x}$ の関係を $y = f(\mathbf{x},\mathbf{w})$ とモデル化し $\mathbf{w}$ に事前分布を定めるという方法でベイズ的な分析を行ってきましたが, 以上の議論から$\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ の事前分布を直接
+        \[ p(\mathbf{y}) = \mathcal{N}(\mathbf{y}|\mathbf{0},\mathbf{K}) \]
+        によって定めるという新しいアプローチを考える事が出来ます.
+        </p>
+        <p class="fragment">
+        次頁で説明しますが, これは<strong>$\mathbf{y}$ をガウス過程と見なす</strong>というモデル化になります.
+        </p>
+        </section>
+
+        <section>
+        <h3> ガウス過程・ガウスランダム場 </h3>
+        <p>
+        どのような $\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n$ を選んでも $\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ の従う分布が正規分布となるならば, このモデル $y=y(\mathbf{x})$ を <strong>ガウスランダム場(Gaussian random field)</strong> と呼びます. 特に独立変数が１つである場合にこれを <strong> ガウス過程 (Gaussian process)</strong> と呼びますが, 今後は両方ともガウス過程と呼ぶことにします.
+        </p>
+        <p class="fragment">
+        ガウスランダム場は平均値関数 $\mu(\mathbf{x})=\mathbb{E}[y(\mathbf{x})]$ と共分散関数 $k(\mathbf{x},\mathbf{x}') = \mathbb{E}[y(\mathbf{x})y(\mathbf{x}')]$ によって定まります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下は $\mu(x) = 0$ 及びガウスカーネル
+        \[ k(x, x') = \exp(-|x-x'|^2/2\sigma^2) \]
+        で定まるガウス過程からのサンプル例です.($\sigma=0.3$)
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-1.png"> <a href="prog/prog11-1.py" style="font-size:60%">prog11-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        以下は $\mu(x) = 0$ 及び指数カーネル
+        \[ k(x, x') = \exp(-\theta|x-x'|) \]
+        で定まるガウス過程からのサンプル例です.($\theta=1$)
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-2.png"> <a href="prog/prog11-2.py" style="font-size:60%">prog11-2.py</a> </div>
+        </section>
+
+        <section>
+        <h3> ガウス過程回帰 </h3>
+        <p>
+        今, 観測データの組 $(\mathbf{x}_i, t_i)$ が
+        \[ t_i = y_i + \varepsilon_i \]
+        と表されるとします. $\varepsilon_i$ はノイズを表す確率変数です.
+        </p>
+        <p class="fragment">
+        $\varepsilon_i$ が正規分布に従うと仮定し,
+        \[ p(t_i | y_i) = N(t_i|y_i, \beta^{-1}) \]
+        とおきます. $\beta$ は精度パラメータです.
+        </p>
+        <p class="fragment">
+        個々のノイズ $\varepsilon_1, \ldots, \varepsilon_n$ が独立に同一の分布から生じるならば, $i=1,\ldots,n$ についてまとめて
+        \[ p(\mathbf{t}|\mathbf{y}) = \mathcal{N}(\mathbf{t}|\mathbf{y},\beta^{-1}\mathbf{I}) \]
+        と書くことが出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さらに, $\mathbf{y}$ をガウス過程としてモデル化し
+        \[ p(\mathbf{y}) = \mathcal{N}(\mathbf{0},\mathbf{K}) \]
+        とします.
+        </p>
+        <p class="fragment">
+        すると, 観測値の分布は
+        \[ \begin{aligned}
+        p(\mathbf{t}) &= \int p(\mathbf{t}|\mathbf{y})p(\mathbf{y})\mathrm{d}\mathbf{y} \\
+        &= \mathcal{N}(\mathbf{t}|\mathbf{0},\mathbf{C})\quad (\mathbf{C} = \mathbf{K}+\beta^{-1}\mathbf{I})
+        \end{aligned} \]
+        となります(次頁の公式).
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue;font-size:90%">
+          <h4> 正規分布の周辺化の公式 </h4>
+          \[ \begin{aligned}
+          p(\mathbf{x})&=\mathcal{N}(\mathbf{x}|\boldsymbol{\mu},\mathbf{\Lambda}^{-1}) \\
+          p(\mathbf{y}|\mathbf{x}) &=\mathcal{N}(\mathbf{y}|\mathbf{A}\mathbf{x}+\mathbf{b},\mathbf{L}^{-1})
+          \end{aligned} \]
+          ならば
+          \[ p(\mathbf{y}) = \mathcal{N}(\mathbf{y}|\mathbf{A}\boldsymbol{\mu}+\mathbf{b},\mathbf{L}^{-1}+\mathbf{A}\boldsymbol{\Lambda}^{-1}\mathbf{A}^T) \]
+        </div>
+        </section>
+
+        <section>
+        <p>
+        さて, 今やりたい事は学習データ $\{(\mathbf{x}_1,t_1),\ldots,(\mathbf{x}_n,t_n)\}$ が与えられている時に, 新しい $\mathbf{x}_{n+1}$ に対する $t_{n+1}$ を予測する事です. つまり, $\mathbf{t}=(t_1,\ldots,t_n)^T$ が与えられた時の, $t_{n+1}$ の分布
+        \[ p(t_{n+1}|\mathbf{t}) \]
+        を求めれば良いです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まず, 先ほどの計算結果より
+        \[ p(\mathbf{t},t_{n+1}) = \mathcal{N}(\mathbf{t},t_{n+1}|\mathbf{0},\mathbf{C}') \]
+        となります. 但し
+        \[ \begin{aligned}
+        \mathbf{C}' &= \begin{pmatrix}
+        \mathbf{C}& \mathbf{k} \\
+        \mathbf{k}^T & c
+        \end{pmatrix} \\
+        \mathbf{k} &= (k(\mathbf{x}_1, \mathbf{x}_{n+1}),\ldots,k(\mathbf{x}_n,\mathbf{x}_{n+1}))^T\\
+        c &= k(\mathbf{x}_{n+1},\mathbf{x}_{n+1})+\beta^{-1}
+        \end{aligned} \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        すると, 求める $t_{n+1}$ の分布は
+        \[ p(t_{n+1}|\mathbf{t})=\mathcal{N}(t_{n+1}|\mu, \sigma^2) \]
+        となります(次頁). 但し
+        \[ \begin{aligned}
+        \mu &= \mathbf{t}^T\mathbf{C}^{-1}\mathbf{k}\\
+        \sigma^2 &=  c - \mathbf{k}^T\mathbf{C}^{-1}\mathbf{k}
+        \end{aligned} \]
+        です.
+        </p>
+        <p class="fragment">
+        従って, $\mathbf{a}=\mathbf{C}^{-1}\mathbf{t}$ と置けば
+        \[ y = \sum_{i=1}^n a_ik(\mathbf{x}_i,\mathbf{x}) \]
+        となります. これを <strong> ガウス過程回帰 (Gaussian process regression) </strong> といいます.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        【前頁の結果の説明】<br>
+        \[ \begin{aligned}
+        \mathbf{C}'^{-1} = \begin{pmatrix}\mathbf{C}&\mathbf{k}\\\mathbf{k}^T&c\end{pmatrix}^{-1} = \begin{pmatrix}  \cdots & -\alpha \mathbf{C}^{-1}\mathbf{k} \\ -\alpha(\mathbf{C}^{-1}\mathbf{k})^T & \alpha\end{pmatrix}\\
+        \qquad (\alpha = (c-\mathbf{k}^T\mathbf{C}^{-1}\mathbf{k})^{-1})
+        \end{aligned} \]
+        と書けるので, $(\mathbf{t},t_{n+1})\mathbf{C}'^{-1}(\mathbf{t},t_{n+1})^T$ を $t_{n+1}$ について整理すれば
+        \[ \alpha(t_{n+1}^2 -\mathbf{t}^T\mathbf{C}^{-1}\mathbf{k}t_{n+1})+\cdots = \alpha||t_{n+1}-\mathbf{t}^T\mathbf{C}^{-1}\mathbf{k}||^2+\cdots \]
+        となる為.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まとめると以下のようになります.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> ガウス過程回帰 </h4>
+        <p>
+        学習データ $\{(\mathbf{x}_1,t_1),\ldots,(\mathbf{x}_n,t_n)\}$ に対して, $\mathbf{t} = (t_1,\ldots,t_n)^T$ とおく. また, 正定値カーネル $k(\mathbf{x},\mathbf{x}')$ で定まるグラム行列 $\mathbf{K}$ と精度パラメータ $\beta &gt; 0$ に対して
+        \[ \mathbf{a} = (\mathbf{K} + \beta^{-1}\mathbf{I})^{-1}\mathbf{t} \]
+        とおく.
+        </p>
+        <p>
+        この時, 回帰方程式は
+        \[ y = \sum_{i=1}^n a_ik(\mathbf{x}_i,\mathbf{x}) \]
+        となる.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        以下がガウス過程回帰の実験例です. ($\sigma=0.1$のガウスカーネル, 精度パラメータ$\beta=2$)
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-3-1.png"> <a href="prog/prog11-3.py" style="font-size:60%">prog11-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        この時の $p(t|\mathbf{t})$ は以下の様になっています.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-3-2.png"> <a href="prog/prog11-3.py" style="font-size:60%">prog11-3.py</a> </div>
+        </section>
+
+        <section>
+        <h3> ガウス過程回帰で用いられるカーネル </h3>
+        <p>
+        今の例ではガウスカーネルを用いましたが, 一般には
+        \[ k(\mathbf{x},\mathbf{x}')=\theta_0\exp\left(-\frac{\theta_1}{2}||\mathbf{x}-\mathbf{x}'||^2\right) + \theta_2 + \theta_3\mathbf{x}^T\mathbf{x}' \]
+        という形のカーネルが良く利用されます.
+        </p>
+        <p>
+        $\boldsymbol{\theta}=(\theta_1,\theta_2,\theta_3,\theta_4)$ を色々変えた時のフィッティングの様子を見てみましょう.
+        </p>
+        </section>
+
+        <section>
+        <div align="center"> <img width="600px" src="prog/fig11-4-1.png"> <a href="prog/prog11-4.py" style="font-size:60%">prog11-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="600px" src="prog/fig11-4-2.png"> <a href="prog/prog11-4.py" style="font-size:60%">prog11-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="600px" src="prog/fig11-4-3.png"> <a href="prog/prog11-4.py" style="font-size:60%">prog11-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="600px" src="prog/fig11-4-4.png"> <a href="prog/prog11-4.py" style="font-size:60%">prog11-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="600px" src="prog/fig11-4-5.png"> <a href="prog/prog11-4.py" style="font-size:60%">prog11-4.py</a> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="600px" src="prog/fig11-4-6.png"> <a href="prog/prog11-4.py" style="font-size:60%">prog11-4.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 超パラメータの学習 </h3>
+        <p>
+        今の例における $\boldsymbol{\theta}=(\theta_1,\theta_2,\theta_3,\theta_4)$ は事前分布の設定に関わるパラメータであり, このようなパラメータを<strong>超パラメータ (hyper parameter)</strong>と呼びます.
+        </p>
+        <p>
+        超パラメータを学習する為には, 尤度関数
+        \[ L(\boldsymbol{\theta}|\mathbf{t})=p(\mathbf{t}|\boldsymbol{\theta}) \]
+        を考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        先ほど確認した様に
+        \[ \begin{aligned}
+        p(\mathbf{t}|\boldsymbol{\theta}) &= \mathcal{N}(\mathbf{t}|\mathbf{0},\mathbf{C})\qquad \small{(\mathbf{C} = \mathbf{K}+\beta^{-1}\mathbf{I})}\\
+        &= \frac{1}{(\sqrt{2\pi})^N\sqrt{|\mathbf{C}|}}\exp\left\{-\frac{1}{2}\mathbf{t}^T\mathbf{C}^{-1}\mathbf{t}\right\}
+        \end{aligned} \]
+        であるので, 対数尤度は
+        \[ \ln L(\boldsymbol{\theta}|\mathbf{t}) = -\frac{1}{2}\ln |\mathbf{C}|-\frac{1}{2}\mathbf{t}^T\mathbf{C}^{-1}\mathbf{t}-\frac{n}{2}\ln(2\pi) \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これを最大化したいので $\boldsymbol{\theta}$ で微分すると
+        \[ \frac{\partial}{\partial \theta_i}\ln L(\boldsymbol{\theta}|\mathbf{t}) = -\frac{1}{2}\mathrm{Tr}\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta_i}\right)+\frac{1}{2}\mathbf{t}^T\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta_i}\mathbf{C}^{-1}\mathbf{t} \]
+        となります(次頁で解説).
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        【前頁解説】<br>
+        \[ \mathbf{C}\mathbf{C}^{-1}=\mathbf{I} \]
+        の両辺を $\theta_i$ で微分すると
+        \[ \frac{\partial \mathbf{C}}{\partial\theta_i}\mathbf{C}^{-1}+\mathbf{C}\frac{\partial\mathbf{C}^{-1}}{\partial\theta_i} = \mathbf{O} \]
+        となるので
+        \[ \frac{\partial\mathbf{C}^{-1}}{\partial\theta_i}=-\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta_i}\mathbf{C}^{-1} \]
+        </p>
+        <p>
+        また, $\mathbf{C}$ の固有値・固有ベクトルを $(\lambda_i,\mathbf{u}_i)\quad (i=1,\ldots,n)$ とする. $\{\mathbf{u}_i\}$は正規直交基底をなすようにとる. $\mathbf{C}$は対称行列だから
+        \[ \mathbf{C} = \sum_i\lambda_i\mathbf{u}_i\mathbf{u}_i^T \]
+        と表す事が出来,
+        \[ \frac{\partial \mathbf{C}}{\partial\theta} = \sum_i\frac{\partial\lambda_i}{\partial\theta}\mathbf{u}_i\mathbf{u}_i^T+\sum_i2\lambda_i\mathbf{u}_i\frac{\partial\mathbf{u}_i^T}{\partial\theta} \]
+        となる.
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        これと
+        \[ \mathbf{C}^{-1} = \sum_i\frac{1}{\lambda_i}\mathbf{u}_i\mathbf{u}_i^T \]
+        を掛けて, $\mathbf{u}_i^T\mathbf{u}_j = \delta_{ij}$ を用いると
+        \[ \mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta} = \sum_i\frac{1}{\lambda_i}\frac{\partial\lambda_i}{\partial\theta}\mathbf{u}_i\mathbf{u}_i^T+\sum_i2\mathbf{u}_i\frac{\partial\mathbf{u}_i^T}{\partial\theta} \]
+        となる. よって $\mathrm{Tr}(\mathbf{a}\mathbf{b}^T)=\mathbf{a}^T\mathbf{b}$ を用いて
+        \[ \mathrm{Tr}\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta}\right) = \sum_i\frac{1}{\lambda_i}\frac{\partial\lambda_i}{\partial\theta}\mathbf{u}_i^T\mathbf{u}_i+\sum_i2\mathbf{u}_i^T\frac{\partial\mathbf{u}_i}{\partial\theta} \]
+        となり, $||\mathbf{u}_i||^2=1$ とこの両辺を微分して得られる
+        \[ 2u_i^T\frac{\partial u_i}{\partial\theta} = 0 \]
+        を代入すれば
+        \[ \mathrm{Tr}\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta}\right) = \sum_i\frac{1}{\lambda_i}\frac{\partial\lambda_i}{\partial\theta} \]
+        となる.
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        ここで $|\mathbf{C}|=\prod_i\lambda_i$ であるから
+        \[ \begin{aligned}
+        \frac{\partial}{\partial\theta}\ln|\mathbf{C}|&=\frac{\partial}{\partial\theta}\sum_i\ln\lambda_i\\
+        &= \sum_i\frac{1}{\lambda_i}\frac{\partial\lambda_i}{\partial\theta}
+        \end{aligned} \]
+        となる.
+        </p>
+        <p>
+        よって
+        \[ \frac{\partial}{\partial\theta}\ln|\mathbf{C}| = \mathrm{Tr}\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta}\right) \]
+        となる.
+        </p>
+        </section>
+
+        <section>
+        <h3> ガウス過程に基づく識別問題 </h3>
+        <p>
+        まず, 2クラスの場合を考えます.
+        </p>
+        <p>
+        これまでと同様にロジスティックモデル
+        \[ y=\sigma(a(\mathbf{x})) \]
+        を用います. $\sigma$ はシグモイド関数です.
+        </p>
+        <p>
+        ここで, 活性化関数 $a(\mathbf{x})$ をガウス過程によってモデル化する事を考えます.
+        </p>
+        </section>
+
+        <section>
+        <p> 例えば $a(\mathbf{x})$ のサンプルが以下のようならば </p>
+        <div align="center"> <img width="600px" src="prog/fig11-5-1.png"> <a href="prog/prog11-5.py" style="font-size:60%">prog11-5.py</a> </div>
+        </section>
+
+        <section>
+        <p> $y = \sigma(a(\mathbf{x}))$ は以下のようになります. </p>
+        <div align="center"> <img width="600px" src="prog/fig11-5-2.png"> <a href="prog/prog11-5.py" style="font-size:60%">prog11-5.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        先ほどと同様に学習データ $\{(\mathbf{x}_1,t_1),\ldots,(\mathbf{x}_n,t_n)\}$ が与えられた時に, 新たな $\mathbf{x}_{n+1}$ に対する $t_{n+1}$ の分布
+        \[ p(t_{n+1}|\mathbf{t}) \]
+        を考えます. この時, 仮定より $\mathbf{a}=(a(\mathbf{x}_1),\ldots,a(\mathbf{x}_n))$ 及び $a_{n+1}=a(\mathbf{x}_{n+1})$ に対して
+        \[ \begin{aligned}
+        p(\mathbf{a}) &= \mathcal{N}(\mathbf{a}|\mathbf{0},\mathbf{C}) \\
+        p(\mathbf{a},a_{n+1}) &= \mathcal{N}(\mathbf{a},a_{n+1}|\mathbf{0},\mathbf{C}') 
+        \end{aligned} \]
+        と置くことが出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さらに, 先ほどと同様に
+        \[ \mathbf{C} = \mathbf{K} + \nu\mathbf{I} \qquad (\nu &gt; 0)\]
+        とおきます.
+        </p>
+        <p>
+        回帰の例では誤差の分散の逆数 $\beta$ によって $\mathbf{C} = \mathbf{K} + \beta^{-1}\mathbf{I}$ となりましたが, 上で登場した $\nu$ はそれと異なるので注意が必要です. 何故ならば, 識別問題における学習データには誤差が存在しない(はず)であるからです.
+        </p>
+        <p>
+        $\nu$ は $\mathbf{C}$ の正定値性の為に導入される人工的なパラメータです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        求める $t_{n+1}$ の分布は
+        \[ p(t_{n+1}|\mathbf{t}) = \int p(t_{n+1}|a_{n+1})p(a_{n+1}|\mathbf{t})\mathrm{d}a_{n+1} \]
+        により定まりますが, これをどうやって計算するのかが問題となります. 面倒なのは$p(a_{n+1}|\mathbf{t})$ の部分です.
+        </p>
+        <p>
+        ここではテキストに沿って, <strong> ラプラス近似 (Laplace approximation) </strong> を用いる方法を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まず, ベイズの定理を2度用いて
+        \[ \begin{aligned}
+        p(a_{n+1}|\mathbf{t})&=\int p(a_{n+1},\mathbf{a}|\mathbf{t})\mathrm{d}\mathbf{a} \\
+        &= \frac{1}{p(\mathbf{t})}\int p(\mathbf{t}|a_{n+1},\mathbf{a})p(a_{n+1},\mathbf{a})\mathrm{d}\mathbf{a}\\
+        &= \frac{1}{p(\mathbf{t})}\int p(\mathbf{t}|\mathbf{a})p(a_{n+1}|\mathbf{a})p(\mathbf{a})\mathrm{d}\mathbf{a}\\
+        &= \int p(\mathbf{a}|\mathbf{t})p(a_{n+1}|\mathbf{a})\mathrm{d}\mathbf{a}\\
+        \end{aligned} \]
+        と変形します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        続いて, 回帰の時と同様にガウス過程の仮定を利用して
+        \[ p(a_{n+1}|\mathbf{a}) = \mathcal{N}(a_{n+1}|\mathbf{a}^T\mathbf{C}^{-1}\mathbf{k}, c-\mathbf{k}^T\mathbf{C}^{-1}\mathbf{k}) \]
+        を得ます.
+        </p>
+        <p class="fragment">
+        また,
+        \[ p(\mathbf{t}|\mathbf{a}) =\prod_{i=1}^n \sigma(a_i)^{t_i}(1-\sigma(a_i))^{1-t_i} \]
+        であり, これを代数的に整理すると
+        \[ p(\mathbf{t}|\mathbf{a}) =\prod_{i=1}^n e^{a_it_i}\sigma(-a_i) \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここでラプラス近似を使います. ラプラス近似とは $f(\mathbf{x})$ の対数を一旦取って, $\nabla \ln f(\mathbf{x})$ が $\mathbf{0}$ になる点 $\mathbf{x}_0$ の周りで2次テイラー展開を行う事によって $f(\mathbf{x})$ を近似するものです.
+        </p>
+        <p class="fragment">
+        実際にやってみると, 1階微分の項が消える事から
+        \[ \ln f(\mathbf{x})\approx \ln f(\mathbf{x}_0) - \frac{1}{2} (\mathbf{x}-\mathbf{x}_0)^T\mathbf{A}(\mathbf{x}-\mathbf{x}_0) \]
+        となります. 但し $\mathbf{A} = -\nabla\nabla \ln f(\mathbf{x})|_{\mathbf{x}=\mathbf{x}_0}$ です.
+        </p>
+        <p class="fragment">
+        すると,
+        \[ f(\mathbf{x}) \approx f(\mathbf{x}_0) \exp\left\{-\frac{1}{2}(\mathbf{x}-\mathbf{x}_0)^T\mathbf{A}(\mathbf{x}-\mathbf{x}_0) \right\} \]
+        となります. これがラプラス近似の公式です. 正規表現の密度関数と同じ形である事に注意しましょう.
+        </p>
+        </section>
+        <section>
+        <p>
+        いま,
+        \[ p(\mathbf{a}|\mathbf{t})\approx p(\mathbf{t}|\mathbf{a})p(\mathbf{a}) \]
+        を計算したいので, 右辺の対数
+        \[ \begin{aligned}
+        \Psi(\mathbf{a}) &= \ln p(\mathbf{t}|\mathbf{a}) + \ln p(\mathbf{a}) \\
+        &= -\frac{1}{2}\ln|\mathbf{C}| - \frac{1}{2}\mathbf{a}^T\mathbf{C}^{-1}\mathbf{a} - \frac{n}{2}\ln(2\pi) \\
+        &  + \mathbf{t}^T\mathbf{a} - \sum_{i=1}^n \ln(1+ e^{a_i}) + \mathrm{const.} 
+        \end{aligned} \]
+        について考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        2次のテイラー展開を行うので2階微分係数まで計算します.
+        </p>
+        <p class="fragment">
+        まず,
+        \[ \nabla \Psi(\mathbf{a}) = -\mathbf{C}^{-1}\mathbf{a} + \mathbf{t} - \boldsymbol{\sigma} \]
+        となります. 但し $\boldsymbol{\sigma}=(\sigma(\mathbf{a}_1),\ldots,\sigma(\mathbf{a}_n))^T$ です.
+        </p>
+        <p class="fragment">
+        また,
+        \[ \nabla\nabla \Psi(\mathbf{a}) = -\mathbf{W} - \mathbf{C}^{-1} \]
+        となります. 但し $\mathbf{W}$ は対角行列であり, $W_{ii} = \sigma(\mathbf{a}_i)(1-\mathbf{a}_i)$ です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さて, $\nabla \Psi(\mathbf{a}) = \mathbf{0}$ となる点を見つけなければいけませんが,
+        \[ \nabla \Psi(\mathbf{a}) = -\mathbf{C}^{-1}\mathbf{a} + \mathbf{t} - \boldsymbol{\sigma} \]
+        を解析的に $\mathbf{a}$ について解くことは出来ません.
+        </p>
+        <p class="fragment">
+        そこで, ニュートン・ラフソン法を利用することが出来ます. 前頁の計算結果を公式に代入すると
+        \[ \mathbf{a}^{(k+1)} = \mathbf{C}(\mathbf{I}+\mathbf{W}\mathbf{C})^{-1}(\mathbf{t}-\boldsymbol{\sigma}+\mathbf{W}\mathbf{a}^{(k)}) \]
+        となります. この極限値を
+        \[ \mathbf{a}_0 = \lim_{k\rightarrow\infty}\mathbf{a}^{(k)} \]
+        とおきます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        すると, ラプラス近似の公式より
+        \[ p(\mathbf{a}|\mathbf{t}) = \mathcal{N}(\mathbf{a}|\mathbf{a}_0, (\mathbf{W}+\mathbf{C}^{-1})^{-1}) \]
+        と近似されます.
+        </p>
+        <p class="fragment">
+        従って以上より
+        \[ p(a_{n+1}|\mathbf{t}) = \mathcal{N}(\mathbf{k}^T(\mathbf{t}-\boldsymbol{\sigma}), c-\mathbf{k}^T(\mathbf{W}^{-1}+\mathbf{C})^{-1}\mathbf{k}) \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        最初の式を思い出すと
+        \[ p(t_{n+1}|\mathbf{t}) = \int p(t_{n+1}|a_{n+1})p(a_{n+1}|\mathbf{t})\mathrm{d}a_{n+1} \]
+        だったので,
+        \[ p(t_{n+1}=1|\mathbf{t})=\int \sigma(a_{n+1})\mathcal{N}(\mu,\sigma^2)\mathrm{d}a_{n+1} \]
+        となります. 但し $\mu,\sigma^2$は前頁の値です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで
+        \[ \int \sigma(a)\mathcal{N}(a|\mu,\sigma^2)\mathrm{d}a \approx \sigma\left(\frac{\mu}{\sqrt{1+\pi\sigma^2/8}} \right) \]
+        と近似出来るので(次頁)まとめると次頁の様になります.
+        </p>
+        </section>
+        <section>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> ガウス過程を用いた識別 </h4>
+        <p>
+        \[ y = p(t_{n+1}|\mathrm{t}) = \sigma\left(\frac{\mu}{\sqrt{1+\pi\sigma^2/8}}\right) \]
+        但し
+        \[ \begin{aligned}
+        \mu &= \mathbf{k}^T(\mathbf{t}-\boldsymbol{\sigma}) \\
+        \sigma^2 &= c-\mathbf{k}^T(\mathbf{W}^{-1}+\mathbf{C})^{-1}\mathbf{k}
+        \end{aligned} \]
+        であり, この右辺の値は
+        \[ \mathbf{a}^{(k+1)} = \mathbf{C}(\mathbf{I}+\mathbf{W}\mathbf{C})^{-1}(\mathbf{t}-\boldsymbol{\sigma}+\mathbf{W}\mathbf{a}^{(k)}) \]
+        の極限で計算する.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <h3> 第11回はここで終わります </h3>
+        <p>
+        次回は第7章スパースカーネルマシンに進みます. サポートベクタマシンの話題が主です.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
