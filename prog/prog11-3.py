@@ -4,7 +4,7 @@ from scipy import linalg as LA
 from matplotlib.pyplot import *
 
 # Gaussian process regression
-N = 10
+N = 100
 train_x = random.uniform(0, 1, N)
 train_t = random.normal(sin(2*pi*train_x), 0.1)
 

@@ -132,7 +132,7 @@
         </section>
 
         <section>
-        <h2 class="chapter-title"> ガウス過程 </h2>
+        <h2 class="chapter-title"> カーネル法:ガウス過程 </h2>
         </section>
 
         <section>
@@ -188,23 +188,28 @@
         <p>
         ただし, $\mathbf{K}$ はカーネル関数
         \[ K_{ij} = k(\mathbf{x}_i,\mathbf{x}_j)=\frac{1}{\alpha}\Psi(\mathbf{x}_i)^T\Psi(\mathbf{x}_j) \]
-        で定まるグラム行列です.
-        </p>
-        <p class="fragment">
-        このモデルのポイントはカーネル関数によって, $\mathbf{y}$ の事前分布が完全に決定されるという事です. この時,
+        で定まるグラム行列です. この時,
         \[ k(\mathbf{x},\mathbf{x}') = \mathbb{E}[y(\mathbf{x})y(\mathbf{x}')] \]
         であるので, カーネル関数 $k(\mathbf{x},\mathbf{x}')$ を共分散関数として解釈する事が出来ます.
+        </p>
+        <p class="fragment">
+        このモデルのポイントはカーネル関数によって $\mathbf{y}$ の事前分布が完全に決定されるという事です.
         </p>
         </section>
 
         <section>
         <p>
-        これまでは $y$ と $\mathbf{x}$ の関係を $y = f(\mathbf{x},\mathbf{w})$ とモデル化し $\mathbf{w}$ に事前分布を定めるという方法でベイズ的な分析を行ってきましたが, 以上の議論から$\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ の事前分布を直接
+        これまでは $y$ と $\mathbf{x}$ の関係を $y = f(\mathbf{x},\mathbf{w})$ とモデル化し $\mathbf{w}$ に事前分布を定めるという方法でベイズ的な分析を行ってきました。
+        </p>
+        <p class="fragment">
+        しかし, 今の例と同様にパラメータ $\mathbf{w}$ を導入すること無く, $\mathbf{y}=(y_1,y_2,\ldots,y_n)^T$ の事前分布を直接
         \[ p(\mathbf{y}) = \mathcal{N}(\mathbf{y}|\mathbf{0},\mathbf{K}) \]
         によって定めるという新しいアプローチを考える事が出来ます.
         </p>
         <p class="fragment">
-        次頁で説明しますが, これは<strong>$\mathbf{y}$ をガウス過程と見なす</strong>というモデル化になります.
+        ここでは, どのような学習データ $y_1,\ldots,y_n$ に対しても常に
+        \[ p(\mathbf{y}) = \mathcal{N}(\mathbf{y}|\mathbf{0},\mathbf{K}) \]
+        が成り立つと仮定していますが, この様なモデルをガウス過程と呼びます.
         </p>
         </section>
 
@@ -293,7 +298,7 @@
 
         <section>
         <p>
-        まず, 先ほどの計算結果より
+        まず, 先ほどの全く同様にして
         \[ p(\mathbf{t},t_{n+1}) = \mathcal{N}(\mathbf{t},t_{n+1}|\mathbf{0},\mathbf{C}') \]
         となります. 但し
         \[ \begin{aligned}
@@ -312,12 +317,12 @@
         <p>
         すると, 求める $t_{n+1}$ の分布は
         \[ p(t_{n+1}|\mathbf{t})=\mathcal{N}(t_{n+1}|\mu, \sigma^2) \]
-        となります(次頁). 但し
+        となります. 但し
         \[ \begin{aligned}
         \mu &= \mathbf{t}^T\mathbf{C}^{-1}\mathbf{k}\\
         \sigma^2 &=  c - \mathbf{k}^T\mathbf{C}^{-1}\mathbf{k}
         \end{aligned} \]
-        です.
+        です(次頁で解説).
         </p>
         <p class="fragment">
         従って, $\mathbf{a}=\mathbf{C}^{-1}\mathbf{t}$ と置けば
@@ -406,12 +411,12 @@
         <section>
         <h3> 超パラメータの学習 </h3>
         <p>
-        今の例における $\boldsymbol{\theta}=(\theta_1,\theta_2,\theta_3,\theta_4)$ は事前分布の設定に関わるパラメータであり, このようなパラメータを<strong>超パラメータ (hyper parameter)</strong>と呼びます.
+        今の例における $\boldsymbol{\theta}=(\theta_0,\theta_1,\theta_2,\theta_3)$ は事前分布の設定に関わるパラメータであり, このようなパラメータを<strong>超パラメータ (hyper parameter)</strong>と呼びます.
         </p>
         <p>
-        超パラメータを学習する為には, 尤度関数
+        続いて超パラメータを学習する事を考えます. 最尤法を使うならば
         \[ L(\boldsymbol{\theta}|\mathbf{t})=p(\mathbf{t}|\boldsymbol{\theta}) \]
-        を考えます.
+        を最大化すれば良いです.
         </p>
         </section>
 
@@ -420,7 +425,7 @@
         先ほど確認した様に
         \[ \begin{aligned}
         p(\mathbf{t}|\boldsymbol{\theta}) &= \mathcal{N}(\mathbf{t}|\mathbf{0},\mathbf{C})\qquad \small{(\mathbf{C} = \mathbf{K}+\beta^{-1}\mathbf{I})}\\
-        &= \frac{1}{(\sqrt{2\pi})^N\sqrt{|\mathbf{C}|}}\exp\left\{-\frac{1}{2}\mathbf{t}^T\mathbf{C}^{-1}\mathbf{t}\right\}
+        &= \frac{1}{(\sqrt{2\pi})^n\sqrt{|\mathbf{C}|}}\exp\left\{-\frac{1}{2}\mathbf{t}^T\mathbf{C}^{-1}\mathbf{t}\right\}
         \end{aligned} \]
         であるので, 対数尤度は
         \[ \ln L(\boldsymbol{\theta}|\mathbf{t}) = -\frac{1}{2}\ln |\mathbf{C}|-\frac{1}{2}\mathbf{t}^T\mathbf{C}^{-1}\mathbf{t}-\frac{n}{2}\ln(2\pi) \]
@@ -428,9 +433,9 @@
         </p>
         </section>
 
-        <section>
+        <section style="font-size:90%">
         <p>
-        これを最大化したいので $\boldsymbol{\theta}$ で微分すると
+        これを最大化したいので勾配を計算します. 結果は以下のようになります.
         \[ \frac{\partial}{\partial \theta_i}\ln L(\boldsymbol{\theta}|\mathbf{t}) = -\frac{1}{2}\mathrm{Tr}\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta_i}\right)+\frac{1}{2}\mathbf{t}^T\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\theta_i}\mathbf{C}^{-1}\mathbf{t} \]
         となります(次頁で解説).
         </p>
@@ -487,28 +492,59 @@
         </section>
 
         <section>
-        <h3> ガウス過程に基づく識別問題 </h3>
         <p>
-        まず, 2クラスの場合を考えます.
+        以下は先ほどのカーネル
+        \[ k(\mathbf{x},\mathbf{x}')=\theta_0\exp\left(-\frac{\theta_1}{2}||\mathbf{x}-\mathbf{x}'||^2\right) + \theta_2 + \theta_3\mathbf{x}^T\mathbf{x}' \]
+        に対する学習結果です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-6.png"> <a href="prog/prog11-6.py" style="font-size:60%">prog11-6.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        最尤法ではなくMAP推定でもやってみます. 事後分布の密度の対数は
+        \[ \ln p(\boldsymbol{\theta}|\mathbf{t})= \ln L(\boldsymbol{\theta}|\mathbf{t}) + \ln p(\boldsymbol{\theta}) + \mathrm{const.}\]
+        なので, $\theta_i$ は互いに独立だとすれば
+        \[ \ln p(\boldsymbol{\theta}|\mathbf{t})= \ln L(\boldsymbol{\theta}|\mathbf{t}) + \sum_{i=0}^3\ln p(\theta_i) + \mathrm{const.}\]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\boldsymbol{\theta}$ の事前分布ですが, $\theta_i \geq 0$ でなければならないので正規分布は使えません.
         </p>
         <p>
-        これまでと同様にロジスティックモデル
+        そこで, ガンマ分布
+        \[ p(\theta_i) \approx \theta_i^{k_i-1}\exp(-\theta_i/s_i) \qquad (\theta_i \geq 0)\]
+        を使ってみます. $k_i$は形状母数, $s_i$ は尺度母数です. すると
+        \[\ln p(\theta_i) = -\frac{\theta_i}{s_i} + (k_i-1)\ln\theta_i + \mathrm{const.} \]
+        なので
+        \[\frac{\partial}{\partial\theta_i} \ln p(\boldsymbol{\theta}|\mathbf{t})= \frac{\partial}{\partial\theta_i}\ln L(\boldsymbol{\theta}|\mathbf{t}) - \frac{1}{s_i} + \frac{k_i-1}{\theta_i}\]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        MAP推定による超パラメータの学習結果は以下のようになります. $(k_i = 2, s_i = 2)$
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-8.png"> <a href="prog/prog11-8.py" style="font-size:60%">prog11-8.py</a> </div>
+        </section>
+
+        <section>
+        <h3> ガウス過程に基づく識別問題 </h3>
+        <p>
+        続いてガウス過程モデルに基づく識別問題を考えます.
+        </p>
+        <p>
+        2クラスの場合は, これまでと同様にロジスティックモデル
         \[ y=\sigma(a(\mathbf{x})) \]
         を用います. $\sigma$ はシグモイド関数です.
         </p>
         <p>
         ここで, 活性化関数 $a(\mathbf{x})$ をガウス過程によってモデル化する事を考えます.
         </p>
-        </section>
-
-        <section>
-        <p> 例えば $a(\mathbf{x})$ のサンプルが以下のようならば </p>
-        <div align="center"> <img width="600px" src="prog/fig11-5-1.png"> <a href="prog/prog11-5.py" style="font-size:60%">prog11-5.py</a> </div>
-        </section>
-
-        <section>
-        <p> $y = \sigma(a(\mathbf{x}))$ は以下のようになります. </p>
-        <div align="center"> <img width="600px" src="prog/fig11-5-2.png"> <a href="prog/prog11-5.py" style="font-size:60%">prog11-5.py</a> </div>
         </section>
 
         <section>
@@ -531,7 +567,7 @@
         とおきます.
         </p>
         <p>
-        回帰の例では誤差の分散の逆数 $\beta$ によって $\mathbf{C} = \mathbf{K} + \beta^{-1}\mathbf{I}$ となりましたが, 上で登場した $\nu$ はそれと異なるので注意が必要です. 何故ならば, 識別問題における学習データには誤差が存在しない(はず)であるからです.
+        回帰の例では誤差の分散の逆数 $\beta$ によって $\mathbf{C} = \mathbf{K} + \beta^{-1}\mathbf{I}$ となりましたが, 上で登場した $\nu$ はそれと異なるので注意が必要です. 何故ならば, 識別問題における学習データは離散的なので誤差が存在しないからです.
         </p>
         <p>
         $\nu$ は $\mathbf{C}$ の正定値性の為に導入される人工的なパラメータです.
@@ -540,7 +576,7 @@
 
         <section>
         <p>
-        求める $t_{n+1}$ の分布は
+        さて, 求める $t_{n+1}$ の分布は
         \[ p(t_{n+1}|\mathbf{t}) = \int p(t_{n+1}|a_{n+1})p(a_{n+1}|\mathbf{t})\mathrm{d}a_{n+1} \]
         により定まりますが, これをどうやって計算するのかが問題となります. 面倒なのは$p(a_{n+1}|\mathbf{t})$ の部分です.
         </p>
@@ -571,9 +607,7 @@
         <p class="fragment">
         また,
         \[ p(\mathbf{t}|\mathbf{a}) =\prod_{i=1}^n \sigma(a_i)^{t_i}(1-\sigma(a_i))^{1-t_i} \]
-        であり, これを代数的に整理すると
-        \[ p(\mathbf{t}|\mathbf{a}) =\prod_{i=1}^n e^{a_it_i}\sigma(-a_i) \]
-        となります.
+        です.
         </p>
         </section>
 
@@ -582,7 +616,7 @@
         ここでラプラス近似を使います. ラプラス近似とは $f(\mathbf{x})$ の対数を一旦取って, $\nabla \ln f(\mathbf{x})$ が $\mathbf{0}$ になる点 $\mathbf{x}_0$ の周りで2次テイラー展開を行う事によって $f(\mathbf{x})$ を近似するものです.
         </p>
         <p class="fragment">
-        実際にやってみると, 1階微分の項が消える事から
+        実際にやってみると, $\mathbf{x}_0$ で1階微分の項が消える事から
         \[ \ln f(\mathbf{x})\approx \ln f(\mathbf{x}_0) - \frac{1}{2} (\mathbf{x}-\mathbf{x}_0)^T\mathbf{A}(\mathbf{x}-\mathbf{x}_0) \]
         となります. 但し $\mathbf{A} = -\nabla\nabla \ln f(\mathbf{x})|_{\mathbf{x}=\mathbf{x}_0}$ です.
         </p>
@@ -596,29 +630,46 @@
         <p>
         いま,
         \[ p(\mathbf{a}|\mathbf{t})\approx p(\mathbf{t}|\mathbf{a})p(\mathbf{a}) \]
-        を計算したいので, 右辺の対数
+        を計算する為に, 右辺のラプラス近似を行います.
+        </p>
+        <p class="fragment">
+        まず, 対数を取ります.
         \[ \begin{aligned}
         \Psi(\mathbf{a}) &= \ln p(\mathbf{t}|\mathbf{a}) + \ln p(\mathbf{a}) \\
         &= -\frac{1}{2}\ln|\mathbf{C}| - \frac{1}{2}\mathbf{a}^T\mathbf{C}^{-1}\mathbf{a} - \frac{n}{2}\ln(2\pi) \\
-        &  + \mathbf{t}^T\mathbf{a} - \sum_{i=1}^n \ln(1+ e^{a_i}) + \mathrm{const.} 
+        & + \sum_{i=1}^n\left\{t_i\ln\sigma(a_i) + (1-t_i)\ln(1-\sigma(a_i))\right\}
         \end{aligned} \]
-        について考えます.
+        続いて, 2階微分係数まで計算します.
         </p>
         </section>
 
         <section>
         <p>
-        2次のテイラー展開を行うので2階微分係数まで計算します.
-        </p>
-        <p class="fragment">
         まず,
         \[ \nabla \Psi(\mathbf{a}) = -\mathbf{C}^{-1}\mathbf{a} + \mathbf{t} - \boldsymbol{\sigma} \]
-        となります. 但し $\boldsymbol{\sigma}=(\sigma(\mathbf{a}_1),\ldots,\sigma(\mathbf{a}_n))^T$ です.
+        となります. 但し $\boldsymbol{\sigma}=(\sigma(a_1),\ldots,\sigma(a_n))^T$ です.
         </p>
-        <p class="fragment">
-        また,
+        <p style="font-size:70%">
+        【$\mathbf{t}-\boldsymbol{\sigma}$の導出】<br>
+        \[ \frac{\partial}{\partial a_i}\sigma(a_i) = \sigma(a_i)(1-\sigma(a_i)) \]
+        なので
+        \[ \frac{\partial}{\partial a_i}\ln\sigma(a_i) = 1-\sigma(a_i) \]
+        同様に
+        \[ \frac{\partial}{\partial a_i}\ln(1-\sigma(a_i)) = -\sigma(a_i) \]
+        従って
+        \[
+        \frac{\partial}{\partial a_i}\sum_{i=1}^n\left\{t_i\ln\sigma(a_i) + (1-t_i)\ln(1-\sigma(a_i))\right\}
+        =t_i(1-\sigma(a_i))-(1-t_i)\sigma(a_i)
+        =t_i - \sigma(a_i)
+        \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        続いて
         \[ \nabla\nabla \Psi(\mathbf{a}) = -\mathbf{W} - \mathbf{C}^{-1} \]
-        となります. 但し $\mathbf{W}$ は対角行列であり, $W_{ii} = \sigma(\mathbf{a}_i)(1-\mathbf{a}_i)$ です.
+        となります. 但し $\mathbf{W}$ は対角行列であり, $W_{ii} = \sigma(a_i)(1-\sigma(a_i))$ です.
         </p>
         </section>
 
@@ -629,8 +680,12 @@
         を解析的に $\mathbf{a}$ について解くことは出来ません.
         </p>
         <p class="fragment">
-        そこで, ニュートン・ラフソン法を利用することが出来ます. 前頁の計算結果を公式に代入すると
-        \[ \mathbf{a}^{(k+1)} = \mathbf{C}(\mathbf{I}+\mathbf{W}\mathbf{C})^{-1}(\mathbf{t}-\boldsymbol{\sigma}+\mathbf{W}\mathbf{a}^{(k)}) \]
+        そこで, ニュートン・ラフソン法(第5回)を利用することが出来ます. 更新式は
+        \[ \begin{aligned}
+        \mathbf{a}^{(k+1)} &= \mathbf{a}^{(k)} - (\nabla\nabla \Psi(\mathbf{a}))^{-1}\nabla \Psi(\mathbf{a})\\
+        &= \mathbf{a}^{(k)} + (\mathbf{W}+\mathbf{C}^{-1})^{-1}(-\mathbf{C}^{-1}\mathbf{a}^{(k)} + \mathbf{t} - \boldsymbol{\sigma})\\
+        &= \mathbf{C}(\mathbf{W}\mathbf{C}+\mathbf{I})^{-1}(\mathbf{W}\mathbf{a}^{(k)} + \mathbf{t} - \boldsymbol{\sigma})\\
+        \end{aligned} \]
         となります. この極限値を
         \[ \mathbf{a}_0 = \lim_{k\rightarrow\infty}\mathbf{a}^{(k)} \]
         とおきます.
@@ -640,13 +695,33 @@
         <section>
         <p>
         すると, ラプラス近似の公式より
-        \[ p(\mathbf{a}|\mathbf{t}) = \mathcal{N}(\mathbf{a}|\mathbf{a}_0, (\mathbf{W}+\mathbf{C}^{-1})^{-1}) \]
-        と近似されます.
+        \[ p(\mathbf{a}|\mathbf{t})\approx\exp\left\{-\frac{1}{2}(\mathbf{a}-\mathbf{a}_0)^T(\mathbf{W}+\mathbf{C}^{-1})(\mathbf{a}-\mathbf{a}_0)\right\} \]
+        となるので, 右辺は正規分布ですから
+        \[ p(\mathbf{a}|\mathbf{t}) \approx \mathcal{N}(\mathbf{a}|\mathbf{a}_0, (\mathbf{W}+\mathbf{C}^{-1})^{-1}) \]
+        となります.
         </p>
-        <p class="fragment">
-        従って以上より
+        </section>
+
+        <section>
+        <p>
+        以上より
+        \[ \begin{aligned}
+        p(\mathbf{a}|\mathbf{t}) &= \mathcal{N}(\mathbf{a}|\mathbf{a}_0, (\mathbf{W}+\mathbf{C}^{-1})^{-1}) \\
+        p(a_{n+1}|\mathbf{a}) &= \mathcal{N}(a_{n+1}|\mathbf{a}^T\mathbf{C}^{-1}\mathbf{k}, c-\mathbf{k}^T\mathbf{C}^{-1}\mathbf{k})
+        \end{aligned} \]
+        なので, 
         \[ p(a_{n+1}|\mathbf{t}) = \mathcal{N}(\mathbf{k}^T(\mathbf{t}-\boldsymbol{\sigma}), c-\mathbf{k}^T(\mathbf{W}^{-1}+\mathbf{C})^{-1}\mathbf{k}) \]
         となります.
+        </p>
+        <p style="font-size:70%">
+        【導出】<br>
+        平均 $\mu$ は $\mathbf{C}^{-1}\mathbf{a}_0 = \mathbf{t}-\boldsymbol{\sigma}$ を用いて
+        \[ \mu = \mathbf{k}^T\mathbf{C}^{-1}\mathbf{a}_0 = \mathbf{k}^T(\mathbf{t}-\boldsymbol{\sigma}) \]
+        分散 $\sigma^2$ は公式 $(A+B)^{-1}=A^{-1}-A^{-1}(B^{-1}+A^{-1})^{-1}A^{-1}$ を用いて
+        \[\begin{aligned}
+        \sigma^2 &= c-\mathbf{k}^T\mathbf{C}^{-1}\mathbf{k}+\mathbf{k}^T\mathbf{C}^{-1}(\mathbf{W}+\mathbf{C}^{-1})^{-1}\mathbf{C}^{-1}\mathbf{k} \\
+                 &= c-\mathbf{k}^T(\mathbf{W}^{-1}+\mathbf{C})^{-1}\mathbf{k}
+        \end{aligned}\]
         </p>
         </section>
 
@@ -658,30 +733,129 @@
         \[ p(t_{n+1}=1|\mathbf{t})=\int \sigma(a_{n+1})\mathcal{N}(\mu,\sigma^2)\mathrm{d}a_{n+1} \]
         となります. 但し $\mu,\sigma^2$は前頁の値です.
         </p>
+        <p class="fragment">
+        この計算には
+        \[ \int \sigma(a)\mathcal{N}(a|\mu,\sigma^2)\mathrm{d}a \approx \sigma\left(\frac{\mu}{\sqrt{1+\pi\sigma^2/8}} \right) \]
+        という近似を利用できます(次頁).
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        【前頁の近似の導出】<br>
+        まず,シグモイド関数を標準正規分布の累積関数
+        \[ \Phi(a)=\int_{-\infty}^a\mathcal{N}(x|0,1)\mathrm{d}x \]
+        を用いて近似する. この時
+        \[ \sigma'(0) = \sigma(0)(1-\sigma(0))=\frac{1}{4},\qquad \Phi'(0) = \frac{1}{\sqrt{2\pi}} \]
+        であるので, $a=0$ における勾配が一致するようにすると
+        \[ \sigma(a) \approx \Phi(\lambda a)\qquad (\lambda=\sqrt{\pi/8}) \]
+        となる.
+        </p>
+        <div align="center"> <img width="400px" src="prog/fig11-9.png"> <a href="prog/prog11-9.py" style="font-size:60%">prog11-9.py</a> </div>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        すると, 
+        \[\begin{aligned}
+        \int \sigma(a)\mathcal{N}(a|\mu,\sigma^2)\mathrm{d}a &\approx \int\Phi(\lambda a)\mathcal{N}(a|\mu,\sigma^2)\mathrm{d}a \\
+        &= \int_{-\infty}^\infty\int_{-\infty}^{\lambda a}\mathcal{N}(t|0,1)\mathcal{N}(a|\mu,\sigma^2)\mathrm{d}t\mathrm{d}a\\
+        \end{aligned} \]
+        となる. ここで $(u,v) = (a, -\lambda a + t)$ と置換すれば
+        \[\begin{aligned}
+        &\int_{-\infty}^\infty\int_{-\infty}^{\lambda a}\mathcal{N}(t|0,1)\mathcal{N}(a|\mu,\sigma^2)\mathrm{d}t\mathrm{d}a\\
+        =& \int_{-\infty}^\infty\int_{-\infty}^0\mathcal{N}(\lambda u+v|0,1)\mathcal{N}(u|\mu,\sigma^2)\mathrm{d}v\mathrm{d}u \\
+        =& \frac{1}{2\pi\sigma}\int_{-\infty}^0\int_{-\infty}^\infty \exp\left\{-\frac{(\lambda u + v)^2}{2}-\frac{(u-\mu)^2}{2\sigma^2}\right\}\mathrm{d}u\mathrm{d}v \\
+        =&\frac{1}{2\pi\sigma}\int_{-\infty}^0\int_{-\infty}^\infty \exp\left\{-\frac{\lambda^2+\sigma^{-2}}{2}\left(u-\frac{\mu\sigma^{-2}-\lambda v}{\lambda^2+\sigma^{-2}}\right)^2\right\}\exp\left\{-\frac{(v+\lambda\mu)^2}{2(\lambda^2\sigma^2+1)}\right\}\mathrm{d}u\mathrm{d}v 
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        \[\begin{aligned}
+        =&\frac{1}{\sqrt{2\pi(\lambda^2\sigma^2+1)}}\int_{-\infty}^0\exp\left\{-\frac{(v+\lambda\mu)^2}{2(\lambda^2\sigma^2+1)}\right\}\mathrm{d}v \\
+        \end{aligned} \]
+        となるので $t = (v+\lambda\mu)/\sqrt{\lambda^2\sigma^2+1}$ と置換すれば
+        \[\begin{aligned}
+        =&\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\lambda\mu/\sqrt{\lambda^2\sigma^2+1}}\exp(-t^2/2)\mathrm{d} t\\
+        =&\Phi\left(\frac{\lambda\mu}{\sqrt{\lambda^2\sigma^2+1}}\right) \\
+        \end{aligned} \]
+        となり, 最後に再び $ \sigma(a) \approx \Phi(\lambda a)$ を用いれば
+        \[\begin{aligned}
+        =&\sigma\left(\frac{\mu}{\sqrt{1+\lambda^2\sigma^2}}\right) =\sigma\left(\frac{\mu}{\sqrt{1+\pi\sigma^2/8}}\right)
+        \end{aligned} \]
+        となる. ■
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p> 以上をまとめると以下のようになります. </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4> ガウス過程を用いた識別 </h4>
+        <p>
+        \[ y = p(t_{n+1}|\mathbf{t}) = \sigma\left(\frac{\mu}{\sqrt{1+\pi\sigma^2/8}}\right) \]
+        但し
+        \[ \mu = \mathbf{k}^T(\mathbf{t}-\boldsymbol{\sigma}),\quad \sigma^2 = c-\mathbf{k}^T(\mathbf{W}^{-1}+\mathbf{C})^{-1}\mathbf{k} \]
+        \[ \mathbf{C}=\mathbf{K}+\nu\mathbf{I},\quad k_i = k(\mathbf{x}_i,\mathbf{x}),\quad c = k(\mathbf{x},\mathbf{x})+\nu \]
+        \[ W_{ii} = \sigma(a_i)(1-\sigma(a_i)), W_{ij}=0\quad(i\neq j) \]
+        であり, $\boldsymbol{\sigma}$ 及び $\mathbf{W}$ は
+        \[ \mathbf{a}^{(k+1)} = \mathbf{C}(\mathbf{I}+\mathbf{W}\mathbf{C})^{-1}(\mathbf{t}-\boldsymbol{\sigma}+\mathbf{W}\mathbf{a}^{(k)}) \]
+        の極限値 $\mathbf{a}_0$ における値を用いる.
+        </p>
+        </div>
         </section>
 
         <section>
         <p>
-        ここで
-        \[ \int \sigma(a)\mathcal{N}(a|\mu,\sigma^2)\mathrm{d}a \approx \sigma\left(\frac{\mu}{\sqrt{1+\pi\sigma^2/8}} \right) \]
-        と近似出来るので(次頁)まとめると次頁の様になります.
+        以下が実装例です. ガウスカーネル $k(\mathbf{x},\mathbf{x}')=\exp(-||\mathbf{x}-\mathbf{x}'||^2/2\sigma^2)$ を用いています.
         </p>
+        <div align="center"> <img width="600px" src="prog/fig11-7-1.png"> <a href="prog/prog11-7.py" style="font-size:60%">prog11-7.py</a> </div>
         </section>
         <section>
-        <div class="block" style="border-color:blue;font-size:90%">
-        <h4> ガウス過程を用いた識別 </h4>
         <p>
-        \[ y = p(t_{n+1}|\mathrm{t}) = \sigma\left(\frac{\mu}{\sqrt{1+\pi\sigma^2/8}}\right) \]
-        但し
-        \[ \begin{aligned}
-        \mu &= \mathbf{k}^T(\mathbf{t}-\boldsymbol{\sigma}) \\
-        \sigma^2 &= c-\mathbf{k}^T(\mathbf{W}^{-1}+\mathbf{C})^{-1}\mathbf{k}
-        \end{aligned} \]
-        であり, この右辺の値は
-        \[ \mathbf{a}^{(k+1)} = \mathbf{C}(\mathbf{I}+\mathbf{W}\mathbf{C})^{-1}(\mathbf{t}-\boldsymbol{\sigma}+\mathbf{W}\mathbf{a}^{(k)}) \]
-        の極限で計算する.
+        以下が実装例です. ガウスカーネル $k(\mathbf{x},\mathbf{x}')=\exp(-||\mathbf{x}-\mathbf{x}'||^2/2\sigma^2)$ を用いています.
         </p>
-        </div>
+        <div align="center"> <img width="600px" src="prog/fig11-7-2.png"> <a href="prog/prog11-7.py" style="font-size:60%">prog11-7.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        ガウスカーネルの $\sigma$ を小さくしすぎると下の様になってしまいます. $\sigma$ が小さいならば $\mathbf{x}$ と $\mathbf{x}'$ かなり近づかないと, 共分散 $k(\mathbf{x},\mathbf{x}')$ が大きくならない為です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-7-3.png"> <a href="prog/prog11-7.py" style="font-size:60%">prog11-7.py</a> </div>
+        </section>
+        <section>
+        <p>
+        ガウスカーネルの $\sigma$ を小さくしすぎると下の様になってしまいます. $\sigma$ が小さいならば $\mathbf{x}$ と $\mathbf{x}'$ かなり近づかないと, 共分散 $k(\mathbf{x},\mathbf{x}')$ が大きくならない為です.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-7-4.png"> <a href="prog/prog11-7.py" style="font-size:60%">prog11-7.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        同様に $\sigma$ を大きくしすぎると以下のようになります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-7-5.png"> <a href="prog/prog11-7.py" style="font-size:60%">prog11-7.py</a> </div>
+        </section>
+        <section>
+        <p>
+        同様に $\sigma$ を大きくしすぎると以下のようになります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig11-7-6.png"> <a href="prog/prog11-7.py" style="font-size:60%">prog11-7.py</a> </div>
+        </section>
+
+        <section>
+        <h3> ニューラルネットワークとの関係 </h3>
+        <p>
+        Neal[1996]によると, 隠れ層の数が $M$ 個のベイジアンニューラルネットワークの多くにおいて
+        \[ M\rightarrow\infty \]
+        の極限を考えると, ネットワークの出力がガウス過程となります. つまり隠れ層が無限個のニューラルネットワークと見なす事が出来ます.
+        </p>
+        <p>
+        但し極限を取ることによって失われてしまう情報がある($M\rightarrow\infty$ では全ての出力 $y_i$が独立になる等)為,
+        一概にガウス過程モデルの方が優れていると言えるわけではありません.
+        </p>
         </section>
 
         <section>

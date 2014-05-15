@@ -27,8 +27,8 @@ for i in range(N):
         K[i, j] = k(x[i], x[j])
 
 xlim(-1, 1)
-ylim(-3, 3)
-for i in range(5):
+ylim(-10, 10)
+for i in range(100):
     y = random.multivariate_normal(zeros(N), K/ALPHA)
     plot(x, y)
 show()

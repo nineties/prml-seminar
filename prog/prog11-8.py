@@ -12,6 +12,10 @@ ITER_EPS = 1.0e-5
 # 精度パラメータ
 BETA = 1.0
 
+# 事前分布のパラメータ
+GA_K = array([2.0, 2.0, 2.0, 2.0])
+GA_S = array([2.0, 2.0, 2.0, 2.0])
+
 # Gaussian process regression
 N = 10
 train_x = random.uniform(0, 1, N)
@@ -58,13 +62,13 @@ def compute_Cinv(w):
 
 # 対数尤度の勾配 x -1
 def diff(w):
-    Cinv = compute_Cinv(w)
+    Cinv   = compute_Cinv(w)
+    Ct     = Cinv.dot(train_t)
     diffCs = [diffC0(w), diffC1(w), diffC2(w), diffC3(w)]
-    d = zeros(4)
+    d      = zeros(4)
     for i in range(4):
-        Ct = Cinv.dot(train_t)
         d[i] = (-trace(Cinv.dot(diffCs[i])) + Ct.T.dot(diffCs[i]).dot(Ct))/2
-    return d
+    return d - 1/GA_S+ (GA_K-1)/log(w)
 
 def steepest():
     w = random.uniform(0, 10, 4)
