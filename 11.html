@@ -694,9 +694,9 @@
 
         <section>
         <p>
-        すると, ラプラス近似の公式より
-        \[ p(\mathbf{a}|\mathbf{t})\approx\exp\left\{-\frac{1}{2}(\mathbf{a}-\mathbf{a}_0)^T(\mathbf{W}+\mathbf{C}^{-1})(\mathbf{a}-\mathbf{a}_0)\right\} \]
-        となるので, 右辺は正規分布ですから
+        すると, ラプラス近似の公式より $C$ を定数として
+        \[ p(\mathbf{a}|\mathbf{t})\approx C\exp\left\{-\frac{1}{2}(\mathbf{a}-\mathbf{a}_0)^T(\mathbf{W}+\mathbf{C}^{-1})(\mathbf{a}-\mathbf{a}_0)\right\} \]
+        となります. よって, 右辺は正規分布の密度関数の形をしていますから
         \[ p(\mathbf{a}|\mathbf{t}) \approx \mathcal{N}(\mathbf{a}|\mathbf{a}_0, (\mathbf{W}+\mathbf{C}^{-1})^{-1}) \]
         となります.
         </p>
