@@ -6,11 +6,13 @@ import matplotlib.cm as cmap
 
 np.random.seed(0)
 
-N = 30
-train_x = np.random.uniform(-1, 1, (N, 2))
-train_t = 2*np.logical_and(train_x[:,0]<0.5, train_x[:,1]<0.5)-1
-#train_t = (train_x[:,0] - 0.5)*(train_x[:,1]-0.5)*(train_x[:,0]+0.5)*(train_x[:,1]+0.5)<0
-#train_t = 2*train_t-1
+N = 50
+train_x = np.zeros((N, 2))
+train_t = np.zeros(N, dtype=int)
+train_x[0:N/2,:] = np.random.normal([0.3, 0], [0.2,0.5], (N/2, 2))
+train_x[N/2:N,:] = np.random.normal([-0.2, 0], [0.2,0.5], (N-N/2,2))
+train_t[0:N/2] = 1
+train_t[N/2:N] = -1
 
 #=== SMO法によるSVMの最適化 ===
 # SMO法の反復回数上限
@@ -21,6 +23,9 @@ KERN_SIGMA = 0.8
 
 # |x|<ZERO_EPS のとき, x=0が成立していると見なす.
 ZERO_EPS = 1.0e-2
+
+# ソフトマージン最適化のパラメータC(大きい程ハードマージンに近づく)
+SOFTMARGIN_C = 1.0e10
 
 def kernel(x1, x2):
     return np.exp(-sum((x1-x2)**2)/(2*KERN_SIGMA**2))
@@ -36,7 +41,7 @@ def gram_matrix(xs):
 def discriminant(mu, theta, x):
     v = 0
     for i in range(N):
-        if mu[i] < ZERO_EPS: continue
+        if mu[i] < ZERO_EPS and SOFTMARGIN_C-mu[i] < ZERO_EPS: continue
         v += mu[i]*train_t[i]*kernel(train_x[i,:], x)
     return v + theta
 
@@ -47,11 +52,11 @@ def threshold(mu, K):
     v = 0
     n = 0
     for i in range(N):
-        if mu[i] < ZERO_EPS: continue
+        if mu[i] < ZERO_EPS and SOFTMARGIN_C-mu[i] < ZERO_EPS: continue
         n += 1
         s = train_t[i]
         for j in range(N):
-            if mu[j] < ZERO_EPS: continue
+            if mu[j] < ZERO_EPS and SOFTMARGIN_C-mu[j] < ZERO_EPS: continue
             s -= mu[j]*train_t[j]*K[i, j]
         v += s
     return v/n
@@ -59,7 +64,10 @@ def threshold(mu, K):
 # KKT条件が成立しているならTrue
 def checkKKT(i, mu, theta, K):
     yi = train_t[i]*discriminant(mu, theta, train_x[i,:])
-    return yi >= 1 and mu[i]*(yi-1) < ZERO_EPS
+    if SOFTMARGIN_C - mu[i] < ZERO_EPS:
+        return yi >= 1 and mu[i]*(yi-1) < ZERO_EPS
+    else:
+        return yi <= 1
 
 # 2つ目の更新ベクトルを選択
 def choose_second(i, mu):
@@ -84,12 +92,15 @@ def update_mu(mu, i, j, K):
     next_mui = mu[i] + delta_i
     c        = ti*mu[i] + tj*mu[j]
     if ti == tj:
-        lim = c/ti
-        if next_mui < 0: next_mui = 0.0
-        elif next_mui > lim: next_mui = lim
+        l = max(0, c/ti-SOFTMARGIN_C)
+        h = max(SOFTMARGIN_C, c/ti)
+        if next_mui < l: next_mui = l
+        elif next_mui > h: next_mui = h
     else:
-        lim = max(c/ti, 0)
-        if next_mui < lim : next_mui = lim
+        l = max(0, c/ti)
+        h = min(SOFTMARGIN_C, SOFTMARGIN_C+c/ti)
+        if next_mui < l: next_mui = l
+        elif next_mui > h: next_mui = h
     if abs(next_mui - mu[i]) < ZERO_EPS: return False
     mu[i] = next_mui
     mu[j] = (c-ti*mu[i])/tj
@@ -116,16 +127,21 @@ for p in range(MAX_ITER):
 print "count=",p
 
 # 表示
+#xlim(-1, 1)
+#ylim(-1, 1)
 X, Y = np.meshgrid(np.linspace(-1, 1, 100), np.linspace(-1, 1, 100))
 Z = np.vectorize(lambda x, y: discriminant(mu, theta, np.array([x,y])))(X, Y)
-for i in range(N):
-    alpha = 0.3
-    if mu[i] >= ZERO_EPS:
-        alpha = 1.0
-    plot(train_x[i,0], train_x[i,1], marker="o", color=["red", "blue"][(train_t[i]+1)/2], markersize=10, alpha=alpha)
-pcolor(X, Y, Z, alpha=0.3)
-show()
+#for i in range(N):
+#    alpha = 0.3
+#    if mu[i] >= ZERO_EPS:
+#        alpha = 1.0
+#    plot(train_x[i,0], train_x[i,1], marker="o", color=["red", "blue"][(train_t[i]+1)/2], markersize=10, alpha=alpha)
+#pcolor(X, Y, Z, alpha=0.3)
+#title(u"σ=%.1f C=%.1f" % (KERN_SIGMA, SOFTMARGIN_C))
+#show()
 
+xlim(-1, 1)
+ylim(-1, 1)
 Z = Z < 0.3
 for i in range(N):
     alpha = 0.3
@@ -133,4 +149,5 @@ for i in range(N):
         alpha = 1.0
     plot(train_x[i,0], train_x[i,1], marker="o", color=["red", "blue"][(train_t[i]+1)/2], markersize=10, alpha=alpha)
 pcolor(X, Y, Z, alpha=0.3)
+title(u"σ=%.1f C=%.1f" % (KERN_SIGMA, SOFTMARGIN_C))
 show()

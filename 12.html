@@ -271,14 +271,14 @@
         <p> 【双対問題】<br>
         条件 $\mu_i \geq 0\quad (i=1,\ldots,n)$ の下で
         \[ \mathop{\rm min}\limits_{\mathbf{x}}\left\{f(\mathbf{x})+\sum_i\mu_ig_i(\mathbf{x})\right\} \]
-        を最大とする $\mathbf{x}$.
+        を最大とする $\mathbf{x}$ (及び $\boldsymbol{\mu}$).
         </p>
         </div>
         </section>
 
         <section>
         <p>
-        今回の場合は, $t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) \geq 1$ も$1/2||\mathbf{w}||^2$も凸である(凸最適化問題である)ので,
+        今回の場合は, $t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) \geq 1$ も$||\mathbf{w}||^2/2$も凸である(凸最適化問題である)ので,
         \[ L(\mathbf{w}, \theta, \boldsymbol{\mu})=\frac{1}{2}||\mathbf{w}||^2+\sum_i\mu_i\{t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)-1\} \]
         が $\mathbf{w}, \theta$ に関して最小となるのは
         \[ \frac{\partial L}{\partial \mathbf{w}}=\mathbf{0},\quad\frac{\partial L}{\partial \theta}=0 \]
@@ -453,6 +453,21 @@
         </section>
 
         <section>
+        <p>
+        実装例です. 分散パラメータが$\sigma=0.8$のガウスカーネルを用いています. 色の濃い点がサポートベクトルです.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig12-1-2.png"> <a href="prog/prog12-1.py" style="font-size:60%">prog12-1.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        もっと複雑な分布の例です. こちらでは$\sigma=0.4$にしています.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig12-1-4.png"> <a href="prog/prog12-1.py" style="font-size:60%">prog12-1.py</a> </div>
+        </section>
+
+
+        <section>
         <h2 class="chapter-title"> ソフトマージン </h2>
         </section>
 
@@ -513,10 +528,7 @@
         <div class="block" style="border-color:blue">
           <h4 style="color:blue"> ソフトマージンSVMの最適化問題の双対版 </h4>
           <p>
-          \[ \begin{aligned}
-          0 \leq \mu_i \leq C \\
-          \sum_i\mu_i t_i = 0
-          \end{aligned} \]
+          \[ 0 \leq \mu_i \leq C, \quad \sum_i\mu_i t_i = 0 \]
           という条件下で
           \[ \tilde{L}(\boldsymbol{\mu}) = -\frac{1}{2}\sum_{i,j}\mu_i\mu_jt_it_jk(\mathbf{x}_i,\mathbf{x}_j)+\sum_i\mu_i \]
           が最小となるような $\boldsymbol{\mu}$ を求める.
@@ -526,9 +538,76 @@
 
         <section>
         <p>
+        ハードマージンSVMの場合と異なる点は
+        \[ 0 \leq \mu_i \]
+        が
+        \[ 0 \leq \mu_i \leq C \]
+        に変わった所です. 従って, クリッピングのルールが以下のように修正されます.
+        </p>
+        <p>
+        <ul>
+          <li> 【$t_p=t_q$ の時】
+          \[ \mathrm{max}\{0,c/t_p-C\}\leq \mu_p + \Delta_p \leq \mathrm{min}\{C,c/t_p\} \]
+          <li> 【$t_p=-t_q$ の時】
+          \[ \mathrm{max}\{0,c/t_p\}\leq \mu_p + \Delta_p \leq \mathrm{min}\{C,C+c/t_p\} \]
+        </ul>
+        </p>
+        </section>
+
+        <section>
+        <p>
         定数項$\theta$の計算は先ほどと同様に
-        \[ \theta = \frac{1}{|\mathcal{M}|}\sum_{i\in\mathcal{M}}\left\{t_i-\sum_{j\in\mathcal{S}}\mu_jt_jk(\mathbf{x}_i,\mathbf{x}_j)\right\} \]
+        \[ \theta = \frac{1}{|\mathcal{M}|}\sum_{i\in\mathcal{M}}\left\{t_i-\sum_{j\in\mathcal{M}}\mu_jt_jk(\mathbf{x}_i,\mathbf{x}_j)\right\} \]
         で行います. 但し, $\mathcal{M}$ は $0 &lt; \mu_i &lt; C$ を満たす $i$ の集合です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        更に, KKT条件は以下のようになります.
+        </p>
+        \[ \begin{aligned}
+        &0 \leq \mu_i \leq C,\quad \xi_i \geq 0\\
+        &t_if(\mathbf{x}_i)-1+\xi_i \geq 0 \\
+        &\mu_i\{t_if(\mathbf{x}_i)-1+\xi_i\} = 0 \\
+        &\xi_i(C-\mu_i) = 0
+        \end{aligned} \]
+        $0\leq \mu_i &lt; C$ の時は最後の等式より $\xi_i = 0$ となるので, ハードマージンの場合と同値になり, $\mu_i = C$ の場合には
+        \[ t_if(\mathbf{x}_i)-1+\xi_i = 0,\quad \xi_i \geq 0 \]
+        より
+        \[ t_if(\mathbf{x}_i)\leq 1 \]
+        となります.
+        </section>
+
+        <section>
+        <p> 以下はカーネルの分散パラメータ $\sigma$と, ソフトマージンのパラメータ $C$ を色々変えて学習を行ったものです. </p>
+        <div align="center"> <img width="600px" src="prog/fig12-2-1.png"> <a href="prog/prog12-1.py" style="font-size:60%">prog12-1.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下はカーネルの分散パラメータ $\sigma$と, ソフトマージンのパラメータ $C$ を色々変えて学習を行ったものです. </p>
+        <div align="center"> <img width="600px" src="prog/fig12-2-2.png"> <a href="prog/prog12-1.py" style="font-size:60%">prog12-1.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下はカーネルの分散パラメータ $\sigma$と, ソフトマージンのパラメータ $C$ を色々変えて学習を行ったものです. </p>
+        <div align="center"> <img width="600px" src="prog/fig12-2-3.png"> <a href="prog/prog12-1.py" style="font-size:60%">prog12-1.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下はカーネルの分散パラメータ $\sigma$と, ソフトマージンのパラメータ $C$ を色々変えて学習を行ったものです. </p>
+        <div align="center"> <img width="600px" src="prog/fig12-2-4.png"> <a href="prog/prog12-1.py" style="font-size:60%">prog12-1.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下はカーネルの分散パラメータ $\sigma$と, ソフトマージンのパラメータ $C$ を色々変えて学習を行ったものです. </p>
+        <div align="center"> <img width="600px" src="prog/fig12-2-6.png"> <a href="prog/prog12-1.py" style="font-size:60%">prog12-1.py</a> </div>
+        </section>
+
+        <section>
+        <h3> 第12回はここで終わります </h3>
+        <p>
+        次回はSVMを用いた多クラス識別等の話題を紹介し, 第7章を終了します.
         </p>
         </section>
 			</div>
