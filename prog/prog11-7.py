@@ -6,7 +6,7 @@ import matplotlib.cm as cmap
 
 random.seed(0)
 
-SIGMA = 0.5
+SIGMA = 0.4
 NU = 0.1
 ITER_MAX = 100
 

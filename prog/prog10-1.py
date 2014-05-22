@@ -6,7 +6,7 @@ from matplotlib.pyplot import *
 # カーネル法による多項式フィッティング
 
 # 学習用データ
-N = 10
+N = 30
 train_x = random.uniform(0, 1, N)
 train_y = random.normal(sin(2*pi*train_x), 0.1)
 

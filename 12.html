@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第12回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第12回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年5月22日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> サポートベクターマシン </h2>
+        </section>
+
+        <section>
+        <p>
+        本日からテキスト第７章スパースカーネルマシンに進みます.
+        </p>
+        <p>
+        <strong> サポートベクターマシン (support vector machine, SVM) </strong> とは, マージン最大化という方針に基づいて汎化性能を高めた識別器であり, 非常に優れた性能を発揮する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 最大マージン分類器 </h3>
+        <p>
+        2クラスの識別問題を考えます. 今, 学習データ $\{(\mathbf{x}_1,t_1),(\mathbf{x}_2,t_2),\ldots,(\mathbf{x}_n,t_n)\}\quad(t_i=\pm 1)$ が適当な特徴ベクトル $\Psi(\mathbf{x}_1),\Psi(\mathbf{x}_2),\ldots,\Psi(\mathbf{x}_n)$ に関して線形分離可能であると仮定します.
+        </p>
+        <div align="center"> <img width="400px" src="fig/maximum-margin-classifier1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この時, 2つのクラスを分離する識別面は唯一に定まりません.
+        </p>
+        <p style="color:transparent">
+        そこで, 最も近い $\Psi(\mathbf{x}_i)$ までの距離(マージン)が最大となるような識別面を選ぶ事にします. これを 最大マージン分類器(maximum margin classifier)と呼びます.
+        </p>
+        <div align="center"> <img width="400px" src="fig/maximum-margin-classifier3.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        この時, 2つのクラスを分離する識別面は唯一に定まりません.
+        </p>
+        <p>
+        そこで, 最も近い $\Psi(\mathbf{x}_i)$ までの距離(<strong>マージン</strong>)が最大となるような識別面を選ぶ事にします. これを<strong>最大マージン分類器(maximum margin classifier)</strong>と呼びます.
+        </p>
+        <div align="center"> <img width="400px" src="fig/maximum-margin-classifier4.png"> </div>
+        </section>
+
+
+        <section>
+        <p>
+        マージンが最大になる時, 識別面からちょうどマージンの分だけ離れた面上に必ず1つ以上の特徴ベクトルが乗ります. これを(広い意味での) <strong> サポートベクトル (support vector) </strong> と呼びます.
+        </p>
+        <div align="center"> <img width="400px" src="fig/maximum-margin-classifier7.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        以上の考え方に基き, 数式化していきましょう. まず, 線形識別関数を定数項を別にして
+        \[ f(\mathbf{x})=\mathbf{w}^T\Psi(\mathbf{x})+\theta \]
+        とおきます.
+        </p>
+        <p class="fragment">
+        学習データが線形分離可能である事は $f(\mathbf{x}_i)$ と $t_i$ が同符号であること, つまり
+        \[ t_if(\mathbf{x}_i) &gt; 0\qquad (i=1,2,\ldots, n) \]
+        が成り立つ事です.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        点 $\Psi(\mathbf{x}_i)$ から識別面に下ろした垂線の足を $\mathbf{h}_i$, 符号付き距離を $d_i$ とおくと, $\mathbf{w}$ が識別面の法ベクトルである事から
+        \[ \mathbf{h}_i = \Psi(\mathbf{x}_i)-d_i\frac{\mathbf{w}}{||\mathbf{w}||},\quad \mathbf{w}^T\mathbf{h}_i + \theta = 0 \]
+        となるので, これを解けば
+        \[ |d_i| = \frac{|\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta|}{||\mathbf{w}||} = \frac{|f(\mathbf{x}_i)|}{||\mathbf{w}||} \]
+        となります.
+        </p>
+        <div align="center"> <img width="350px" src="fig/maximum-margin-classifier5.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        さらに, $t_i = \pm 1$ と $t_if(\mathbf{x}_i)&gt; 0$ より
+        \[ |f(\mathbf{x}_i)|=t_if(\mathbf{x}_i) \]
+        が成り立つので
+        \[ |d_i| = \frac{t_if(\mathbf{x}_i)}{||\mathbf{w}||} \]
+        と書くことが出来ます.
+        </p>
+        <p class="fragment">
+        従って, 最大マージンを与える識別面は
+        \[ \mathop{\rm arg~max}\limits_{\mathbf{w},\theta}\mathop{\rm min}\limits_{i}\frac{t_if(\mathbf{x}_i)}{||\mathbf{w}||} = \mathop{\rm arg~max}\limits_{\mathbf{w},\theta}\frac{1}{||\mathbf{w}||}\mathop{\rm min}\limits_{i}t_if(\mathbf{x}_i) \]
+        を求める事によって得られます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで $(\mathbf{w},\theta)\mapsto (k\mathbf{w},k\theta)$ と実数倍しても
+        \[ \frac{t_if(\mathbf{x}_i)}{||\mathbf{w}||}=\frac{t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)}{||\mathbf{w}||} \]
+        が不変である事に注意すれば,
+        \[ \mathop{\rm min}\limits_{i} t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) = 1\]
+        となるように $(\mathbf{w},\theta)$ を選ぶ事が出来ます.
+        </p>
+        <p class="fragment">
+        すると, 解くべき問題は
+        \[ \mathop{\rm arg~max}\limits_{\mathbf{w},\theta}\frac{1}{||\mathbf{w}||} = \mathop{\rm arg~min}\limits_{\mathbf{w},\theta}\frac{1}{2}||\mathbf{w}||^2 \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さらに,
+        \[ \mathop{\rm min}\limits_{i} t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) = 1\]
+        という条件は
+        \[ t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) \geq 1\qquad(i=1,\ldots,n) \]
+        と同値です. 何故ならば等号が成立するベクトル(サポートベクトル)が必ず存在する為です.
+        </p>
+        <div align="center"> <img width="350px" src="fig/maximum-margin-classifier6.png"> </div>
+        </section>
+
+        <section>
+        <p> 以上より最大マージン分類器の最適化問題が以下の様に定式化されます. </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> 最大マージン分類器の最適化 </h4>
+          \[ t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) \geq 1\qquad(i=1,\ldots,n) \]
+          という条件下で
+          \[ \frac{1}{2}||\mathbf{w}||^2 \]
+          が最小となるような $\mathbf{w},\theta$ を求める.
+        </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        次に,この問題を<strong>双対問題(dual problem)</strong>に変換しましょう.
+        </p>
+        <div class="block" style="border-color:blue">
+        <h4 style="color:blue"> 双対定理の(特別な場合) </h4>
+        <p>
+        以下の2つの問題の解はもし存在するならば一致する.
+        </p>
+        <p> 【主問題】<br>
+        条件 $g_i(\mathbf{x})\leq 0\quad (i=1,\ldots,n)$ の下で $f(\mathbf{x})$ を最小とする $\mathbf{x}$.
+        </p>
+        <p> 【双対問題】<br>
+        条件 $\mu_i \geq 0\quad (i=1,\ldots,n)$ の下で
+        \[ \mathop{\rm min}\limits_{\mathbf{x}}\left\{f(\mathbf{x})+\sum_i\mu_ig_i(\mathbf{x})\right\} \]
+        を最大とする $\mathbf{x}$.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        今回の場合は, $t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) \geq 1$ も$1/2||\mathbf{w}||^2$も凸である(凸最適化問題である)ので,
+        \[ L(\mathbf{w}, \theta, \boldsymbol{\mu})=\frac{1}{2}||\mathbf{w}||^2+\sum_i\mu_i\{t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)-1\} \]
+        が $\mathbf{w}, \theta$ に関して最小となるのは
+        \[ \frac{\partial L}{\partial \mathbf{w}}=\mathbf{0},\quad\frac{\partial L}{\partial \theta}=0 \]
+        の時です. これを用いて $\mathbf{w},\theta$ を消去すれば双対問題を得る事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4 style="color:blue"> 最大マージン分類器の最適化問題の双対版 </h4>
+        <p>
+        条件
+        \[ \mu_i \geq 0\quad(i=1,\ldots,n),\quad \sum_i \mu_i t_i = 0 \]
+        の下で
+        \[ \tilde{L}(\boldsymbol{\mu}) = -\frac{1}{2}\sum_{i,j}\mu_i\mu_jt_it_jk(\mathbf{x}_i,\mathbf{x}_j)+\sum_i\mu_i \]
+        を最大化する. 但し, $k(\mathbf{x}_i,\mathbf{x}_j)=\Psi(\mathbf{x}_i)^T\Psi(\mathbf{x}_j)$.
+        </p>
+        </div>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        【前頁の導出】<br>
+        $\mathbf{p} = (\mu_1t_1,\ldots,\mu_nt_n)^T$, $\mathbf{X}$ を計画行列, $\mathbf{K}=\mathbf{X}\mathbf{X}^T$ とすると
+        \[ \begin{aligned}
+        \frac{\partial L}{\partial \mathbf{w}} &= \mathbf{w}-\sum_{i=1}^n \mu_it_i\Psi(\mathbf{x}_i) = \mathbf{w}-\mathbf{X}^T\mathbf{p} \\
+        \frac{\partial L}{\partial \theta} &= -\sum_{i=1}^n \mu_it_i = 0
+        \end{aligned} \]
+        より,
+        \[ \begin{aligned}
+        &||\mathbf{w}||^2 = \mathbf{p}^T\mathbf{X}\mathbf{X}^T\mathbf{p}=\mathbf{p}^T\mathbf{K}\mathbf{p} \\
+        &\sum_i\mu_i\{t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)-1\} = \mathbf{p}^T\mathbf{X}\mathbf{w}-\sum_i\mu_i = \mathbf{p}^T\mathbf{K}\mathbf{p}-\sum_i\mu_i
+        \end{aligned} \]
+        従って
+        \[ L = \sum_i\mu_i - \frac{1}{2}\mathbf{p}^T\mathbf{K}\mathbf{p} = \sum_i\mu_i - \frac{1}{2}\sum_{i,j}\mu_i\mu_jt_it_jk(\mathbf{x}_i,\mathbf{x}_j) \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        最適解を与える $\mathbf{w},\theta,\boldsymbol{\mu}$ では, 以下の <strong>カルーシュ・キューン・タッカー条件 (Karush-Kuhn-Tucker condition, KKTcondition)</strong> と呼ばれる条件が成立します.
+        \[ \begin{aligned}
+        &\mu_i \geq 0\\
+        &t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) \geq 1\\
+        &\mu_i\{t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)-1\} = 0 
+        \end{aligned} \]
+        これから $\mu_i &gt; 0$ ならば $\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta = t_i$  が成立する事が分かります.
+        </p>
+        <p class="fragment">
+        この $\mu_i &gt; 0$ を満たす $\Psi(\mathbf{x}_i)$ を <strong>サポートベクトル(support vector)</strong>と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        元の識別関数をパラメータ $\boldsymbol{\mu}$ を用いて書き直すと
+        \[ f(\mathbf{x}) = \sum_i \mu_it_ik(\mathbf{x}_i,\mathbf{x})+\theta \]
+        となります.
+        </p>
+        <p class="fragment">
+        ここで, <strong> サポートベクトル以外では $\mu_i = 0$ となる</strong> 事に注目しましょう. 従って, サポートベクトルのインデックスの集合を $\mathcal{S}$ とおくと, 上の式は
+        \[ f(\mathbf{x}) = \sum_{i\in\mathcal{S}} \mu_it_ik(\mathbf{x}_i,\mathbf{x})+\theta \]
+        と書き直す事が出来ます.
+        </p>
+        <p class="fragment">
+        識別関数の構成に<strong>サポートベクトルしか使わない</strong>というのがこのモデルの最大の特徴です.
+        </p>
+        </section>
+
+        <section>
+        <div align="center"> <img width="600px" src="fig/maximum-margin-classifier8.png"> </div>
+        </section>
+
+
+        <section>
+        <p>
+        但し, $\theta$ は任意のサポートベクトルが
+        \[ t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)= 1 \quad (i\in\mathcal{S})\]
+        を満たすことより求めます.
+        </p>
+        <p class="fragment">
+        テキストによれば演算誤差を考慮して
+        \[\begin{aligned}
+        \theta &= \frac{1}{|\mathcal{S}|}\sum_{i\in\mathcal{S}}\left\{t_i-\mathbf{w}^T\Psi(\mathbf{x}_i)\right\} \\
+        &= \frac{1}{|\mathcal{S}|}\sum_{i\in\mathcal{S}}\left\{t_i-\sum_{j\in\mathcal{S}}\mu_jt_jk(\mathbf{x}_i,\mathbf{x}_j)\right\} \\
+        \end{aligned} \]
+        とすると良いだろうという事です.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        続いてサポートベクターマシンの学習について説明します. 以下を解きたいわけですが, 勾配法等では計算量が大きくなってしまいます. そこで <strong> Sequential minimal optimization (SMO法)</strong> という物を紹介します.
+        </p>
+        <div class="block" style="border-color:blue;font-size:90%">
+        <h4 style="color:blue"> 最大マージン分類器の最適化問題の双対版 </h4>
+        <p>
+        条件
+        \[ \mu_i \geq 0\quad(i=1,\ldots,n),\quad \sum_i \mu_i t_i = 0 \]
+        の下で
+        \[ \tilde{L}(\boldsymbol{\mu}) = -\frac{1}{2}\sum_{i,j}\mu_i\mu_jt_it_jk(\mathbf{x}_i,\mathbf{x}_j)+\sum_i\mu_i \]
+        を最大化する. 但し, $k(\mathbf{x}_i,\mathbf{x}_j)=\Psi(\mathbf{x}_i)^T\Psi(\mathbf{x}_j)$.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        SMO法は反復法であり, 適当な初期値 $\boldsymbol{\mu}^{(0)}$ から出発して, 更新 $\boldsymbol{\mu}^{(k)} \rightarrow \boldsymbol{\mu}^{(k+1)}$ を繰り返します. この際, 一度には2つの成分しか動かさないというのがポイントです.
+        </p>
+        <p calss="fragment">
+        今, $\mu_p$ と $\mu_q$ だけ動かすとします. この時, 制約条件より
+        \[ t_p\mu_p + t_q\mu_q = c = \mathrm{const.} \]
+        が成立している必要があります. 特に
+        \[ \frac{\partial \mu_q}{\partial \mu_p} = -\frac{t_p}{t_q} =-t_pt_q\]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        以下, $K_{ij} = k(\mathrm{x}_i,\mathrm{x}_j)$ とおきます. $\tilde{L}$ を $\mu_p$ の関数とみなして微分すると
+        \[ \begin{aligned}
+        &\frac{\partial}{\partial \mu_p}\tilde{L} \\
+        =&-\frac{1}{2}\left\{\sum_{ij}\frac{\partial \mu_i}{\partial \mu_p}\mu_jt_it_jK_{ij}+\sum_{ij}\mu_i\frac{\partial \mu_j}{\partial \mu_p}t_it_jK_{ij}\right\}+\sum_i\frac{\partial \mu_i}{\partial\mu_p}\\
+        =&-\frac{1}{2}\left\{\sum_j\mu_jt_pt_jK_{pj}-\sum_j\mu_jt_pt_jK_{qj}+\sum_{i}\mu_it_it_pK_{ip}-\sum_{i}\mu_it_it_pK_{iq}\right\}+1-t_pt_q\\
+        =&-\left\{\sum_i\mu_it_pt_iK_{pi}-\sum_i\mu_it_pt_iK_{qi}\right\}+1-t_pt_q
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        従って, $\mu_p\mapsto \mu_p+\Delta_p, \mu_q\mapsto\mu_q-t_pt_q\Delta_p $ と更新するならば
+        \[ (K_{pp}-2K_{pq}+K_{qq})\Delta_p = 1-t_pt_q + \sum_i\mu_it_pt_iK_{qi}-\sum_i\mu_it_pt_iK_{pi} \]
+        つまり,
+        \[\begin{aligned}
+        \Delta_p &= \frac{1-t_pt_q + t_p(\sum_i\mu_it_iK_{qi}-\sum_i\mu_it_iK_{pi})}{K_{pp}-2K_{pq}+K_{qq}} \\
+        &=\frac{1-t_pt_q+t_p\{f(\mathbf{x}_q)-f(\mathbf{x}_p)\}}{K_{pp}-2K_{pq}+K_{qq}}
+        \end{aligned}\]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        この時, $t_p\mu_p+t_q\mu_q=c, \mu_p\geq 0, \mu_q \geq 0$ が成立していなければならないので, 以下を満たすように $\Delta_p$ のクリッピングを行う必要があります.
+        <ul>
+          <li> $t_p=t_q$ のときは
+          \[ 0 \leq \mu_p + \Delta_p \leq c/t_p \] </li>
+          <li> $t_p=-t_q$ のときは
+          \[ \mathrm{max}\{0,c/t_p\}\leq \mu_p+\Delta_p\] </li>
+        </ul>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        次に, 動かす $\mu_p,\mu_q$ の選択基準ですが SMO法の発見者であるJohn C. Plattの論文に従うならば以下の様になります.
+        </p>
+        <ol>
+          <li> KKT条件を破る $\mu_p$ を1つめに選ぶ. </li>
+          <li> 続いて$|f(\mathbf{x}_q)-f(\mathbf{x}_p)|$ が最大となる $\mu_q$ を次に選ぶ. </li>
+        </ol>
+        <p>
+        これを繰り返して, $\tilde{L}$ が収束するまで反復を繰り返せば学習完了です.
+        </p>
+        <ul>
+          <li> Platt, John C. "Fast training of support vector machines using sequential minimal optimization." (1999): 185-208.
+        </ul>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ソフトマージン </h2>
+        </section>
+
+        <section>
+        <p>
+        先ほどまでは, 学習データの線形分離が可能という条件を前提としていました.
+        </p>
+        <p class="fragment">
+        しかし, 実際には上手く分離出来るとは限りません. 識別誤差の発生を許容するサポートベクターマシンを <strong> ソフトマージンSVM </strong> と呼びます. 一方, これまでやったものはハードマージンSVMと呼ばれます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        そこで, 各学習データ $(\mathbf{x}_i,t_i)$ に対して <strong> スラック変数 (slack variable) </strong> $\xi_i\geq 0$ を導入して
+        \[ t_if(\mathbf{x}_i) \geq 1 \]
+        の代わりに
+        \[ t_if(\mathbf{x}_i) \geq 1 - \xi_i \]
+        という条件を考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        下図の様に, $0 &lt; \xi_i &lt; 1$ の場合は最大マージンよりも内側に入ってきますが, それでも正しく識別されます. $\xi_i &gt; 1$ になってしまうと, そのデータは誤って識別されます.
+        </p>
+        <div align="center"> <img width="500px" src="fig/soft-margin1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        従って $\xi_i$ は出来るだけ小さい方が望ましいので, 先ほどの $||\mathbf{w}||^2/2$ に代わって
+        \[ \frac{1}{2}||\mathbf{w}||^2 + C\sum_i \xi_i \]
+        を最小化する事を考えます.
+        </p>
+        </section>
+
+        <section>
+        <p> つまり, まとめると以下のようになります. </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> ソフトマージンSVMの最適化 </h4>
+          <p>
+          \[ \begin{aligned}
+          &t_i(\mathbf{w}^T\Psi(\mathbf{x}_i))\geq 1-\xi_i \\
+          &\xi_i \geq 0
+          \end{aligned} \]
+          という条件下で
+          \[ \frac{1}{2}||\mathbf{w}||^2 + C\sum_i \xi_i \]
+          が最小となるような $\mathbf{w}$, $\boldsymbol{\xi}$ を求める.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        これを先ほどと同様に双対問題に変換します. 細かい計算はここでは省略します.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> ソフトマージンSVMの最適化問題の双対版 </h4>
+          <p>
+          \[ \begin{aligned}
+          0 \leq \mu_i \leq C \\
+          \sum_i\mu_i t_i = 0
+          \end{aligned} \]
+          という条件下で
+          \[ \tilde{L}(\boldsymbol{\mu}) = -\frac{1}{2}\sum_{i,j}\mu_i\mu_jt_it_jk(\mathbf{x}_i,\mathbf{x}_j)+\sum_i\mu_i \]
+          が最小となるような $\boldsymbol{\mu}$ を求める.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        定数項$\theta$の計算は先ほどと同様に
+        \[ \theta = \frac{1}{|\mathcal{M}|}\sum_{i\in\mathcal{M}}\left\{t_i-\sum_{j\in\mathcal{S}}\mu_jt_jk(\mathbf{x}_i,\mathbf{x}_j)\right\} \]
+        で行います. 但し, $\mathcal{M}$ は $0 &lt; \mu_i &lt; C$ を満たす $i$ の集合です.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
