@@ -108,7 +108,6 @@ for p in range(MAX_ITER):
     changed = False
     for i in range(N):
         if checkKKT(i, mu, theta, K): continue
-        kkt_failed = True
         j = choose_second(i, mu)
         changed = update_mu(mu, i, j, K) or changed
         theta = threshold(mu, K)

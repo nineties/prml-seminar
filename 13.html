@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第13回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第13回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年5月29日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 多クラスSVM </h2>
+        </section>
+
+        <section>
+        <p>
+        SVMは2クラス識別の為の分類器ですが, これを複数組み合わせるなどの方法によって$K$ クラス $(K &gt; 2)$の識別に利用する事が出来ます. 簡単に説明します.
+        </p>
+        </section>
+
+        <section>
+        <h3> one-versus-the-rest法 </h3>
+        <p>
+        one-versus-the-rest法では, データ$\mathbf{x}$ がクラス $k$ かそれ以外であるかを識別するSVM $f_k(\mathbf{x})$ を $K$ クラスそれぞれについて構築し, 
+        \[ f(\mathbf{x}) = \mathop{\rm arg~max}\limits_{k}f_k(\mathbf{x}) \]
+        によって $\mathbf{x}$ のクラスを決定します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今説明したone-versus-the-rest法にはいくつか問題点があります. 例えば, 1対他という形で学習を行うのでデータ数に大きく差が出てしまうという問題です.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> SVM回帰 </h2>
+        </section>
+
+        <section>
+        <p>
+        続いて, 回帰分析の為のSVMを紹介します.
+        </p>
+        <p class="fragment">
+        通常は観測値 $t_i$ とモデルによる予測値 $y_i$ の誤差の平方
+        \[ |y_i-t_i|^2 \]
+        を用いて最小二乗法などの立式を用いますが, 今回は<strong> $\epsilon$-sensitive誤差関数 </strong>
+        \[ E_{\epsilon}(y_i-t_i)=\left\{\begin{array}{cl}
+        0 & (|y_i-t_i|&lt;\epsilon\text{の時}) \\
+        |y_i-t_i|-\epsilon & (\text{それ以外})
+        \end{array}\right.\]
+        を用います. $\epsilon$ 以下の誤差を $0$ に丸める事によってスパース性を実現する事が目標です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        この誤差関数の様子を図示すると下のようになります.
+        </p>
+        <div align="center"> <img width="600px" src="fig/svm-regression1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        $\epsilon$-sensitive誤差関数を用いて, 学習データに対する正則化項付きの誤差関数を
+        \[ E(\mathbf{w}) = C\sum_{i=1}^n E_{\epsilon}(y_i-t_i)+\frac{1}{2}||\mathbf{w}||^2 \]
+        と表します. $C &gt; 0$は通常正則化項に付ける係数$\lambda$ の逆数です. これを最小化する様な $\mathbf{w}$ を求める事が目標になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        続いて, 各データポイントについて2つのスラック変数 $\xi_i$ と $\hat{\xi_i}$ を導入して,
+        \[ \begin{aligned}
+        \xi_i       &= \mathop{\rm max}\{t_i-y_i-\epsilon, 0\} \\
+        \hat{\xi_i} &= \mathop{\rm max}\{-t_i+y_i-\epsilon, 0\} \\
+        \end{aligned} \]
+        とおきます.
+        </p>
+        <p class="fragment">
+        $t_i \geq y_i+\epsilon$ の時は
+        \[ \xi_i = t_i-y_i-\epsilon, \quad \hat{\xi_i} = 0 \]
+        $t_i \leq y_i-\epsilon$ の時は
+        \[ \xi_i = 0,\quad \hat{\xi_i} = -(t_i-y_i)-\epsilon \]
+        $y_i-\epsilon \leq t_i \leq y_i+\epsilon$ の時は
+        \[ \xi_i = 0, \hat{\xi_i} = 0\]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        つまり, 距離$\epsilon$より上に外れた時の誤差が $\xi_i$ であり, 下に外れた時の誤差が $\hat{\xi_i}$ となります.
+        </p>
+        <p>
+        また,
+        \[ E_{\epsilon}(y_i-t_i) = \xi_i + \hat{\xi_i} \]
+        となります.
+        </p>
+        <div align="center"> <img width="500px" src="fig/svm-regression2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        従って, 先ほどの問題は以下のように書きなおす事が出来ます.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> SVM回帰の最適化問題 </h4>
+          <p>
+          条件 $\xi_i,\hat{\xi_i} \geq 0$ 及び
+          \[ \begin{aligned}
+          \xi_i & \geq t_i - y_i-\epsilon \\
+          \hat{\xi_i} & \geq -t_i+y_i-\epsilon
+          \end{aligned} \]
+          の下で
+          \[ C\sum_{i=1}^n(\xi_i + \hat{\xi_i})+\frac{1}{2}||\mathbf{w}||^2 \]
+          を最小化する.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        前回と同様に, これを双対問題に書き直します. 不等式制約が4つあるのでそれぞれについて変数 $\mu_i,\hat{\mu_i},a_i,\hat{a_i}\geq 0$ を導入して
+        \[ \begin{aligned}
+        \tilde{L}&=C\sum_i(\xi_i+\hat{\xi_i})+\frac{1}{2}||\mathbf{w}||^2-\sum_i\mu_i\xi_i-\sum_i\hat{\mu_i}\hat{\xi_i}\\
+        &-\sum_ia_i(\xi_i-t_i+y_i+\epsilon)-\sum_i\hat{a_i}(\hat{\xi_i}+t_i-y_i+\epsilon)
+        \end{aligned}\]
+        とおき, これを $\mathbf{w},\theta,\xi_i,\hat{\xi_i}$ に関して最小化した後に $\mu_i,\hat{\mu_i},a_i,\hat{a_i}$ について最大化します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        実際に計算すると, 以下の双対問題を得ます(次頁).
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> SVM回帰の最適化問題の双対問題 </h4>
+          <p>
+          条件 $0 \leq a_i \leq C, 0\leq \hat{a_i} \leq C$ のもとで
+          \[ \begin{aligned}
+          \tilde{L}(\mathbf{a},\hat{\mathbf{a}}) &= -\frac{1}{2}\sum_{i,j}(a_i-\hat{a_i})(a_j-\hat{a_j})k(\mathbf{x}_i,\mathbf{x}_j)\\
+          &-\epsilon\sum_i(a_i+\hat{a_i})+\sum_i(a_i-\hat{a_i})t_i
+          \end{aligned} \]
+          を最大化する. 但し $k(\mathbf{x}_i,\mathbf{x}_j)=\Psi(\mathbf{x}_i)^T\Psi(\mathbf{x}_j)$.
+          </p>
+        </div>
+        </section>
+
+        <section style="font-size:60%">
+        <p>
+        【導出の方針】<br>
+        $y_i = \mathbf{w}^T\Psi(\mathbf{x}_i) + \theta$ より $\partial y_i/\partial\mathbf{w}=\Psi(\mathbf{x}_i), \partial y_i/\partial\theta = 1$ なので
+        \[ \begin{aligned}
+        \frac{\partial \tilde{L}}{\partial\mathbf{w}}&= \mathbf{w}-\sum_i(a_i-\hat{a_i})\Psi(\mathbf{x}_i) \\
+        \frac{\partial \tilde{L}}{\partial\theta}    &= - \sum_i(a_i-\hat{a_i})\\
+        \frac{\partial \tilde{L}}{\partial\xi_i}    &= C-\mu_i-a_i \\
+        \frac{\partial \tilde{L}}{\partial\hat{\xi_i}}    &= C-\hat{\mu_i}-\hat{a_i} \\
+        \end{aligned} \]
+        よって,$\tilde{L}$ が $\mathbf{w},\theta$ に関して最小となる点では
+        \[ \mathbf{w} = \sum_i(a_i-\hat{a_i})\Psi(\mathbf{x}_i),\quad \sum_i(a_i-\hat{a_i})=0,\quad a_i+\mu_i=\hat{a_i}+\hat{\mu_i}=C \]
+        が成り立つ. これを $\tilde{L}$ に代入する.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        回帰方程式は
+        \[ y = \mathbf{w}^T\Psi(\mathbf{x}) + \theta \]
+        に $\mathbf{w} = \sum_i(a_i-\hat{a_i})\Psi(\mathbf{x}_i)$ を代入して
+        \[ y = \sum_i (a_i-\hat{a_i})k(\mathbf{x}_i,\mathbf{x}) + \theta \]
+        となります.
+        </p>
+        <p class="fragment">
+        従って, 回帰方程式の構築には $a_i-\hat{a_i}\neq 0$ であるサポートベクター $\Psi(\mathbf{x}_i)$ 
+        のみがあれば良いという事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        KKT条件は先ほどの不等式制約に以下を加えたものです.
+        \[ \begin{aligned}
+        &a_i(\xi_i - t_i+y_i+\epsilon) = 0\\
+        &\hat{a_i}(\hat{\xi_i} + t_i-y_i+\epsilon) = 0\\
+        &\mu_i\xi=(C-a_i)\xi_i = 0 \\
+        &\hat{\mu_i}\hat{\xi_i}=(C-\hat{a_i})\hat{\xi_i} = 0
+        \end{aligned} \]
+        </p>
+        <p class="fragment">
+        $y_i-\epsilon &lt; t_i &lt; y_i + \epsilon$ の場合には $\xi_i+t_i-y_i+\epsilon,\hat{\xi_i}-t_i+y_i+\epsilon &gt; 0$ となるので,
+        $a_i=\hat{a_i} = 0$ となります. つまり, $y=f(\mathbf{x})$ から距離 $\epsilon$ 以内の点はサポートベクターではないことが分かります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\theta$ の計算ですが, $0 &lt; a_i &lt; C$ ならば $\xi_i = 0$ となるため
+        \[ - t_i + y_i + \epsilon =  -t_i + (\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)+\epsilon = 0 \]
+        つまり
+        \[ \theta = t_i -\epsilon - \mathbf{w}^T\Psi(\mathbf{x}_i) = t_i-\epsilon - \sum_j (a_j-\hat{a_j})k(\mathbf{x}_i,\mathbf{x}_j) \]
+        となります.
+        </p>
+        <p>
+        同様に $0 &lt; \hat{a_i} &lt; C$ ならば
+        \[ \theta = t_i + \epsilon - \sum_j(a_j-\hat{a_j})k(\mathbf{x}_i,\mathbf{x}_j) \]
+        となります. 前回同様 これら $\theta$ の平均値を取って $\theta$ を求めます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 関連ベクターマシン </h2>
+        </section>
+
+        <section>
+        <p>
+        ベイズ的なカーネル法を用いて構成されるSVMと同様のスパースカーネルマシンを <strong>関連ベクターマシン (relevance vector machine) </strong> と呼びます.
+        </p>
+        <p class="fragment">
+        SVMと異なり確率論に基づいているので, 事後分布の計算が可能であるなどの好ましい性質を持ちます. また, 性能面でもよりスパースな方程式を出力する事ができます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        回帰問題で説明します. 入力データ $\mathbf{x}$ に対する 観測データ $t$ が分布
+        \[ p(t|\mathbf{x},\mathbf{w},\beta) = \mathcal{N}(t|f(\mathbf{x}),\beta^{-1}) \]
+        に従って得られるとします. $\beta$ は観測誤差の分散の逆数であり, $\mathbf{w}$ は回帰方程式のパラメータです.
+        </p>
+        <p>
+        回帰方程式は一般化線形モデルを用います.
+        \[ f(\mathbf{x}) = \mathbf{w}^T\Psi(\mathbf{x}) \]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        学習データ $\{(\mathbf{x}_1,t_1),\ldots,(\mathbf{x}_n,t_n)\}$ に対する尤度関数は
+        \[ L(\mathbf{w}) = p(\mathbf{t}|\mathbf{D},\mathbf{w},\beta) = \prod_{i=1}^n p(t_i|\mathbf{x}_i,\mathbf{w},\beta) \] 
+        となります. 但し $\mathbf{t}=(t_1,\ldots,t_n)^T,\mathbf{D}=(\mathbf{x}_1,\ldots,\mathbf{x}_n)^T$ です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $\mathbf{w}$ の事前分布はこれまでと同様に平均が $0$ の正規分布を利用する事にします.
+        但し, $w_i$ 毎に異なる精度パラメータを用います.
+        \[ p(\mathbf{w}|\boldsymbol{\alpha})=\prod_{i=1}^n\mathcal{N}(w_i|0,\alpha_i^{-1}) \]
+        但し, $\boldsymbol{\alpha}=(\alpha_1,\ldots,\alpha_m)^T$ です.
+        </p>
+        <p class="fragment">
+        ポイントは $\alpha_i$ が非常に大きい値となるならば $w_i$ はほとんど $0$ であるという事です.
+        これによって不要なデータを落としスパースなモデルを得る事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さて<a href="http://nineties.github.io/prml-seminar/11.html#/14">第11回の公式</a>を用いれば  $\mathbf{w}$ の事後分布は
+        \[ p(\mathbf{w}|\mathbf{t},\mathbf{D},\boldsymbol{\alpha},\beta)\propto L(\mathbf{w})p(\mathbf{w}|\boldsymbol{\alpha})=\mathcal{N}(\mathbf{w}|\mathbf{m},\mathbf{\Sigma}) \]
+        \[ \begin{aligned}
+        \mathbf{m} &= \beta \mathbf{\Sigma}\mathbf{X}^T\mathbf{t}\\
+        \mathbf{\Sigma} &= (\mathbf{A}+\beta\mathbf{X}^T\mathbf{X})^{-1}
+        \end{aligned} \]
+        となります. 但し $\mathbf{X}$ は計画行列で, $\mathbf{A}$ は $\alpha_1,\ldots,\alpha_m$ を対角に持つ対角行列です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        これまでのカーネル法と同様に
+        \[ f(\mathbf{x}) = \sum_{i=1}^n w_ik(\mathbf{x}_i,\mathbf{x})+\theta \]
+        という方程式を利用する事にすれば, 計画行列は
+        \[ \mathbf{X} = \begin{pmatrix}
+        k(\mathbf{x}_1,\mathbf{x}_1) & k(\mathbf{x}_1,\mathbf{x}_2) & \cdots & k(\mathbf{x}_1,\mathbf{x}_n) & 1 \\
+        k(\mathbf{x}_2,\mathbf{x}_1) & k(\mathbf{x}_2,\mathbf{x}_2) & \cdots & k(\mathbf{x}_2,\mathbf{x}_n) & 1 \\
+        \vdots & \vdots & \ddots & \vdots & \vdots & \\
+        k(\mathbf{x}_n,\mathbf{x}_1) & k(\mathbf{x}_n,\mathbf{x}_2) & \cdots & k(\mathbf{x}_n,\mathbf{x}_n) & 1 \\
+        1 & 1 & \cdots & 1 & 1
+        \end{pmatrix} \]
+        という形になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さて, 今超パラメータ $\boldsymbol{\alpha},\beta$ の値が不明であるので $\mathbf{w}$ の事後分布の形状も分かりません.
+        </p>
+        <p class="fragment">
+        そこで <strong> エビデンス近似 (evidence approximation) </strong> や <strong> EM法 </strong> という手法を利用する事が出来ます. EM法は後の回にやるのでエビデンス近似の説明をします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        エビデンス近似の考え型はそんなに難しくなく, $\mathbf{w}$ に関してのみ周辺化を行った尤度
+        \[ p(\mathbf{t}|\mathbf{D},\boldsymbol{\alpha},\beta) = \int p(\mathbf{t}|\mathbf{D},\mathbf{w},\beta)p(\mathbf{w}|\boldsymbol{\alpha})\mathrm{d}\mathbf{w} \]
+        を最大化とする $\boldsymbol{\alpha},\beta$ を最適な超パラメータの近似値として利用します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        この積分もやはり公式を用いれば
+        \[ p(\mathbf{t}|\mathbf{D},\boldsymbol{\alpha},\beta) = \mathcal{N}(\mathbf{t}|\mathbf{0},\mathbf{C}) \]
+        但し,
+        \[ \mathbf{C} = \beta^{-1}\mathbf{I} + \mathbf{X}\mathbf{A}^{-1}\mathbf{X}^T \]
+        となり, 対数を取ると
+        \[ \ln p(\mathbf{t}|\mathbf{D},\boldsymbol{\alpha},\beta) = -\frac{1}{2}\mathbf{t}^T\mathbf{C}\mathbf{t}-\frac{1}{2}\ln|\mathbf{C}|+\mathrm{const.} \]
+        となりますので, これを準ニュートン法などで最大化する事になります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        ここでは結果だけ示すと, 以下のようになります.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> エビデンス近似による超パラメータの学習 </h4>
+          <p>
+          $\boldsymbol{\alpha},\beta$ を適当に初期化し
+          \[ \begin{aligned}
+          \alpha_i' &= \frac{\gamma_i}{m_i^2} \\
+          (\beta^{-1})' &=  \frac{||\mathbf{t}-\mathbf{X}\mathbf{m}||^2}{n-\sum_i\gamma_i} \\
+          \gamma_i &= 1 - \alpha_i \Sigma_{ii}
+          \end{aligned} \]
+          により反復を行う. 但し,
+          \[ \begin{aligned}
+          \mathbf{m} &= \beta \mathbf{\Sigma}\mathbf{X}^T\mathbf{t}\\
+          \mathbf{\Sigma} &= (\mathbf{A}+\beta\mathbf{X}^T\mathbf{X})^{-1}
+          \end{aligned} \]
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        学習された超パラメータを $\boldsymbol{\alpha}^*, \beta^*$ とすると, あらたな入力 $\mathbf{x}$ に対する観測値 $t$ の分布は
+        \[ \begin{aligned}
+        p(t|x,\mathbf{D},\mathbf{t},\boldsymbol{\alpha}^*,\beta^*) &= \int p(t|\mathbf{x},\mathbf{w},\beta^*)p(\mathbf{w}|\mathbf{D},\mathbf{t},\boldsymbol{\alpha}^*,\beta^*)\mathrm{d}\mathbf{w}\\
+        &= \mathcal{N}(t|\mathbf{m}^T\Psi(\mathbf{x}), \sigma^2(\mathbf{x}))
+        \end{aligned} \]
+        となります. 但し $\sigma^2(\mathbf{x}) = (\beta^*)^{-1}+\Psi(\mathbf{x})^T\Sigma\Psi(\mathbf{x})$ です.
+        </p>
+        <p class="fragment">
+        つまり, $\mathbf{w} = \mathbf{m}$ とすれば良い事になります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 第13回はここで終わります </h3>
+        <p>
+        次回から第8章グラフィカルモデルに入り, ベイジアンネットワークなどの話をします.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
