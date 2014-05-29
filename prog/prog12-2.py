@@ -18,14 +18,14 @@ train_t[N/2:N] = -1
 # SMO法の反復回数上限
 MAX_ITER = 1000
 
-# カーネル関数の分散パラメータ
-KERN_SIGMA = 0.8
-
 # |x|<ZERO_EPS のとき, x=0が成立していると見なす.
 ZERO_EPS = 1.0e-2
 
+# カーネル関数の分散パラメータ
+KERN_SIGMA = 0.5
+
 # ソフトマージン最適化のパラメータC(大きい程ハードマージンに近づく)
-SOFTMARGIN_C = 1.0e10
+SOFTMARGIN_C = 1.0e1
 
 def kernel(x1, x2):
     return np.exp(-sum((x1-x2)**2)/(2*KERN_SIGMA**2))
@@ -142,12 +142,12 @@ Z = np.vectorize(lambda x, y: discriminant(mu, theta, np.array([x,y])))(X, Y)
 
 xlim(-1, 1)
 ylim(-1, 1)
-Z = Z < 0.3
+Z = Z < 0
 for i in range(N):
     alpha = 0.3
     if mu[i] >= ZERO_EPS:
         alpha = 1.0
     plot(train_x[i,0], train_x[i,1], marker="o", color=["red", "blue"][(train_t[i]+1)/2], markersize=10, alpha=alpha)
 pcolor(X, Y, Z, alpha=0.3)
-title(u"σ=%.1f C=%.1f" % (KERN_SIGMA, SOFTMARGIN_C))
+title(u"σ=%.2f C=%.1f" % (KERN_SIGMA, SOFTMARGIN_C))
 show()

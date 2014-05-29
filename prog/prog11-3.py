@@ -4,17 +4,19 @@ from scipy import linalg as LA
 from matplotlib.pyplot import *
 
 # Gaussian process regression
-N = 100
-train_x = random.uniform(0, 1, N)
-train_t = random.normal(sin(2*pi*train_x), 0.1)
+N = 500
+train_x = random.uniform(0, 5, N)
+train_t = random.normal(sin(pi*train_x) + 0.3*sin(3*pi*train_x), 0.1)
 
 # 精度パラメータ
-BETA = 2
+BETA = 100
 
 # カーネル関数
 def k(x1, x2):
-    SIGMA = 0.1
-    return exp(-(x1-x2)**2/(2*SIGMA**2))
+    SIGMA = 0.05
+    return sum([sin(i*pi*x1)*sin(i*pi*x2) for i in range(30)])
+    # return sin(10*x1)*(sin(10*x2))
+    #return exp(-(x1-x2)**2/(2*SIGMA**2))
 
 # グラム行列
 K = zeros((N, N))
@@ -43,20 +45,20 @@ def cond_p(x, t):
     return 1/sqrt(2*pi*s**2)*exp(-(t-mu)**2/(2*s**2))
 
 # 予測値
-x = linspace(0, 1, 100)
+x = linspace(0, 10, 100)
 y = vectorize(m)(x)
 
 # 予測値のみ
-xlim(0, 1)
+xlim(0, 10)
 ylim(-2.0, 2.0)
 scatter(train_x, train_t)
 plot(x, y)
 show()
 
 # 予測値とp(t|x)と標準偏差
-X, Y = meshgrid(linspace(0, 1, 100), linspace(-2.0, 2.0, 100))
+X, Y = meshgrid(linspace(0, 2, 100), linspace(-2.0, 2.0, 100))
 Z = vectorize(cond_p)(X, Y)
-xlim(0, 1)
+xlim(0, 10)
 ylim(-2.0, 2.0)
 scatter(train_x, train_t)
 plot(x, y)
