@@ -119,7 +119,7 @@ class SVM:
     def learn(self, train_x, train_t):
         #== SMO 法 ==
         # 以下のメインループはアイデアを理解してもらう為に
-        # 非常に単純化したものです.
+        # 非常に単純化したものです. 従って遅いです.
         # もっと高速な方法はSMO法の論文を参照してください.
         self.N       = len(train_t)
         self.train_x = np.copy(train_x)
@@ -169,14 +169,14 @@ class MultiSVM:
 np.random.seed(0)
 random.seed(0)
 
-N = 50
+N = 100
 K = 4
 train_x = np.zeros((N, 2))
 train_t = np.zeros(N, dtype=int)
 for i in range(N):
     k = random.randint(0, K-1)
     mu = [[0.5, 0.5], [-0.5, 0.5], [-0.5, -0.5], [0.5, -0.5]][k]
-    train_x[i, :] = np.random.normal(mu, [0.25, 0.25], 2)
+    train_x[i, :] = np.random.normal(mu, [0.3, 0.3], 2)
     train_t[i] = k
 idxs = np.arange(0, N)
 random.shuffle(idxs)
@@ -190,8 +190,8 @@ xlim(-1,1)
 ylim(-1,1)
 X, Y = np.meshgrid(np.linspace(-1, 1, 100), np.linspace(-1, 1, 100))
 Z = np.vectorize(lambda x, y: msvm.classify([x,y]))(X, Y)
-scatter(train_x[:,0], train_x[:,1], c=train_t, s=50, cmap=cmap.gist_rainbow)
-pcolor(X, Y, Z, alpha=0.3)
+scatter(train_x[:,0], train_x[:,1], c=train_t, s=50, cmap=cmap.cool)
+pcolor(X, Y, Z, alpha=0.2)
 show()
 clf()
 

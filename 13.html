@@ -152,7 +152,18 @@
 
         <section>
         <p>
+        実装例です. ガウスカーネルを利用しています.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig13-1.png"> <a href="prog/prog13-1.py" style="font-size:60%">prog13-1.py</a> </div>
+
+        </section>
+
+        <section>
+        <p>
         今説明したone-versus-the-rest法にはいくつか問題点があります. 例えば, 1対他という形で学習を行うのでデータ数に大きく差が出てしまうという問題です.
+        </p>
+        <p>
+        テキストには SVMを $K(K-1)/2$ 個組み合わせる方法や1つのSVMのみで行う方法など他のアプローチも紹介されています. ここでは詳しくはやりません.
         </p>
         </section>
 
@@ -167,7 +178,7 @@
         <p class="fragment">
         通常は観測値 $t_i$ とモデルによる予測値 $y_i$ の誤差の平方
         \[ |y_i-t_i|^2 \]
-        を用いて最小二乗法などの立式を用いますが, 今回は<strong> $\epsilon$-sensitive誤差関数 </strong>
+        を用いて最小二乗法などの立式を用いますが, 今回は<strong> $\epsilon$-insensitive誤差関数 </strong>
         \[ E_{\epsilon}(y_i-t_i)=\left\{\begin{array}{cl}
         0 & (|y_i-t_i|&lt;\epsilon\text{の時}) \\
         |y_i-t_i|-\epsilon & (\text{それ以外})
@@ -185,7 +196,7 @@
 
         <section>
         <p>
-        $\epsilon$-sensitive誤差関数を用いて, 学習データに対する正則化項付きの誤差関数を
+        $\epsilon$-insensitive誤差関数を用いて, 学習データに対する正則化項付きの誤差関数を
         \[ E(\mathbf{w}) = C\sum_{i=1}^n E_{\epsilon}(y_i-t_i)+\frac{1}{2}||\mathbf{w}||^2 \]
         と表します. $C &gt; 0$は通常正則化項に付ける係数$\lambda$ の逆数です. これを最小化する様な $\mathbf{w}$ を求める事が目標になります.
         </p>
@@ -260,7 +271,9 @@
         <div class="block" style="border-color:blue">
           <h4 style="color:blue"> SVM回帰の最適化問題の双対問題 </h4>
           <p>
-          条件 $0 \leq a_i \leq C, 0\leq \hat{a_i} \leq C$ のもとで
+          条件 $0 \leq a_i \leq C, 0\leq \hat{a_i} \leq C$ 及び
+          \[ \sum_i a_i = \sum_i \hat{a_i} \]
+          のもとで
           \[ \begin{aligned}
           \tilde{L}(\mathbf{a},\hat{\mathbf{a}}) &= -\frac{1}{2}\sum_{i,j}(a_i-\hat{a_i})(a_j-\hat{a_j})k(\mathbf{x}_i,\mathbf{x}_j)\\
           &-\epsilon\sum_i(a_i+\hat{a_i})+\sum_i(a_i-\hat{a_i})t_i
@@ -332,6 +345,31 @@
         </section>
 
         <section>
+        <p>
+        前回と同様にSMO法で学習を行わせてみます. まず数式を簡単にする為に
+        \[ u_i = (a_i + \hat{a_i})/2,\quad v_i = (a_i-\hat{a_i})/2 \]
+        とおくと, 以下の問題に帰着されます.
+        </p>
+        <div class="block" style="border-color:blue">
+          <p>
+          $0 \leq u_i \pm v_i \leq C$ 及び
+          \[ \sum_i v_i = 0 \]
+          のもとで
+          \[ \tilde{L}(\mathbf{u},\mathbf{v})= -\sum_{i,j}v_iv_j K_{ij} - \epsilon\sum_i u_i + \sum_i v_it_i \]
+          を最大化する. 但し $K_{ij}=k(\mathbf{x}_i,\mathbf{x}_j)$
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        $v_i$ を固定して $u_i$ のみを動かせば, $u_i \geq |v_i|$ である事より, 条件 $-C/2 \leq v_i \leq C/2$ 及び $\sum_i v_i = 0$ の下で
+        \[ \tilde{L}(\mathbf{v})= -\sum_{i,j}v_iv_j K_{ij} - \epsilon\sum_i |v_i| + \sum_i v_it_i \]
+        を最大化すれば良いです.
+        </p>
+        </section>
+
+        <section>
         <h2 class="chapter-title"> 関連ベクターマシン </h2>
         </section>
 
@@ -351,8 +389,23 @@
         に従って得られるとします. $\beta$ は観測誤差の分散の逆数であり, $\mathbf{w}$ は回帰方程式のパラメータです.
         </p>
         <p>
-        回帰方程式は一般化線形モデルを用います.
-        \[ f(\mathbf{x}) = \mathbf{w}^T\Psi(\mathbf{x}) \]
+        回帰方程式はSVMと同様に
+        \[ f(\mathbf{x})=\sum_{i=1}^n w_ik(\mathbf{x}_i,\mathbf{x})+\theta \]
+        という形を考えます. $w_i=0$ となる項が出来るだけ多くなるように学習を行う事が目標となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以下, 記述を簡単にする為
+        \[ f(\mathbf{x})=\mathbf{w}^T\Psi(\mathbf{x}) \]
+        と書きます.
+        \[ \begin{aligned}
+        &\mathbf{w}=(w_1,w_2,\ldots,w_n,\theta) \\
+        &\psi_i(\mathbf{x})=k(\mathbf{x}_i,\mathbf{x})\quad (i=1,\ldots,n)\\
+        &\psi_{n+1}(\mathbf{x})=1
+        \end{aligned} \]
+        です.
         </p>
         </section>
 
@@ -371,9 +424,8 @@
         \[ p(\mathbf{w}|\boldsymbol{\alpha})=\prod_{i=1}^n\mathcal{N}(w_i|0,\alpha_i^{-1}) \]
         但し, $\boldsymbol{\alpha}=(\alpha_1,\ldots,\alpha_m)^T$ です.
         </p>
-        <p class="fragment">
-        ポイントは $\alpha_i$ が非常に大きい値となるならば $w_i$ はほとんど $0$ であるという事です.
-        これによって不要なデータを落としスパースなモデルを得る事が出来ます.
+        <p>
+        $\alpha_i$ が非常に大きい値となるならば, $w_i = 0$ とみなす事が出来ます.
         </p>
         </section>
 
@@ -391,15 +443,12 @@
 
         <section>
         <p>
-        これまでのカーネル法と同様に
-        \[ f(\mathbf{x}) = \sum_{i=1}^n w_ik(\mathbf{x}_i,\mathbf{x})+\theta \]
-        という方程式を利用する事にすれば, 計画行列は
+        先ほどの特徴ベクトルのおき方より,
         \[ \mathbf{X} = \begin{pmatrix}
         k(\mathbf{x}_1,\mathbf{x}_1) & k(\mathbf{x}_1,\mathbf{x}_2) & \cdots & k(\mathbf{x}_1,\mathbf{x}_n) & 1 \\
         k(\mathbf{x}_2,\mathbf{x}_1) & k(\mathbf{x}_2,\mathbf{x}_2) & \cdots & k(\mathbf{x}_2,\mathbf{x}_n) & 1 \\
         \vdots & \vdots & \ddots & \vdots & \vdots & \\
         k(\mathbf{x}_n,\mathbf{x}_1) & k(\mathbf{x}_n,\mathbf{x}_2) & \cdots & k(\mathbf{x}_n,\mathbf{x}_n) & 1 \\
-        1 & 1 & \cdots & 1 & 1
         \end{pmatrix} \]
         という形になります.
         </p>
@@ -407,7 +456,7 @@
 
         <section>
         <p>
-        さて, 今超パラメータ $\boldsymbol{\alpha},\beta$ の値が不明であるので $\mathbf{w}$ の事後分布の形状も分かりません.
+        さて, $\mathbf{w}$ の事後分布に対するMAP推定を行ってこれを学習したいのですが,超パラメータ $\boldsymbol{\alpha},\beta$ の値が不明であるということをどうにかしないといけません.
         </p>
         <p class="fragment">
         そこで <strong> エビデンス近似 (evidence approximation) </strong> や <strong> EM法 </strong> という手法を利用する事が出来ます. EM法は後の回にやるのでエビデンス近似の説明をします.
@@ -416,7 +465,7 @@
 
         <section>
         <p>
-        エビデンス近似の考え型はそんなに難しくなく, $\mathbf{w}$ に関してのみ周辺化を行った尤度
+        エビデンス近似の考え方はそんなに難しくなく, $\mathbf{w}$ に関してのみ周辺化を行った尤度
         \[ p(\mathbf{t}|\mathbf{D},\boldsymbol{\alpha},\beta) = \int p(\mathbf{t}|\mathbf{D},\mathbf{w},\beta)p(\mathbf{w}|\boldsymbol{\alpha})\mathrm{d}\mathbf{w} \]
         を最大化とする $\boldsymbol{\alpha},\beta$ を最適な超パラメータの近似値として利用します.
         </p>
@@ -424,13 +473,13 @@
 
         <section>
         <p>
-        この積分もやはり公式を用いれば
+        この積分もやはり第11回にやった公式を用いれば
         \[ p(\mathbf{t}|\mathbf{D},\boldsymbol{\alpha},\beta) = \mathcal{N}(\mathbf{t}|\mathbf{0},\mathbf{C}) \]
         但し,
         \[ \mathbf{C} = \beta^{-1}\mathbf{I} + \mathbf{X}\mathbf{A}^{-1}\mathbf{X}^T \]
         となり, 対数を取ると
         \[ \ln p(\mathbf{t}|\mathbf{D},\boldsymbol{\alpha},\beta) = -\frac{1}{2}\mathbf{t}^T\mathbf{C}\mathbf{t}-\frac{1}{2}\ln|\mathbf{C}|+\mathrm{const.} \]
-        となりますので, これを準ニュートン法などで最大化する事になります.
+        となりますので, これを準ニュートン法などで最大化する事になります. この計算はガウス過程の所でやったものと同様です.
         </p>
         </section>
 
@@ -468,6 +517,13 @@
         <p class="fragment">
         つまり, $\mathbf{w} = \mathbf{m}$ とすれば良い事になります.
         </p>
+        </section>
+
+        <section>
+        <p>
+        実装例です. ガウスカーネルを用いており, 赤い点のみが回帰方程式の構築に使われています. 上下の曲線は標準偏差を表しています. この例では学習データ数50 に対して, 12点だけで回帰方程式を表す事が出来ています.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig13-2.png"> <a href="prog/prog13-2.py" style="font-size:60%">prog13-2.py</a> </div>
         </section>
 
         <section>
