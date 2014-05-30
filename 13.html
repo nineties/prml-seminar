@@ -346,16 +346,16 @@
 
         <section>
         <p>
-        前回と同様にSMO法で学習を行わせてみます. まず数式を簡単にする為に
-        \[ u_i = (a_i + \hat{a_i})/2,\quad v_i = (a_i-\hat{a_i})/2 \]
+        SMO法で学習を行わせてみます. まず数式を簡単にする為に
+        \[ u_i = a_i + \hat{a_i},\quad v_i = a_i-\hat{a_i} \]
         とおくと, 以下の問題に帰着されます.
         </p>
         <div class="block" style="border-color:blue">
           <p>
-          $0 \leq u_i \pm v_i \leq C$ 及び
+          $0 \leq u_i \pm v_i \leq 2C$ 及び
           \[ \sum_i v_i = 0 \]
           のもとで
-          \[ \tilde{L}(\mathbf{u},\mathbf{v})= -\sum_{i,j}v_iv_j K_{ij} - \epsilon\sum_i u_i + \sum_i v_it_i \]
+          \[ \tilde{L}(\mathbf{u},\mathbf{v})= -\frac{1}{2}\sum_{i,j}v_iv_j K_{ij} - \epsilon\sum_i u_i + \sum_i v_it_i \]
           を最大化する. 但し $K_{ij}=k(\mathbf{x}_i,\mathbf{x}_j)$
           </p>
         </div>
@@ -363,10 +363,37 @@
 
         <section>
         <p>
-        $v_i$ を固定して $u_i$ のみを動かせば, $u_i \geq |v_i|$ である事より, 条件 $-C/2 \leq v_i \leq C/2$ 及び $\sum_i v_i = 0$ の下で
-        \[ \tilde{L}(\mathbf{v})= -\sum_{i,j}v_iv_j K_{ij} - \epsilon\sum_i |v_i| + \sum_i v_it_i \]
+        $v_i$ を固定して $u_i$ のみを動かせば, $u_i \geq |v_i|$ である事より, 条件 $-C \leq v_i \leq C$ 及び $\sum_i v_i = 0$ の下で
+        \[ \tilde{L}(\mathbf{v})= -\frac{1}{2}\sum_{i,j}v_iv_j K_{ij} - \epsilon\sum_i |v_i| + \sum_i v_it_i \]
         を最大化すれば良いです.
         </p>
+        <p>
+        これは絶対値関数を含みますが $v_i\neq 0$ では $\mathrm{d}|x|/\mathrm{d}x=\mathrm{sgn}(x)$ となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        $v_p, v_q$ を動かす事にすると $v_p + v_q = \mathrm{const.}$ であるので
+        \[ \frac{\partial \tilde{L}}{\partial v_p} = -\sum_i(K_{pi}-K_{qi})v_i-\epsilon(\mathrm{sgn}(v_p)-\mathrm{sgn}(v_q))+t_p-t_q \]
+        となります. 従って $v_p \rightarrow v_p+\Delta_p, v_q \rightarrow v_q - \Delta_p$ と動かして $0$ と置くことによって
+        \[ \Delta_p = \frac{\sum_i(K_{qi}-K_{pi})v_i+t_p-t_q-\epsilon(\mathrm{sgn}(v_p+\Delta_p)-\mathrm{sgn}(v_q-\Delta_p))}{K_{pp}-2K_{pq}+K_{qq}} \]
+        となります.
+        </p>
+        <p>
+        これは両辺に $\Delta_p$ を含みますが $\mathrm{sgn}(v_p+\Delta_p)-\mathrm{sgn}(v_p-\Delta_p)$ は $\Delta_p$ について単調増加するので $\Delta_p$ は唯一つしか存在しません. $\mathrm{sgn}(v_p+\Delta_p)-\mathrm{sgn}(v_p-\Delta_p)=0,\pm 2$ の3パターンしかないので1つずつチェックすればOKです.
+        </p>
+        <p>
+        その後前頁の条件に従ってクリッピングを行って更新を行います. $v_p,v_q$ の選び方は前回と同様でKKT条件を満たさない $p$ を選んだ後, 
+        $|\sum_i(K_{qi}-K_{pi})v_i|=|f(\mathbf{x}_q)-f(\mathbf{x}_p)|$ が最大となる $q$ を選びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        実装例です. ガウスカーネルを用いており, 赤い点のみが回帰方程式の構築に使われています. この例では学習データ数20 に対して, 11点で回帰方程式を表す事が出来ています.
+        </p>
+        <div align="center"> <img width="600px" src="prog/fig13-3.png"> <a href="prog/prog13-3.py" style="font-size:60%">prog13-3.py</a> </div>
         </section>
 
         <section>
@@ -521,7 +548,7 @@
 
         <section>
         <p>
-        実装例です. ガウスカーネルを用いており, 赤い点のみが回帰方程式の構築に使われています. 上下の曲線は標準偏差を表しています. この例では学習データ数50 に対して, 12点だけで回帰方程式を表す事が出来ています.
+        実装例です. ガウスカーネルを用いており, 赤い点のみが回帰方程式の構築に使われています. 上下の曲線は標準偏差を表しています. この例では学習データ数20 に対して, 5点だけで回帰方程式を表す事が出来ています.
         </p>
         <div align="center"> <img width="600px" src="prog/fig13-2.png"> <a href="prog/prog13-2.py" style="font-size:60%">prog13-2.py</a> </div>
         </section>

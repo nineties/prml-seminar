@@ -12,7 +12,7 @@ THRESHOLD  = 1.0e2 # これよりαが大きいならばw=0とする.
 
 # 学習データ
 random.seed(0)
-N = 50
+N = 20
 train_x = random.uniform(-1, 1, N)
 train_t = random.normal(sin(2*pi*train_x), 0.5)
 
