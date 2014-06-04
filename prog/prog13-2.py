@@ -12,7 +12,7 @@ THRESHOLD  = 1.0e2 # これよりαが大きいならばw=0とする.
 
 # 学習データ
 random.seed(0)
-N = 20
+N = 600
 train_x = random.uniform(-1, 1, N)
 train_t = random.normal(sin(2*pi*train_x), 0.5)
 
@@ -25,17 +25,17 @@ for i in range(N):
     for j in range(N):
         X[i, j] = kernel(train_x[i], train_x[j])
 
-alpha = random.uniform(0, 1, N+1)
+alpha = np.random.uniform(0, 1, N+1)
 beta  = 1.0
 for i in range(MAX_ITER):
-    A = diag(alpha)
+    A = np.diag(alpha)
     SIGMA = LA.inv(A + beta * X.T.dot(X))
     m = beta * SIGMA.dot(X.T.dot(train_t))
-    gamma = 1 - alpha*diagonal(SIGMA)
+    gamma = 1 - alpha*np.diagonal(SIGMA)
     new_alpha = gamma / m**2
-    new_alpha[where(new_alpha > THRESHOLD)] = THRESHOLD # Overflow対策
+    new_alpha[np.where(new_alpha > THRESHOLD)] = THRESHOLD # Overflow対策
     num   = LA.norm(train_t - X.dot(m))**2
-    denom = N - sum(gamma)
+    denom = N - np.sum(gamma)
     new_beta = denom/num
 
     if LA.norm(new_alpha-alpha)/LA.norm(new_alpha) < ITER_EPS and\
@@ -73,7 +73,7 @@ def std(w, x):
 
 x = linspace(-1, 1, 100)
 y = vectorize(lambda x: f(w, x))(x)
-s = vectorize(lambda x: std(w, x))(x)
+#s = vectorize(lambda x: std(w, x))(x)
 
 xlim(-1, 1)
 ylim(-2, 2)
@@ -85,8 +85,8 @@ for i in range(N):
         color = "red"
     plot(train_x[i], train_t[i], "o", color=color)
 plot(x, y)
-plot(x, y+s)
-plot(x, y-s)
+#plot(x, y+s)
+#plot(x, y-s)
 show()
 
 print "%d/%d" % (count, N)
