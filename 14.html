@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第14回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第14回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年6月4日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ベイジアンネットワーク </h2>
+        </section>
+
+        <section>
+        <p>
+        <strong> グラフィカルモデル (graphical model) </strong>とは有向グラフや無向グラフを用いて確率分布を表現したものです。
+        </p>
+        <p>
+        この際, 確率分布の <strong>条件付き独立性 (conditional independence)</strong> の構造をグラフ構造として表す事が出来、これを利用して周辺分布の計算などを効率的に行う事が出来ます。
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例として, 離散的な確率変数 $A,B,C$ からなる同時分布
+        \[ p(A, B, C) \]
+        について考えます. それぞれの変数は $N_A,N_B,N_C$ 通りの値を取るとします.
+        </p>
+        <p class="fragment">
+        値の組合せは $N_AN_BN_C$ 通りになるので, この分布を表現する為には同じ数だけの実数値が必要になります.
+        <span style="font-size:80%">(確率の和が1である事を使えば多少減らせます)</span>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        つまり, 以下の様なテーブルで表されます.
+        \[ \begin{array}{cccc}
+        A & B & C & p(A,B,C) \\ \hline
+        a_1 & b_1 & c_1 & p(A=a_1,B=b_1,C=c_1) \\
+        \vdots & \vdots & \vdots & \vdots \\
+        a_i & b_j & c_k & p(A=a_i,B=b_j,C=c_k)\\
+        \vdots & \vdots & \vdots & \vdots \\
+        a_{N_A} & b_{N_B} & c_{N_C} & p(A=a_{N_A},B=b_{N_B},C=c_{N_C}) \\
+        \end{array}\]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $p(A,B,C)$ を $A,B$ に関して周辺化して $p(C)$ を求めたいならば
+        \[ p(C) = \sum_{A,B}p(A,B,C) \]
+        という計算を行います.
+        </p>
+        <p class="fragment">
+        これは
+        \[ p(C=c_k) = \sum_{i=1}^{N_A}\sum_{j=1}^{N_B}p(A=a_i,B=b_j,C=c_k) \]
+        の略記です. これを $k=1,2,\ldots,N_C$ それぞれに関して計算するので $\mathcal{O}(N_AN_BN_C)$ の計算量が必要となります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        つまり, $p(C=c_k)$ を求める為には以下の部分を全て足します.
+        \[ \begin{array}{cccc}
+        A & B & C & p(A,B,C) \\ \hline
+        \vdots & \vdots & \vdots & \vdots \\
+        a_{N_A} & b_{N_B} & c_{k-1} & p(A=a_{N_A},B=b_{N_B},C=c_{k-1})\\
+        a_1 & b_1 & c_k & \color{red}{ p(A=a_1,B=b_1,C=c_k) }\\
+        a_2 & b_1 & c_k & \color{red}{ p(A=a_2,B=b_1,C=c_k) }\\
+        \vdots & \vdots & \vdots & \color{red}{ \vdots }\\
+        a_{N_A} & b_{N_B} & c_k & \color{red}{ p(A=a_{N_A},B=b_{N_B},C=c_k) }\\
+        a_1 & b_1 & c_{k+1} & p(A=a_1 ,B=b_1,C=c_{k+1})\\
+        \vdots & \vdots & \vdots & \vdots \\
+        \end{array}\]
+        </p>
+        </section>
+
+        <section>
+        <p>
+        続いて分布 $p(A,B,C)$ に何らかの条件付き独立性が存在する場合を考えます.
+        </p>
+        <p class="fragment">
+        まず, 確率の乗法定理より
+        \[ p(A,B,C) = p(C|A,B)p(B|A)p(A) \]
+        と書くことが出来ます.
+        </p>
+        <p class="fragment">
+        ここで例えば
+        \[ p(C|A,B) = p(C|B) \]
+        が成り立っている場合を考えましょう. この事を<strong> $B$ を所与として $A,C$ が独立</strong>と言います.
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> 条件付き独立性 </h4>
+          <p>
+          確率変数 $X,Y,C$ に対して
+          \[ p(Y|X,C) = p(Y|C) \]
+          が成り立つ時, <strong> $C$ を所与として $X,Y$ は独立</strong> であるという.
+          また, これは
+          \[ p(X,Y|C) = p(X|C)p(Y|C) \]
+          が成り立つ事と同値である.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        これは以下のように一般化出来ます.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> 条件付き独立性 </h4>
+          <p>
+          確率変数の集合 $\mathbf{X},\mathbf{Y},\mathbf{C}$ に対して
+          \[ p(\mathbf{Y}|\mathbf{X},\mathbf{C}) = p(\mathbf{Y}|\mathbf{C}) \]
+          が成り立つ時, <strong> $\mathbf{C}$ を所与として $\mathbf{X},\mathbf{Y}$ は独立</strong> であるという.
+          また, これは
+          \[ p(\mathbf{X},\mathbf{Y}|\mathbf{C}) = p(\mathbf{X}|\mathbf{C})p(\mathbf{Y}|\mathbf{C}) \]
+          が成り立つ事と同値である.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <img width="60px" src="fig/graphical-model1.png" align="right">
+        <p>
+        \[ p(A,B,C) = p(C|A,B)p(B|A)p(A) \]
+        において $B$ を所与として $A,C$ が独立ならば
+        \[ p(C|A,B) = p(C|B) \]
+        なので
+        \[ p(A,B,C) = p(C|B)p(B|A)p(A) \]
+        となります. この状況を右のようなグラフで表現する事が出来ます.
+        これをこの分布の <strong> ベイジアンネットワーク (Bayesian network) </strong> と呼びます.
+        一般的な定義は後でやります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        簡単な例で, どんな状況かイメージしてみましょう.
+        </p>
+        <p class="fragment">
+        ネットショップの登録ユーザーにある商品を紹介する事を考えます.
+        そして, 過去のアンケート結果や国の出している統計から, 以下の事が解っているとしましょう.
+        <ul>
+          <li class="fragment"> あるユーザーが主婦(主夫)であるか否か$(B)$と, その商品を買ってもらえるか否か$(C)$の関係 $p(C|B)$  </li>
+          <li class="fragment"> ある人が女性であるか否か $(A)$ と, 主婦(主夫)であるか否か $(B)$ の関係 $p(B|A)$ </li>
+          <li class="fragment"> ユーザーに占める女性の割合 $p(A)$
+        </ul>
+        </p>
+        </section>
+
+        <section>
+        <img width="200px" src="fig/graphical-model2.png" align="right">
+        <p>
+        この時 $B$ を所与として $A,C$ が独立というのは
+        \[ p(\text{買う}|\text{女性},\text{主婦}) = p(\text{買う}|\text{主婦}) \]
+        つまり, 主婦(主夫)であるという事が解っている場合には性別の情報は役に立たないという状況を表します.
+        </p>
+        <p class="fragment">
+        $B$ であるか否かが分かっていない場合には $A$ が $B$ に影響を及ぼし, 間接的に $C$ にも影響します. 一方, $B$ が所与の場合には $A\rightarrow B\rightarrow C$ のパスがブロックされて, $A$ が $C$ に影響しないという事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        次に, 条件付き独立性を利用してどのようにデータ量・計算量を減らせるのか見てみましょう.
+        </p>
+        <p class="fragment">
+        $B$ を所与として $A,C$ が独立の場合,
+        \[ p(A,B,C) = p(C|B)p(B|A)p(A) \]
+        ですから,これを表現する為には, $P(A),P(B|A),P(C|B)$ それぞれを表すテーブルがあれば良いです.
+        よって, テーブルサイズの和は
+        \[ N_A + N_AN_B + N_BN_C \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        先ほどと同様に $p(C)$ の計算を考えてみると
+        \[ p(C) = \sum_{A,B}p(C|B)p(B|A)p(A) \]
+        となりますが,  $p(C|B)$ は $A$ に依存しない為
+        \[ p(C) = \sum_{B}p(C|B)\sum_{A}p(B|A)p(A) \]
+        とくくりだす事が出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <img width="200px" src="fig/graphical-model3.png" align="right">
+        <p>
+        これを計算する為には, まず
+        \[ p(B) = \sum_{A}p(B|A)p(A) \]
+        を各 $B$ に対して計算します. $\sum_{A}$ の部分は $\mathcal{O}(N_A)$ の計算量となるので併せて $\mathcal{O}(N_AN_B)$ となります.
+        </p>
+        <p class="fragment">
+        続いて
+        \[ p(C) = \sum_{B}p(C|B)p(B) \]
+        を各 $C$ に対して計算します. この計算量は $\mathcal{O}(N_BN_C)$ となりますので, 上と併せて
+        \[ \mathcal{O}(N_AN_B+N_BN_C) \]
+        となります. 元々 $\mathcal{O}(N_AN_BN_C)$ だったので大分計算量が減っています.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        さっきの例でやってみましょう.
+        </p>
+        <p>
+        例えば条件付き確率が以下のようになっていたとします(数値は適当).
+        \[ \begin{aligned}
+        &\begin{array}{cc}
+        A & p(A) \\ \hline
+        \text{男性} & 0.3 \\
+        \text{女性} & 0.7
+        \end{array}
+        \quad
+        \begin{array}{ccc}
+        A & B & p(B|A) \\ \hline
+        \text{男性} & \text{主夫} & 0.1 \\ 
+        \text{男性} & \text{主夫じゃない} & 0.9 \\ 
+        \text{女性} & \text{主婦} & 0.4 \\ 
+        \text{女性} & \text{主婦じゃない} & 0.6 \\ 
+        \end{array} \\
+        &
+        \begin{array}{ccc}
+        B & C & p(C|B) \\ \hline
+        \text{主婦(主夫)} & \text{買う} & 0.3 \\
+        \text{主婦(主夫)} & \text{買わない} & 0.7 \\
+        \text{主婦(主夫)じゃない} & \text{買う} & 0.1 \\
+        \text{主婦(主夫)じゃない} & \text{買わない} & 0.9 \\
+        \end{array}
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        まず, 
+        \[ \begin{array}{cc}
+        A & p(A) \\ \hline
+        \text{男性} & 0.3 \\
+        \text{女性} & 0.7
+        \end{array}
+        \quad
+        \begin{array}{ccc}
+        A & B & p(B|A) \\ \hline
+        \text{男性} & \text{主夫} & 0.1 \\ 
+        \text{男性} & \text{主夫じゃない} & 0.9 \\ 
+        \text{女性} & \text{主婦} & 0.4 \\ 
+        \text{女性} & \text{主婦じゃない} & 0.6 \\ 
+        \end{array} \]
+        から
+        \[ \begin{array}{cc}
+        B & p(B) \\ \hline
+        \text{主婦(主夫)} & 0.1\cdot 0.3 + 0.4\cdot 0.7 = 0.31 \\
+        \text{主婦(主夫)じゃない} & 0.9\cdot 0.3 + 0.6\cdot 0.7 = 0.69
+        \end{array} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        続いて,
+        \[ \begin{array}{cc}
+        B & p(B) \\ \hline
+        \text{主婦(主夫)} & 0.31 \\
+        \text{主婦(主夫)じゃない} & 0.69
+        \end{array}
+        \quad
+        \begin{array}{ccc}
+        B & C & p(C|B) \\ \hline
+        \text{主婦(主夫)} & \text{買う} & 0.3 \\
+        \text{主婦(主夫)} & \text{買わない} & 0.7 \\
+        \text{主婦(主夫)じゃない} & \text{買う} & 0.1 \\
+        \text{主婦(主夫)じゃない} & \text{買わない} & 0.9 \\
+        \end{array}
+        \]
+        から
+        \[ \begin{array}{cc}
+        C & p(C) \\ \hline
+        \text{買う} & 0.3\cdot 0.31 + 0.1\cdot 0.69 = \color{red}{ 0.162 }\\
+        \text{買わない} & 0.7\cdot 0.31 + 0.9\cdot 0.69 = \color{red}{ 0.838 }
+        \end{array} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        もうちょっと練習してみましょう.
+        </p>
+        <img width="60px" src="fig/graphical-model1.png" align="right">
+        <p>
+        今度は同じモデル
+        \[ p(A,B,C) = p(C|B)p(B|A)p(A) \]
+        において,
+        \[ p(C|A) \]
+        を計算する方法を考えましょう.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        \[ p(C|A) = \frac{p(A,C)}{p(A)} \]
+        なので, $p(A,C)$ と $p(A)$を計算出来れば良いです.
+        </p>
+        <p class="fragment">
+        $p(A,B,C)$ を $B$ に関して周辺化して
+        \[ p(A,C) = \sum_B p(A,B,C) \]
+        つまり,
+        \[ p(A,C) = \sum_B p(C|B)p(B|A)p(A) = p(A)\sum_B p(C|B)p(B|A) \]
+        となりますから
+        \[ p(C|A) = \sum_B p(C|B)p(B|A) \]
+        です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        従って,
+        \[ \begin{array}{ccc}
+        A & B & p(B|A) \\ \hline
+        \text{男性} & \text{主夫} & 0.1 \\ 
+        \text{男性} & \text{主夫じゃない} & 0.9 \\ 
+        \text{女性} & \text{主婦} & 0.4 \\ 
+        \text{女性} & \text{主婦じゃない} & 0.6 \\ 
+        \end{array}
+        \quad
+        \begin{array}{ccc}
+        B & C & p(C|B) \\ \hline
+        \text{主婦(主夫)} & \text{買う} & 0.3 \\
+        \text{主婦(主夫)} & \text{買わない} & 0.7 \\
+        \text{主婦(主夫)じゃない} & \text{買う} & 0.1 \\
+        \text{主婦(主夫)じゃない} & \text{買わない} & 0.9 \\
+        \end{array} \]
+        より
+        \[ \begin{array}{ccc}
+        A & C & p(C|A) \\ \hline
+        \text{男性} & \text{買う} & 0.3\cdot 0.1 + 0.1\cdot 0.9 = \color{red}{ 0.12 } \\
+        \text{男性} & \text{買わない} & 0.7\cdot 0.1 + 0.9\cdot 0.9 = \color{red}{ 0.88 }\\
+        \text{女性} & \text{買う} & 0.3\cdot 0.4 + 0.1\cdot 0.6 = \color{red}{ 0.18 }\\
+        \text{女性} & \text{買わない} &  0.7\cdot 0.4 + 0.9\cdot 0.6 = \color{red}{ 0.82 }
+        \end{array} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <img width="100px" src="fig/graphical-model4.png" align="right">
+        <p>
+        今度は, $C$ の値が $c$ であると既に解っている場合の
+        \[ p(A|C=c) \]
+        を考えてみましょう.
+        </p>
+        <p>
+        $C$ の様にその値が観測された確率変数に対応するノードを<strong>エビデンスノード (evidence node)</strong> と呼びます.
+        また, この時 $C$ は <strong> インスタンス化 (instantiated)</strong> されていると言います.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        \[ p(A|C=c) = \frac{p(A,C=c)}{p(C=c)} \]
+        ですが, $p(C)$ の計算は既にやりました. また,
+        \[ \begin{aligned}
+        p(A,C=c) & =\sum_B p(A,B,C=c) \\
+        &= \sum_B p(C=c|B)p(B|A)p(A) \\
+        &= p(A)\sum_B p(C=c|B)p(B|A)
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        先ほどの例で $p(A|\text{買う})$ を計算してみましょう. まず
+        \[ \begin{array}{ccc}
+        A & B & p(B|A) \\ \hline
+        \text{男性} & \text{主夫} & 0.1 \\ 
+        \text{男性} & \text{主夫じゃない} & 0.9 \\ 
+        \text{女性} & \text{主婦} & 0.4 \\ 
+        \text{女性} & \text{主婦じゃない} & 0.6 \\ 
+        \end{array}
+        \quad
+        \begin{array}{cc}
+        B & p(\text{買う}|B) \\ \hline
+        \text{主婦(主夫)} & 0.3 \\
+        \text{主婦(主夫)じゃない} & 0.1 \\
+        \end{array} \]
+        より
+        \[ \begin{array}{cc}
+        A & \sum_Bp(\text{買う}|B)p(B|A) \\ \hline
+        \text{男性} & 0.3\cdot 0.1 + 0.1\cdot 0.9 = 0.12 \\
+        \text{女性} & 0.3\cdot 0.4 + 0.1\cdot 0.6 = 0.18
+        \end{array} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        これに $p(A)$ を掛けて
+        \[ \begin{array}{cc}
+        A & p(A,\text{買う}) \\ \hline
+        \text{男性} & 0.3\cdot 0.12 = 0.036\\
+        \text{女性} & 0.7\cdot 0.18 = 0.126
+        \end{array} \]
+        です. これを既に計算した $p(\text{買う}) = 0.162$ で割って
+        \[ \begin{array}{cc}
+        A & p(A|\text{買う}) \\ \hline
+        \text{男性} & 0.036/0.162 \approx \color{red}{ 0.222 } \\
+        \text{女性} & 0.126/0.162 \approx \color{red}{ 0.778 }
+        \end{array} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ベイジアンネットワークがどんなものであるのか大体イメージが掴めたと思いますので, 一般的な説明をしていきます.
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> ベイジアンネットワーク </h4>
+          <p>
+          確率変数 $\mathbf{X}=(X_1,X_2,\ldots,X_n)$ からなる <strong> ベイジアンネットワーク(Bayesian network) </strong> 
+          は以下により定まる.
+          </p>
+          <ul>
+            <li> $\mathbf{X}$ をノード集合とする 非循環有向グラフ (directed acyclic graph, DAG) </li>
+            <li> 各変数 $X_i$ に対する条件付き確率
+            \[ p(X_i|\mathrm{pa}(X_i)) \]
+            但し $\mathrm{pa}(X_i)$ はノード $X_i$ の親ノードの集合 </li>
+          </ul>
+        </div>
+        </section>
+
+        <section>
+        <img width="200px" src="fig/graphical-model5.png" align="right">
+        <p>
+        有向グラフというのは辺(エッジ)に向きが付いたグラフ構造の事で,
+        非循環というのは右図のように(辺の向きを考慮した)閉路が存在しないという事です.
+        </p>
+        </section>
+
+        <section>
+        <img width="300px" src="fig/bayesian-network1.png" align="right">
+        <p>
+        例えば, 右図のようなものがベイジアンネットワークの例です.
+        このベイジアンネットワークは $A,B,C,D,E$ の5つの確率変数からなり
+        \[ \begin{aligned}
+        \mathrm{pa}(A) &= \emptyset \\
+        \mathrm{pa}(B) &= \emptyset \\
+        \mathrm{pa}(C) &= \{A,B\} \\
+        \mathrm{pa}(D) &= \{B\} \\
+        \mathrm{pa}(E) &= \{C,D\}
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ベイジアンネットワークの中には確率変数間の条件付き独立性が埋め込まれているわけですが, これを説明するのが <strong> d分離 (d-separation)</strong> という性質です.
+        </p>
+        <p>
+        目標は
+        \[ \text{グラフ上でd分離} \Rightarrow \text{分布上で独立} \]
+        となるようにグラフを作る事です.
+        </p>
+        </section>
+
+        <section>
+        <img width="80px" src="fig/d-separation1.png" align="right">
+        <p>
+        グラフ中の右図のような部分を <strong> 逐次結合 (serial connection) </strong> と呼びます.
+        </p>
+        <p>
+        逐次結合に対しては
+        \[ \text{$B$を所与として $A,C$ は d分離である} \]
+        と言います. このグラフは先ほどやったのでイメージ出来ると思います.
+        </p>
+        </section>
+
+        <section>
+        <img width="300px" src="fig/d-separation2.png" align="right">
+        <p>
+        右図のような部分は <strong> 分岐結合 (diverging connection) </strong> と呼びます.
+        </p>
+        <p>
+        分岐結合に対しては
+        \[ \text{$A$を所与として $B_1,B_2,\ldots,B_m$ は d分離である} \]
+        と言います.
+        </p>
+        </section>
+
+        <section>
+        <img width="400px" src="fig/d-separation3.png" align="right">
+        <p>
+        右図を見て下さい.
+        </p>
+        <p class="fragment">
+        ある人の性別が所与でない場合
+        \[ \text{背が高い}\rightarrow\text{きっと男性だろう}\rightarrow\text{きっと髪が短いだろう} \]
+        というように背が高い事と髪が長い事には間接的な従属性があります.
+        </p>
+        <p class="fragment">
+        しかし, その人の性別が既に判明しているならば, 背が高い事と髪の長さは関係なさそうです(本当かどうかは知りません).
+        </p>
+        </section>
+
+        <section>
+        <img width="300px" src="fig/d-separation4.png" align="right">
+        <p>
+        右図のような部分は <strong> 合流結合 (converging connection) </strong> と呼びます.
+        </p>
+        <p>
+        合流結合に対しては
+        \[ \begin{aligned}
+        &\text{$B$もしくは $B$の子孫が所与でないとき,}\\
+        &\text{$A_1,A_2,\ldots,A_m$ はd分離である} 
+        \end{aligned} \]
+        と言います. これまでより若干複雑なので注意して下さい.
+        </p>
+        </section>
+
+        <section>
+        <img width="300px" src="fig/d-separation6.png" align="right">
+        <p>
+        右図を見て下さい.
+        </p>
+        <p class="fragment">
+        普通, ソフトウェアにバグがある事とマシンが故障する事は無関係です.
+        つまり「異常動作」が所与でない場合には「バグ」と「故障」は独立です.
+        </p>
+        <p class="fragment">
+        しかし, 異常動作が発生した場合
+        \[ \text{マシンが故障していないならバグがあるはず} \]
+        などの推論が可能になります. つまり「異常動作」が所与の時に「バグ」と「故障」が従属となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以上を元にして一般的な状況におけるd分離性が定義されます.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> d分離 </h4>
+          <p>
+          ノード集合 $E$ が所与である時, ノード $X,Y$ を結ぶ(辺の向きを無視した)全てのパス上に, 以下の条件を満たすノードが存在する時, $X,Y$ は $E$ を所与としてd分離であると言う.
+          </p>
+          <ul>
+            <li> 逐次結合・分岐結合部のノードであって $E$ に含まれるもの </li>
+            <li> 合流結合部のノードもしくはその子孫であって $E$ に含まれないもの </li>
+          </ul>
+        </div>
+        </section>
+
+        <section>
+        <img width="300px" src="fig/d-separation7.png" align="right">
+        <p>
+        例えば$B$にエビデンスが与えられた右図において, $A$ と $D$ はd分離の関係にあるでしょうか？
+        </p>
+        <div class="fragment">
+        <p>
+        $A$から$D$へのパスは2つありますが
+        <ul>
+          <li> パス $A\rightarrow C\rightarrow B\rightarrow D$ は分岐結合 $B$ でインスタンス化されている.
+          <li> パス $A\rightarrow C\rightarrow E\rightarrow D$ は合流結合 $E$ でインスタンス化されていない
+        </ul>
+        ですので, $A,D$ は $B$ を所与としてd分離という事になります.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <img width="300px" src="fig/d-separation8.png" align="right">
+        <p>
+        こちらではどうでしょうか？
+        </p>
+        <div class="fragment">
+        <p>
+        こんどはパス $A\rightarrow C\rightarrow E\rightarrow D$ が($E$ でインスタンス化されている為に)繋がっています.
+        従って $A,D$ は $B,E$ を所与とするとd分離ではありません.
+        </div>
+        </section>
+
+        <section>
+        <p>
+        ノード集合 $\mathbf{X},\mathbf{Y},\mathbf{C}$ に対するd分離性も同様に定義されます.
+        </p>
+        <p>
+        つまり $\mathbf{X}$と$\mathbf{Y}$ 内の全てのノードのペアが $\mathbf{C}$ を所与として d分離になる時に $\mathbf{X},\mathbf{Y}$ はd分離であると言います.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さて, あるベイジアンネットワークのグラフ構造が
+        \[ \text{グラフ上でd分離} \Rightarrow \text{確率分布上で条件付き独立} \]
+        を全ての $\mathbf{X},\mathbf{Y},\mathbf{C}$ の組合せに対して満たす時, このグラフを 
+        <strong> インデペンデントマップ (independent map, I-map) </strong> と呼びます.
+        </p>
+        <p class="fragment">
+        \[ \text{確率分布上で条件付き独立} \Rightarrow \text{グラフ上でd分離} \]
+        は一般に成り立たないので, I-mapとは確率分布の条件付き独立性の構造の一部を表現したものです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        さて, ベイジアンネットワークのグラフがI-mapであれば, これを用いて確率分布を厳密に表現する事が出来ます.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> ベイジアンネットワークの表現する分布 </h4>
+          ベイジアンネットワークのグラフがI-mapであるならば
+          \[ p(\mathbf{X}) = \prod_i p(X_i|\mathrm{pa}(X_i)) \]
+          が成立する.
+        </div>
+        </section>
+
+        <section>
+        <p>
+        例えば下のネットワークに対しては(これがI-mapであると仮定すると),
+        \[ p(A,B,C,D,E) = p(A)p(B)p(C|A,B)p(D|B)p(E|C,D) \]
+        となります.
+        </p>
+        <div align="center"><img width="300px" src="fig/bayesian-network1.png"></div>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ベイジアンネットワーク上での推論 </h2>
+        </section>
+
+        <section>
+        <p>
+        ベイジアンネットワーク上で, 幾つかの変数の集合 $Q$ (クエリ) の対して
+        同時確率
+        \[ p(Q) \]
+        を計算する事をベイジアンネットワークにおける推論と言います.
+        </p>
+        <p>
+        条件付き確率も
+        \[ p(\mathbf{X}|\mathbf{Y}) = \frac{p(\mathbf{X},\mathbf{Y})}{p(\mathbf{Y})} \]
+        によって同時確率の計算に帰着する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        エビデンスが全くない状態での $p(Q)$ を <strong>周辺事前分布 (marginal prior distribution) </strong>, エビデンス $E$ が与えられた状態での $p(Q|E)$ を <strong> 周辺事後分布 (marginal posterior distribution)</strong> と呼びます.
+        </p>
+        <p>
+        まずは周辺事前分布の計算を考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        下のグラフに対して $p(B,E)$ を計算する事を考えてみましょう.
+        </p>
+        <p class="fragment">
+        \[ p(A,B,C,D,E) = p(A)p(B)p(C|A,B)p(D|B)p(E|C,D) \]
+        だったので
+        \[ p(B,E) = \sum_{A,C,D}p(A)p(B)p(C|A,B)p(D|B)p(E|C,D) \]
+        となります.
+        </p>
+        <div align="center"><img width="300px" src="fig/bayesian-network1.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $\sum$ に関して分配すると例えば
+        \[ p(B,E) = p(B)\sum_{D}p(D|B)\sum_{C}p(E|C,D)\sum_{A}p(A)p(C|A,B) \]
+        となります.
+        </p>
+        <p>
+        つまり, $A$に関する因数を全部掛けて足す $\rightarrow$ $C$に関する因数を全部掛けて足す $\rightarrow$ $D$に関する因数を全部掛けて足す.
+        という流れで計算を行う事が出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p> 具体的に書き下してみましょう. </p>
+        <ol>
+          <li> $\mathcal{S} = \{p(A),p(B),p(C|A,B),p(D|B),p(E|C,D)\}$ とする. </li>
+          <li> $A$を含むもの全てを掛けあわせて足して,それらを $\mathcal{S}$ から除く. 計算した
+          \[ \varphi(B,C,D,E) = \sum_{A}p(A)p(C|A,B) \]
+          を追加して$\mathcal{S} = \{p(B),p(D|B),p(E|C,D),\varphi(B,C,D,E)\}$ とする. </li>
+          <li> $C$ を含むもの全てを掛けあわせて足して, それらを $\mathcal{S}$ から除く. 計算した
+          \[ \varphi(B,D,E) = \sum_{C}p(E|C,D)\varphi(B,C,D,E) \]
+          を追加して$\mathcal{S} = \{p(B),p(D|B),\varphi(B,D,E)\}$ とする. </li>
+          <li> $D$ を含むもの全てを掛けあわせて足して, それらを $\mathcal{S}$ から除く. 計算した
+          \[ \varphi(B,E) = \sum_{D}p(D|B)\varphi(B,D,E) \]
+          を追加して$\mathcal{S} = \{p(B),\varphi(B,E)\}$とする. </li>
+          <li> $\mathcal{S}$ 内のファクターを全て掛けたものを出力する.
+          \[ p(B,E) = p(B)\varphi(B,E) \]
+          </li>
+        </ol>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        途中計算に現れた因数, つまり $\mathcal{S}$ の要素を <strong>ファクター(factor)</strong> と呼びます.
+        </p>
+        <p class="fragment">
+        ファクターの集合からは
+        \[ \begin{aligned}
+          &\{p(A),p(B),p(C|A,B),p(D|B),p(E|C,D)\}\\
+          \rightarrow& \{p(B),p(D|B),p(E|C,D),\varphi(B,C,D,E)\}\\
+          \rightarrow& \{p(B),p(D|B),\varphi(B,D,E)\}\\
+          \rightarrow& \{p(B),\varphi(B,E)\}
+          \end{aligned} \]
+          と一文字ずつ変数が消えていきます. そこで, このアルゴリズムを <strong>変数消去アルゴリズム(variable elimination)</strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p> まとめましょう. </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> 変数消去による周辺事前分布の計算 </h4>
+          <p>
+          クエリを $\mathbf{Q}$ とする.
+          \[ \mathcal{S} = \{ p(X_i|\mathrm{pa}(X_i))\}_i \]
+          とし, $\mathbf{Q}$ に含まれない変数 $X$ に対して以下を繰り返す.
+          </p>
+          <ol>
+            <li> $\mathbf{S}$ 内の$X$を含むファクターを全て除く. </li>
+            <li> ファクターを掛けて $X$ について足し合わせる. </li>
+            <li> それを $\mathbf{S}$ に追加する. </li>
+          </ol>
+          <p>
+          $\mathbf{S}$ 内のファクターを全て掛け合わせて出力する.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        これをエビデンス $E$ が与えられたものに修正する事は簡単です. 各ファクター$\varphi(\mathbf{X})$について
+        \[ \varphi(\mathbf{X})' = \left\{\begin{array}{cl}
+        \varphi(\mathbf{X}) & (\text{$\mathbf{X}$と$E$が $E$内の変数に関して一致する}) \\
+        0 & (それ以外)
+        \end{array}\right. \]
+        と修正を行ってから変数消去を行えば良いです.
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> 変数消去による周辺事後分布の計算 </h4>
+          <p>
+          クエリを $\mathbf{Q}$, エビデンスを $E$ とする.
+          \[ \mathcal{S} = \{ p(X_i|\mathrm{pa}(X_i))\}_i \]
+          とする. $\mathcal{S}$ 内の各テーブルについて $E$ と一致しない行を $0$ にする.
+          $\mathbf{Q}$ に含まれない変数 $X$ に対して以下を繰り返す.
+          </p>
+          <ol>
+            <li> $\mathbf{S}$ 内の$X$を含むファクターを全て除く. </li>
+            <li> ファクターを掛けて $X$ について足し合わせる. </li>
+            <li> それを $\mathbf{S}$ に追加する. </li>
+          </ol>
+          <p>
+          $\mathbf{S}$ 内のファクターを全て掛け合わせて出力する.
+          </p>
+        </div>
+        </section>
+
+        <section style="font-size:80%">
+        <img width="400px" src="fig/sprinkler.png" align="right">
+        <p>
+        これはベイジアンネットワークの例題としてよく使われるものです.
+        いろいろと計算してみて下さい. ($\overline{A}$ などは $A$ が偽であるという事を表します。)
+        </p>
+        <p>
+        \[ \small{\begin{aligned}
+        &p(A) = 0.6\\
+        &p(B|A) = 0.2,\,p(B|\overline{A}) = 0.75\\
+        &p(C|A) = 0.8,\,p(C|\overline{A}) = 0.1\\
+        &p(D|B,C) = 0.95,\,p(D|B,\overline{C})=0.1,\,p(D|\overline{B},C)=0.8,\,p(D|\overline{B},\overline{C})=0.0\\
+        &p(E|C) = 0.7,\, p(E|\overline{C}) = 0.0
+        \end{aligned}} \]
+        </p>
+        </section>
+
+
+        <section>
+        <p>
+        PRMLはベイジアンネットワークの説明が若干軽めなので, 今回は以下のテキストを参考にしました.
+        </p>
+        <ul>
+          <li> 植野 真臣著「ベイジアンネットワーク」コロナ射 </li>
+        </ul>
+        </section>
+
+        <section>
+        <h3> 第14回はここで終わります </h3>
+        <p>
+        次回も引き続きベイジアンネットワークの話をします. 変数消去アルゴリズムに関してもう少し話をした後, ジョインツリーアルゴリズムというより効率の良い手法や近似推論アルゴリズムの紹介をする予定です.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>

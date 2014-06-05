@@ -1,0 +1,1572 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="graphical-mode.svg"
+   inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation8.png"
+   inkscape:export-xdpi="95.32"
+   inkscape:export-ydpi="95.32">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="663"
+     inkscape:cy="797.78975"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="746"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true" />
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Mend"
+       style="overflow:visible;">
+      <path
+         id="path4084"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path4078"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-9"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4084-4"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <defs
+       id="defs3016">
+      <path
+         inkscape:connector-curvature="0"
+         id="equation_01_00"
+         d="m 1.6,-0.78 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.27,0 -0.27,0.2 C 0.42,0 0.51,0 0.69,0 H 4.26 C 5.84,0 7.02,-1.18 7.02,-2.16 7.02,-2.88 6.44,-3.46 5.47,-3.57 6.51,-3.76 7.56,-4.5 7.56,-5.45 7.56,-6.19 6.9,-6.83 5.7,-6.83 H 2.34 c -0.19,0 -0.29,0 -0.29,0.2 0,0.11 0.09,0.11 0.28,0.11 0.02,0 0.21,0 0.38,0.02 0.18,0.02 0.27,0.03 0.27,0.16 0,0.04 -0.01,0.07 -0.04,0.19 L 1.6,-0.78 z m 1.51,-2.88 0.62,-2.48 c 0.09,-0.35 0.11,-0.38 0.54,-0.38 h 1.29 c 0.88,0 1.09,0.59 1.09,1.03 0,0.88 -0.86,1.83 -2.08,1.83 H 3.11 z m -0.45,3.35 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 0.69,-2.79 h 1.89 c 0.96,0 1.15,0.74 1.15,1.17 0,0.99 -0.89,1.96 -2.07,1.96 H 2.66 z" />
+    </defs>
+    <defs
+       id="defs2991">
+      <path
+         inkscape:connector-curvature="0"
+         d="M 1.79,-1.15 C 1.39,-0.48 1,-0.34 0.56,-0.31 0.44,-0.3 0.35,-0.3 0.35,-0.11 0.35,-0.05 0.4,0 0.48,0 0.75,0 1.06,-0.03 1.34,-0.03 1.67,-0.03 2.02,0 2.34,0 2.4,0 2.53,0 2.53,-0.19 2.53,-0.3 2.44,-0.31 2.37,-0.31 2.14,-0.33 1.9,-0.41 1.9,-0.66 1.9,-0.78 1.96,-0.89 2.04,-1.03 L 2.8,-2.31 h 2.51 c 0.02,0.21 0.16,1.57 0.16,1.67 0,0.3 -0.52,0.33 -0.72,0.33 -0.14,0 -0.24,0 -0.24,0.2 C 4.51,0 4.63,0 4.65,0 5.06,0 5.49,-0.03 5.9,-0.03 6.15,-0.03 6.78,0 7.03,0 c 0.06,0 0.18,0 0.18,-0.2 0,-0.11 -0.1,-0.11 -0.23,-0.11 -0.62,0 -0.62,-0.07 -0.65,-0.36 L 5.72,-6.92 C 5.7,-7.12 5.7,-7.16 5.53,-7.16 c -0.16,0 -0.2,0.07 -0.26,0.17 l -3.48,5.84 z m 1.2,-1.47 1.97,-3.3 0.32,3.3 H 2.99 z"
+         id="equation_00_00" />
+    </defs>
+    <defs
+       id="defs3051">
+      <path
+         inkscape:connector-curvature="0"
+         d="m 7.6,-6.95 c 0,-0.03 -0.02,-0.1 -0.11,-0.1 -0.03,0 -0.04,0.01 -0.15,0.12 l -0.7,0.77 C 6.55,-6.3 6.09,-7.05 4.98,-7.05 c -2.23,0 -4.48,2.21 -4.48,4.53 0,1.65 1.18,2.74 2.71,2.74 0.87,0 1.63,-0.4 2.16,-0.86 0.93,-0.82 1.1,-1.73 1.1,-1.76 0,-0.1 -0.1,-0.1 -0.12,-0.1 -0.06,0 -0.11,0.02 -0.13,0.1 -0.09,0.29 -0.32,1 -1.01,1.58 -0.69,0.56 -1.32,0.73 -1.84,0.73 -0.9,0 -1.96,-0.52 -1.96,-2.08 0,-0.57 0.21,-2.19 1.21,-3.36 0.61,-0.71 1.55,-1.21 2.44,-1.21 1.02,0 1.61,0.77 1.61,1.93 0,0.4 -0.03,0.41 -0.03,0.51 0,0.1 0.11,0.1 0.15,0.1 0.13,0 0.13,-0.02 0.18,-0.2 L 7.6,-6.95 z"
+         id="equation_02_00" />
+    </defs>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-1"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4084-2"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5618"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5620"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5618-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5620-9"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="marker5618Z"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5618Z"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6855"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="stroke:#ff0000;stroke-width:1pt;fill:#ff0000;fill-rule:evenodd"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="marker5618z"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5618z"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6858"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="stroke:#ff0000;stroke-width:1pt;fill:#ff0000;fill-rule:evenodd"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5618-5-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5620-9-0"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker8981"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path8983"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker8985"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path8987"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker8989"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path8991"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker8993"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path8995"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker8993-3"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path8995-6"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker8993-8"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path8995-9"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker9356"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path9358"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="レイヤー 1">
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#000000"
+       id="path3187-1-7-4"
+       sodipodi:cx="124.45079"
+       sodipodi:cy="68.423096"
+       sodipodi:rx="18.84182"
+       sodipodi:ry="9.1923885"
+       d="m 143.29261,68.423096 a 18.84182,9.1923885 0 1 1 -37.68364,0 18.84182,9.1923885 0 1 1 37.68364,0 z"
+       transform="matrix(3.73079,0,0,3.73079,111.12143,-170.04254)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#000000"
+       id="path3187-1-7-4-0"
+       sodipodi:cx="124.45079"
+       sodipodi:cy="68.423096"
+       sodipodi:rx="18.30574"
+       sodipodi:ry="14.553184"
+       d="m 142.75653,68.423096 a 18.30574,14.553184 0 1 1 -36.61148,0 18.30574,14.553184 0 1 1 36.61148,0 z"
+       transform="matrix(3.73079,0,0,-3.73079,111.12143,632.4723)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       sodipodi:type="arc"
+       style="fill:none;stroke:#000000"
+       id="path3187-1"
+       sodipodi:cx="124.45079"
+       sodipodi:cy="68.423096"
+       sodipodi:rx="29.29537"
+       sodipodi:ry="9.1923885"
+       d="m 153.74616,68.423096 a 29.29537,9.1923885 0 1 1 -58.59074,0 29.29537,9.1923885 0 1 1 58.59074,0 z"
+       transform="matrix(3.73079,0,0,3.73079,24.12143,-37.057335)" />
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       style="fill:#000000"
+       id="equation_02_g"
+       transform="matrix(3.73079,0,0,3.73079,362.04067,-63.722321)">
+      <use
+         height="1052.3622"
+         width="744.09448"
+         x="77"
+         xlink:href="#equation_02_00"
+         y="63"
+         id="use3055" />
+    </g>
+    <g
+       id="equation_03"
+       style="fill:#000000"
+       title="$D$"
+       transform="matrix(3.73079,0,0,3.73079,215.33091,99.915744)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <defs
+         id="defs3096">
+        <path
+           d="m 1.59,-0.78 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.28,0 -0.28,0.19 C 0.4,0 0.49,0 0.68,0 h 3.31 c 2.08,0 4.05,-2.11 4.05,-4.3 0,-1.41 -0.85,-2.53 -2.35,-2.53 H 2.33 c -0.19,0 -0.3,0 -0.3,0.19 0,0.12 0.09,0.12 0.29,0.12 0.13,0 0.31,0.01 0.43,0.02 0.16,0.02 0.22,0.05 0.22,0.16 0,0.04 -0.01,0.07 -0.04,0.19 l -1.34,5.37 z m 2.16,-5.36 c 0.09,-0.35 0.11,-0.38 0.54,-0.38 h 1.07 c 0.98,0 1.81,0.53 1.81,1.85 0,0.49 -0.2,2.13 -1.05,3.23 -0.29,0.37 -1.08,1.13 -2.31,1.13 H 2.68 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 1.37,-5.49 z"
+           id="equation_03_00"
+           inkscape:connector-curvature="0" />
+      </defs>
+      <g
+         id="equation_03_g">
+        <use
+           x="77"
+           xlink:href="#equation_03_00"
+           y="63"
+           id="use3100"
+           width="744.09448"
+           height="1052.3622" />
+      </g>
+    </g>
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#000000"
+       id="path3187-1-7"
+       sodipodi:cx="124.45079"
+       sodipodi:cy="68.423096"
+       sodipodi:rx="9.1923885"
+       sodipodi:ry="9.1923885"
+       d="m 133.64318,68.423096 a 9.1923885,9.1923885 0 1 1 -18.38478,0 9.1923885,9.1923885 0 1 1 18.38478,0 z"
+       transform="matrix(3.73079,0,0,3.73079,189.04593,-39.057335)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <use
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       style="fill:#000000"
+       id="use2995"
+       y="63"
+       xlink:href="#equation_00_00"
+       x="77"
+       width="744.09448"
+       height="1052.3622"
+       transform="matrix(3.73079,0,0,3.73079,217.04798,-182.45388)" />
+    <use
+       style="fill:#000000"
+       x="77"
+       xlink:href="#equation_01_00"
+       y="63"
+       id="use3020"
+       width="744.09448"
+       height="1052.3622"
+       transform="matrix(3.73079,0,0,3.73079,124.26451,-56.06946)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <g
+       title="$E$"
+       style="fill:#000000"
+       id="equation_04"
+       transform="matrix(3.73079,0,0,3.73079,414.19404,98.84501)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <defs
+         id="defs3151">
+        <path
+           id="equation_04_00"
+           d="m 7.08,-2.33 c 0.02,-0.05 0.05,-0.12 0.05,-0.14 0,-0.01 0,-0.11 -0.12,-0.11 -0.09,0 -0.11,0.06 -0.13,0.12 -0.65,1.48 -1.02,2.15 -2.73,2.15 H 2.69 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 0.68,-2.73 h 0.99 c 0.85,0 0.85,0.21 0.85,0.46 0,0.07 0,0.19 -0.07,0.49 -0.02,0.05 -0.03,0.08 -0.03,0.11 0,0.05 0.04,0.11 0.13,0.11 0.08,0 0.11,-0.05 0.15,-0.2 l 0.57,-2.34 c 0,-0.06 -0.05,-0.11 -0.12,-0.11 -0.09,0 -0.11,0.06 -0.14,0.18 -0.21,0.76 -0.39,0.99 -1.31,0.99 H 3.15 l 0.6,-2.41 c 0.09,-0.35 0.1,-0.39 0.54,-0.39 H 5.7 c 1.22,0 1.52,0.29 1.52,1.11 0,0.24 0,0.26 -0.04,0.53 0,0.06 -0.01,0.13 -0.01,0.18 0,0.05 0.03,0.12 0.12,0.12 0.11,0 0.12,-0.06 0.14,-0.25 l 0.2,-1.73 C 7.66,-6.8 7.61,-6.8 7.36,-6.8 H 2.31 c -0.2,0 -0.3,0 -0.3,0.2 0,0.11 0.09,0.11 0.28,0.11 0.37,0 0.65,0 0.65,0.18 0,0.04 0,0.06 -0.05,0.24 l -1.32,5.29 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.28,0 -0.28,0.19 C 0.38,0 0.47,0 0.66,0 h 5.19 c 0.23,0 0.24,-0.01 0.31,-0.17 l 0.92,-2.16 z"
+           inkscape:connector-curvature="0" />
+      </defs>
+      <g
+         id="equation_04_g">
+        <use
+           id="use3155"
+           y="63"
+           xlink:href="#equation_04_00"
+           x="77"
+           width="744.09448"
+           height="1052.3622" />
+      </g>
+    </g>
+    <g
+       id="g5029"
+       transform="translate(-74.5,114)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model2.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <text
+         xml:space="preserve"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         x="148.03125"
+         y="-43.606567"
+         id="text4733"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4735"
+           x="148.03125"
+           y="-43.606567">女性</tspan></text>
+      <path
+         transform="translate(68,-80)"
+         d="m 178,21.862183 c 0,18.501539 -25.74363,33.5 -57.5,33.5 -31.756373,0 -57.5,-14.998461 -57.5,-33.5 0,-18.5015395 25.743627,-33.5 57.5,-33.5 31.75637,0 57.5,14.9984605 57.5,33.5 z"
+         sodipodi:ry="33.5"
+         sodipodi:rx="57.5"
+         sodipodi:cy="21.862183"
+         sodipodi:cx="120.5"
+         id="path4803"
+         style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-end:none"
+         sodipodi:type="arc" />
+    </g>
+    <g
+       id="g5039"
+       transform="translate(-238,225.75)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model2.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <text
+         xml:space="preserve"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         x="311.375"
+         y="-31.262817"
+         id="text4737"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4739"
+           x="311.375"
+           y="-31.262817">主婦</tspan></text>
+      <path
+         transform="translate(231.5,-67.5)"
+         d="m 178,21.862183 c 0,18.501539 -25.74363,33.5 -57.5,33.5 -31.756373,0 -57.5,-14.998461 -57.5,-33.5 0,-18.5015395 25.743627,-33.5 57.5,-33.5 31.75637,0 57.5,14.9984605 57.5,33.5 z"
+         sodipodi:ry="33.5"
+         sodipodi:rx="57.5"
+         sodipodi:cy="21.862183"
+         sodipodi:cx="120.5"
+         id="path4803-8"
+         style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-end:none"
+         sodipodi:type="arc" />
+    </g>
+    <g
+       id="g5034"
+       transform="translate(-121,274)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model2.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <text
+         xml:space="preserve"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         x="200.27417"
+         y="43.955933"
+         id="text4741"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4743"
+           x="200.27417"
+           y="43.955933">買う</tspan></text>
+      <path
+         transform="translate(114.5,8.5)"
+         d="m 178,21.862183 c 0,18.501539 -25.74363,33.5 -57.5,33.5 -31.756373,0 -57.5,-14.998461 -57.5,-33.5 0,-18.5015395 25.743627,-33.5 57.5,-33.5 31.75637,0 57.5,14.9984605 57.5,33.5 z"
+         sodipodi:ry="33.5"
+         sodipodi:rx="57.5"
+         sodipodi:cy="21.862183"
+         sodipodi:cx="120.5"
+         id="path4803-8-7"
+         style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-end:none"
+         sodipodi:type="arc" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.7;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend-9);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 111,90.362183 0,52.999997"
+       id="path5044"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model2.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.7;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend-9);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 111,215.36218 0,53"
+       id="path5046"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model2.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <use
+       style="fill:#000000"
+       id="use2995-7"
+       y="63"
+       xlink:href="#equation_00_00"
+       x="77"
+       width="744.09448"
+       height="1052.3622"
+       transform="matrix(3.73079,0,0,3.73079,-270.37321,-165.82136)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model2.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <g
+       style="fill:#000000"
+       id="equation_02_g-2"
+       transform="matrix(3.73079,0,0,3.73079,-271.38053,82.06306)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model2.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <use
+         height="1052.3622"
+         width="744.09448"
+         x="77"
+         xlink:href="#equation_02_00"
+         y="63"
+         id="use3055-4" />
+    </g>
+    <use
+       style="fill:#000000"
+       x="77"
+       xlink:href="#equation_01_00"
+       y="63"
+       id="use3020-3"
+       width="744.09448"
+       height="1052.3622"
+       transform="matrix(3.73079,0,0,3.73079,-271.15668,-42.18694)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model2.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path8757"
+       d="m 559,115.36218 c 0,6 -58,66 -58,66"
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker5618-5)" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path8759"
+       d="m 503,246.36218 50,71"
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker5618-5)" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path8761"
+       d="m 597,113.36218 39,67"
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker5618-5)" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path8771"
+       d="m 638,246.36218 -41,69"
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker5618-5)" />
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation1.png"
+       transform="translate(-548.88344,515.41943)"
+       id="g8704-2">
+      <path
+         transform="matrix(3.73079,0,0,3.73079,202.12143,-16.329464)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-8"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model5.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+      <g
+         transform="matrix(3.73079,0,0,3.73079,364.04067,14.00555)"
+         id="equation_02_g-6"
+         style="fill:#000000"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model5.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32">
+        <use
+           id="use3055-7"
+           y="63"
+           xlink:href="#equation_02_00"
+           x="77"
+           width="744.09448"
+           height="1052.3622" />
+      </g>
+    </g>
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\bayesian-network1.png"
+       id="g3285-0"
+       transform="matrix(3.73079,0,0,3.73079,-21.30099,577.72804)">
+      <g
+         transform="translate(122.42674,8.1309892)"
+         title="$D$"
+         style="fill:#000000"
+         id="equation_03-8">
+        <defs
+           id="defs3096-1">
+          <path
+             inkscape:connector-curvature="0"
+             id="equation_03_00-8"
+             d="m 1.59,-0.78 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.28,0 -0.28,0.19 C 0.4,0 0.49,0 0.68,0 h 3.31 c 2.08,0 4.05,-2.11 4.05,-4.3 0,-1.41 -0.85,-2.53 -2.35,-2.53 H 2.33 c -0.19,0 -0.3,0 -0.3,0.19 0,0.12 0.09,0.12 0.29,0.12 0.13,0 0.31,0.01 0.43,0.02 0.16,0.02 0.22,0.05 0.22,0.16 0,0.04 -0.01,0.07 -0.04,0.19 l -1.34,5.37 z m 2.16,-5.36 c 0.09,-0.35 0.11,-0.38 0.54,-0.38 h 1.07 c 0.98,0 1.81,0.53 1.81,1.85 0,0.49 -0.2,2.13 -1.05,3.23 -0.29,0.37 -1.08,1.13 -2.31,1.13 H 2.68 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 1.37,-5.49 z" />
+        </defs>
+        <g
+           id="equation_03_g-3">
+          <use
+             height="1052.3622"
+             width="744.09448"
+             id="use3100-0"
+             y="63"
+             xlink:href="#equation_03_00-8"
+             x="77" />
+        </g>
+      </g>
+      <path
+         transform="translate(79.195955,-0.70710648)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-7-3"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc" />
+    </g>
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation1.png"
+       transform="translate(-471.88344,437.86039)"
+       id="g8483-6">
+      <use
+         transform="matrix(3.73079,0,0,3.73079,288.04798,-134.16697)"
+         height="1052.3622"
+         width="744.09448"
+         x="77"
+         xlink:href="#equation_00_00"
+         y="63"
+         id="use2995-2"
+         style="fill:#000000"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model4.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+      <path
+         transform="matrix(3.73079,0,0,3.73079,125.12143,-167.75563)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-0"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model4.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+    </g>
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation1.png"
+       transform="translate(-471.88344,433.63988)"
+       id="g8487-2">
+      <g
+         transform="translate(488,5)"
+         id="g4795-8"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model4.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32">
+        <use
+           style="fill:#000000"
+           x="77"
+           xlink:href="#equation_01_00"
+           y="63"
+           id="use3020-4"
+           width="744.09448"
+           height="1052.3622"
+           transform="matrix(3.73079,0,0,3.73079,-200.73549,-21.069462)" />
+        <path
+           sodipodi:type="arc"
+           style="fill:none;stroke:#000000"
+           id="path3187-1-7-4-1"
+           sodipodi:cx="124.45079"
+           sodipodi:cy="68.423096"
+           sodipodi:rx="9.1923885"
+           sodipodi:ry="9.1923885"
+           d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+           transform="matrix(3.73079,0,0,3.73079,-362.87857,-54.042541)" />
+      </g>
+    </g>
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\bayesian-network1.png"
+       transform="translate(127.07666,332.1473)"
+       id="g8763-8">
+      <g
+         transform="matrix(3.73079,0,0,3.73079,259.23394,124.84501)"
+         id="equation_04-3"
+         style="fill:#000000"
+         title="$E$">
+        <defs
+           id="defs3151-7">
+          <path
+             inkscape:connector-curvature="0"
+             d="m 7.08,-2.33 c 0.02,-0.05 0.05,-0.12 0.05,-0.14 0,-0.01 0,-0.11 -0.12,-0.11 -0.09,0 -0.11,0.06 -0.13,0.12 -0.65,1.48 -1.02,2.15 -2.73,2.15 H 2.69 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 0.68,-2.73 h 0.99 c 0.85,0 0.85,0.21 0.85,0.46 0,0.07 0,0.19 -0.07,0.49 -0.02,0.05 -0.03,0.08 -0.03,0.11 0,0.05 0.04,0.11 0.13,0.11 0.08,0 0.11,-0.05 0.15,-0.2 l 0.57,-2.34 c 0,-0.06 -0.05,-0.11 -0.12,-0.11 -0.09,0 -0.11,0.06 -0.14,0.18 -0.21,0.76 -0.39,0.99 -1.31,0.99 H 3.15 l 0.6,-2.41 c 0.09,-0.35 0.1,-0.39 0.54,-0.39 H 5.7 c 1.22,0 1.52,0.29 1.52,1.11 0,0.24 0,0.26 -0.04,0.53 0,0.06 -0.01,0.13 -0.01,0.18 0,0.05 0.03,0.12 0.12,0.12 0.11,0 0.12,-0.06 0.14,-0.25 l 0.2,-1.73 C 7.66,-6.8 7.61,-6.8 7.36,-6.8 H 2.31 c -0.2,0 -0.3,0 -0.3,0.2 0,0.11 0.09,0.11 0.28,0.11 0.37,0 0.65,0 0.65,0.18 0,0.04 0,0.06 -0.05,0.24 l -1.32,5.29 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.28,0 -0.28,0.19 C 0.38,0 0.47,0 0.66,0 h 5.19 c 0.23,0 0.24,-0.01 0.31,-0.17 l 0.92,-2.16 z"
+             id="equation_04_00-5" />
+        </defs>
+        <g
+           id="equation_04_g-8">
+          <use
+             height="1052.3622"
+             width="744.09448"
+             x="77"
+             xlink:href="#equation_04_00-5"
+             y="63"
+             id="use3155-1" />
+        </g>
+      </g>
+      <path
+         transform="matrix(3.73079,0,0,3.73079,97.161333,91.927894)"
+         d="m 133.64318,68.423096 a 9.1923885,9.1923885 0 1 1 -18.38478,0 9.1923885,9.1923885 0 1 1 18.38478,0 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-7-4-0-7"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc" />
+    </g>
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation1.png"
+       inkscape:connector-curvature="0"
+       id="path9112"
+       d="m 117,559.36218 0,41"
+       style="fill:none;stroke:#000000;stroke-width:3.7;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker8993);stroke-miterlimit:4;stroke-dasharray:none" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation1.png"
+       inkscape:connector-curvature="0"
+       id="path9112-7"
+       d="m 117,673.47468 0,41"
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker8993)" />
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation1.png"
+       transform="translate(77.57881,524.91205)"
+       id="g8704-2-5">
+      <path
+         transform="matrix(3.73079,0,0,3.73079,202.12143,-16.329464)"
+         d="m 133.64318,68.423096 a 9.1923885,9.1923885 0 1 1 -18.38478,0 9.1923885,9.1923885 0 1 1 18.38478,0 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-8-5"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model5.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+      <g
+         transform="matrix(3.73079,0,0,3.73079,364.04067,14.00555)"
+         id="equation_02_g-6-5"
+         style="fill:#000000"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model5.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32">
+        <use
+           id="use3055-7-6"
+           y="63"
+           xlink:href="#equation_02_00"
+           x="77"
+           width="744.09448"
+           height="1052.3622" />
+      </g>
+    </g>
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation2.png"
+       transform="translate(-141.42119,450.35301)"
+       id="g8483-6-6">
+      <use
+         transform="matrix(3.73079,0,0,3.73079,288.04798,-134.16697)"
+         height="1052.3622"
+         width="744.09448"
+         x="77"
+         xlink:href="#equation_00_00"
+         y="63"
+         id="use2995-2-3"
+         style="fill:#000000"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model4.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+      <path
+         transform="matrix(3.73079,0,0,3.73079,125.12143,-167.75563)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-0-0"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\graphical-model4.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+    </g>
+    <g
+       transform="matrix(4.7883937,0,0,4.7883937,69.967748,166.4561)"
+       title="$B_2$"
+       style="fill:#000000"
+       id="equation_01">
+      <defs
+         id="defs3517">
+        <path
+           inkscape:connector-curvature="0"
+           id="path3519"
+           d="m 1.6,-0.78 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.27,0 -0.27,0.2 C 0.42,0 0.51,0 0.69,0 H 4.26 C 5.84,0 7.02,-1.18 7.02,-2.16 7.02,-2.88 6.44,-3.46 5.47,-3.57 6.51,-3.76 7.56,-4.5 7.56,-5.45 7.56,-6.19 6.9,-6.83 5.7,-6.83 H 2.34 c -0.19,0 -0.29,0 -0.29,0.2 0,0.11 0.09,0.11 0.28,0.11 0.02,0 0.21,0 0.38,0.02 0.18,0.02 0.27,0.03 0.27,0.16 0,0.04 -0.01,0.07 -0.04,0.19 L 1.6,-0.78 z m 1.51,-2.88 0.62,-2.48 c 0.09,-0.35 0.11,-0.38 0.54,-0.38 h 1.29 c 0.88,0 1.09,0.59 1.09,1.03 0,0.88 -0.86,1.83 -2.08,1.83 H 3.11 z m -0.45,3.35 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 0.69,-2.79 h 1.89 c 0.96,0 1.15,0.74 1.15,1.17 0,0.99 -0.89,1.96 -2.07,1.96 H 2.66 z" />
+        <path
+           inkscape:connector-curvature="0"
+           id="equation_01_01"
+           d="M 3.535,-1.274 H 3.297 C 3.276,-1.12 3.206,-0.707 3.115,-0.637 3.059,-0.595 2.52,-0.595 2.422,-0.595 H 1.134 c 0.735,-0.651 0.98,-0.847 1.4,-1.176 0.518,-0.413 1.001,-0.847 1.001,-1.512 0,-0.847 -0.742,-1.365 -1.638,-1.365 -0.868,0 -1.456,0.609 -1.456,1.253 0,0.357 0.301,0.392 0.371,0.392 0.168,0 0.371,-0.119 0.371,-0.371 0,-0.126 -0.049,-0.371 -0.413,-0.371 0.217,-0.497 0.693,-0.651 1.022,-0.651 0.7,0 1.064,0.546 1.064,1.113 0,0.609 -0.434,1.092 -0.658,1.344 L 0.511,-0.273 C 0.441,-0.21 0.441,-0.196 0.441,0 h 2.884 l 0.21,-1.274 z" />
+      </defs>
+      <g
+         id="equation_01_g">
+        <use
+           height="1052.3622"
+           width="744.09448"
+           id="use3523"
+           y="63"
+           xlink:href="#equation_01_00"
+           x="77" />
+        <use
+           height="1052.3622"
+           width="744.09448"
+           id="use3525"
+           y="64.5"
+           xlink:href="#equation_01_01"
+           x="84.585098" />
+      </g>
+    </g>
+    <g
+       transform="matrix(4.7883937,0,0,4.7883937,-120.03225,213.4561)"
+       id="equation_02"
+       style="fill:#000000"
+       title="$B_m$">
+      <defs
+         id="defs3812">
+        <path
+           inkscape:connector-curvature="0"
+           d="m 1.6,-0.78 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.27,0 -0.27,0.2 C 0.42,0 0.51,0 0.69,0 H 4.26 C 5.84,0 7.02,-1.18 7.02,-2.16 7.02,-2.88 6.44,-3.46 5.47,-3.57 6.51,-3.76 7.56,-4.5 7.56,-5.45 7.56,-6.19 6.9,-6.83 5.7,-6.83 H 2.34 c -0.19,0 -0.29,0 -0.29,0.2 0,0.11 0.09,0.11 0.28,0.11 0.02,0 0.21,0 0.38,0.02 0.18,0.02 0.27,0.03 0.27,0.16 0,0.04 -0.01,0.07 -0.04,0.19 L 1.6,-0.78 z m 1.51,-2.88 0.62,-2.48 c 0.09,-0.35 0.11,-0.38 0.54,-0.38 h 1.29 c 0.88,0 1.09,0.59 1.09,1.03 0,0.88 -0.86,1.83 -2.08,1.83 H 3.11 z m -0.45,3.35 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 0.69,-2.79 h 1.89 c 0.96,0 1.15,0.74 1.15,1.17 0,0.99 -0.89,1.96 -2.07,1.96 H 2.66 z"
+           id="path3814" />
+        <path
+           inkscape:connector-curvature="0"
+           d="M 3.038,-0.567 C 3.003,-0.427 2.94,-0.189 2.94,-0.154 2.94,0 3.066,0.07 3.178,0.07 c 0.126,0 0.238,-0.091 0.273,-0.154 0.035,-0.063 0.091,-0.287 0.126,-0.434 0.035,-0.133 0.112,-0.455 0.154,-0.63 0.042,-0.154 0.084,-0.308 0.119,-0.469 0.077,-0.301 0.077,-0.315 0.217,-0.532 0.224,-0.343 0.574,-0.742 1.12,-0.742 0.392,0 0.413,0.322 0.413,0.49 0,0.42 -0.301,1.197 -0.413,1.491 -0.077,0.196 -0.105,0.259 -0.105,0.378 0,0.371 0.308,0.602 0.665,0.602 0.7,0 1.008,-0.966 1.008,-1.071 0,-0.091 -0.091,-0.091 -0.112,-0.091 -0.098,0 -0.105,0.042 -0.133,0.119 -0.161,0.56 -0.462,0.847 -0.742,0.847 -0.147,0 -0.175,-0.098 -0.175,-0.245 0,-0.161 0.035,-0.252 0.161,-0.567 0.084,-0.217 0.371,-0.959 0.371,-1.351 0,-0.112 0,-0.406 -0.259,-0.609 C 5.747,-2.989 5.544,-3.087 5.215,-3.087 4.585,-3.087 4.2,-2.674 3.976,-2.38 3.92,-2.975 3.423,-3.087 3.066,-3.087 2.485,-3.087 2.093,-2.73 1.883,-2.45 1.834,-2.933 1.421,-3.087 1.134,-3.087 c -0.301,0 -0.462,0.217 -0.553,0.378 -0.154,0.259 -0.252,0.658 -0.252,0.693 0,0.091 0.098,0.091 0.119,0.091 0.098,0 0.105,-0.021 0.154,-0.21 0.105,-0.413 0.238,-0.756 0.511,-0.756 0.182,0 0.231,0.154 0.231,0.343 0,0.133 -0.063,0.392 -0.112,0.581 -0.049,0.189 -0.119,0.476 -0.154,0.63 l -0.224,0.896 c -0.028,0.091 -0.07,0.266 -0.07,0.287 0,0.154 0.126,0.224 0.238,0.224 0.126,0 0.238,-0.091 0.273,-0.154 0.035,-0.063 0.091,-0.287 0.126,-0.434 0.035,-0.133 0.112,-0.455 0.154,-0.63 0.042,-0.154 0.084,-0.308 0.119,-0.469 0.077,-0.287 0.091,-0.343 0.294,-0.63 0.196,-0.28 0.525,-0.644 1.05,-0.644 0.406,0 0.413,0.357 0.413,0.49 0,0.175 -0.021,0.266 -0.119,0.658 l -0.294,1.176 z"
+           id="equation_02_01" />
+      </defs>
+      <g
+         id="g3817">
+        <use
+           height="1052.3622"
+           width="744.09448"
+           x="77"
+           xlink:href="#equation_02_00"
+           y="63"
+           id="use3819" />
+        <use
+           height="1052.3622"
+           width="744.09448"
+           x="84.585098"
+           xlink:href="#equation_02_01"
+           y="64.5"
+           id="use3821" />
+      </g>
+    </g>
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation2.png"
+       transform="translate(-54,5.38601)"
+       id="g5362">
+      <path
+         transform="matrix(3.73079,0,0,3.73079,-93.206445,391.59014)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-7-4-1-2"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc" />
+      <g
+         id="equation_07"
+         style="fill:#000000"
+         title="$ B_1$"
+         transform="matrix(3.7461501,0,0,3.7461501,61.44386,420.83837)">
+        <defs
+           id="defs4780">
+          <path
+             d="m 1.6,-0.78 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.27,0 -0.27,0.2 C 0.42,0 0.51,0 0.69,0 H 4.26 C 5.84,0 7.02,-1.18 7.02,-2.16 7.02,-2.88 6.44,-3.46 5.47,-3.57 6.51,-3.76 7.56,-4.5 7.56,-5.45 7.56,-6.19 6.9,-6.83 5.7,-6.83 H 2.34 c -0.19,0 -0.29,0 -0.29,0.2 0,0.11 0.09,0.11 0.28,0.11 0.02,0 0.21,0 0.38,0.02 0.18,0.02 0.27,0.03 0.27,0.16 0,0.04 -0.01,0.07 -0.04,0.19 L 1.6,-0.78 z m 1.51,-2.88 0.62,-2.48 c 0.09,-0.35 0.11,-0.38 0.54,-0.38 h 1.29 c 0.88,0 1.09,0.59 1.09,1.03 0,0.88 -0.86,1.83 -2.08,1.83 H 3.11 z m -0.45,3.35 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 0.69,-2.79 h 1.89 c 0.96,0 1.15,0.74 1.15,1.17 0,0.99 -0.89,1.96 -2.07,1.96 H 2.66 z"
+             id="equation_07_00"
+             inkscape:connector-curvature="0" />
+          <path
+             d="m 2.345,-4.452 c 0,-0.189 -0.014,-0.196 -0.21,-0.196 C 1.687,-4.207 1.05,-4.2 0.763,-4.2 v 0.252 c 0.168,0 0.63,0 1.015,-0.196 v 3.57 c 0,0.231 0,0.322 -0.7,0.322 H 0.812 V 0 c 0.126,-0.007 0.987,-0.028 1.246,-0.028 0.217,0 1.099,0.021 1.253,0.028 V -0.252 H 3.045 c -0.7,0 -0.7,-0.091 -0.7,-0.322 v -3.878 z"
+             id="equation_07_01"
+             inkscape:connector-curvature="0" />
+        </defs>
+        <g
+           id="equation_07_g">
+          <use
+             x="77"
+             xlink:href="#equation_07_00"
+             y="63"
+             id="use4785"
+             width="744.09448"
+             height="1052.3622" />
+          <use
+             x="84.585098"
+             xlink:href="#equation_07_01"
+             y="64.5"
+             id="use4787"
+             width="744.09448"
+             height="1052.3622" />
+        </g>
+      </g>
+    </g>
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation2.png"
+       transform="translate(-107,-46.11383)"
+       id="g5372">
+      <g
+         title="$ B_2$"
+         style="fill:#000000"
+         id="equation_08"
+         transform="matrix(3.7461501,0,0,3.7461501,210.93097,472.33821)">
+        <defs
+           id="defs5130">
+          <path
+             id="equation_08_00"
+             d="m 1.6,-0.78 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.27,0 -0.27,0.2 C 0.42,0 0.51,0 0.69,0 H 4.26 C 5.84,0 7.02,-1.18 7.02,-2.16 7.02,-2.88 6.44,-3.46 5.47,-3.57 6.51,-3.76 7.56,-4.5 7.56,-5.45 7.56,-6.19 6.9,-6.83 5.7,-6.83 H 2.34 c -0.19,0 -0.29,0 -0.29,0.2 0,0.11 0.09,0.11 0.28,0.11 0.02,0 0.21,0 0.38,0.02 0.18,0.02 0.27,0.03 0.27,0.16 0,0.04 -0.01,0.07 -0.04,0.19 L 1.6,-0.78 z m 1.51,-2.88 0.62,-2.48 c 0.09,-0.35 0.11,-0.38 0.54,-0.38 h 1.29 c 0.88,0 1.09,0.59 1.09,1.03 0,0.88 -0.86,1.83 -2.08,1.83 H 3.11 z m -0.45,3.35 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 0.69,-2.79 h 1.89 c 0.96,0 1.15,0.74 1.15,1.17 0,0.99 -0.89,1.96 -2.07,1.96 H 2.66 z"
+             inkscape:connector-curvature="0" />
+          <path
+             id="equation_08_01"
+             d="M 3.535,-1.274 H 3.297 C 3.276,-1.12 3.206,-0.707 3.115,-0.637 3.059,-0.595 2.52,-0.595 2.422,-0.595 H 1.134 c 0.735,-0.651 0.98,-0.847 1.4,-1.176 0.518,-0.413 1.001,-0.847 1.001,-1.512 0,-0.847 -0.742,-1.365 -1.638,-1.365 -0.868,0 -1.456,0.609 -1.456,1.253 0,0.357 0.301,0.392 0.371,0.392 0.168,0 0.371,-0.119 0.371,-0.371 0,-0.126 -0.049,-0.371 -0.413,-0.371 0.217,-0.497 0.693,-0.651 1.022,-0.651 0.7,0 1.064,0.546 1.064,1.113 0,0.609 -0.434,1.092 -0.658,1.344 L 0.511,-0.273 C 0.441,-0.21 0.441,-0.196 0.441,0 h 2.884 l 0.21,-1.274 z"
+             inkscape:connector-curvature="0" />
+        </defs>
+        <g
+           id="equation_08_g">
+          <use
+             id="use5135"
+             y="63"
+             xlink:href="#equation_08_00"
+             x="77"
+             width="744.09448"
+             height="1052.3622" />
+          <use
+             id="use5137"
+             y="64.5"
+             xlink:href="#equation_08_01"
+             x="84.585098"
+             width="744.09448"
+             height="1052.3622" />
+        </g>
+      </g>
+      <path
+         transform="matrix(3.73079,0,0,3.73079,56.700236,443.08998)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-7-4-1-2-1"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc" />
+    </g>
+    <g
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation2.png"
+       transform="translate(-54,7)"
+       id="g5382">
+      <g
+         title="$ B_m$"
+         style="fill:#000000"
+         id="equation_06"
+         transform="matrix(3.7461501,0,0,3.7461501,309.67826,419.09327)">
+        <defs
+           id="defs4444">
+          <path
+             id="equation_06_00"
+             d="m 1.6,-0.78 c -0.1,0.39 -0.12,0.47 -0.91,0.47 -0.17,0 -0.27,0 -0.27,0.2 C 0.42,0 0.51,0 0.69,0 H 4.26 C 5.84,0 7.02,-1.18 7.02,-2.16 7.02,-2.88 6.44,-3.46 5.47,-3.57 6.51,-3.76 7.56,-4.5 7.56,-5.45 7.56,-6.19 6.9,-6.83 5.7,-6.83 H 2.34 c -0.19,0 -0.29,0 -0.29,0.2 0,0.11 0.09,0.11 0.28,0.11 0.02,0 0.21,0 0.38,0.02 0.18,0.02 0.27,0.03 0.27,0.16 0,0.04 -0.01,0.07 -0.04,0.19 L 1.6,-0.78 z m 1.51,-2.88 0.62,-2.48 c 0.09,-0.35 0.11,-0.38 0.54,-0.38 h 1.29 c 0.88,0 1.09,0.59 1.09,1.03 0,0.88 -0.86,1.83 -2.08,1.83 H 3.11 z m -0.45,3.35 c -0.14,0 -0.16,0 -0.22,-0.01 -0.1,-0.01 -0.13,-0.02 -0.13,-0.1 0,-0.03 0,-0.05 0.05,-0.23 l 0.69,-2.79 h 1.89 c 0.96,0 1.15,0.74 1.15,1.17 0,0.99 -0.89,1.96 -2.07,1.96 H 2.66 z"
+             inkscape:connector-curvature="0" />
+          <path
+             id="equation_06_01"
+             d="M 3.038,-0.567 C 3.003,-0.427 2.94,-0.189 2.94,-0.154 2.94,0 3.066,0.07 3.178,0.07 c 0.126,0 0.238,-0.091 0.273,-0.154 0.035,-0.063 0.091,-0.287 0.126,-0.434 0.035,-0.133 0.112,-0.455 0.154,-0.63 0.042,-0.154 0.084,-0.308 0.119,-0.469 0.077,-0.301 0.077,-0.315 0.217,-0.532 0.224,-0.343 0.574,-0.742 1.12,-0.742 0.392,0 0.413,0.322 0.413,0.49 0,0.42 -0.301,1.197 -0.413,1.491 -0.077,0.196 -0.105,0.259 -0.105,0.378 0,0.371 0.308,0.602 0.665,0.602 0.7,0 1.008,-0.966 1.008,-1.071 0,-0.091 -0.091,-0.091 -0.112,-0.091 -0.098,0 -0.105,0.042 -0.133,0.119 -0.161,0.56 -0.462,0.847 -0.742,0.847 -0.147,0 -0.175,-0.098 -0.175,-0.245 0,-0.161 0.035,-0.252 0.161,-0.567 0.084,-0.217 0.371,-0.959 0.371,-1.351 0,-0.112 0,-0.406 -0.259,-0.609 C 5.747,-2.989 5.544,-3.087 5.215,-3.087 4.585,-3.087 4.2,-2.674 3.976,-2.38 3.92,-2.975 3.423,-3.087 3.066,-3.087 2.485,-3.087 2.093,-2.73 1.883,-2.45 1.834,-2.933 1.421,-3.087 1.134,-3.087 c -0.301,0 -0.462,0.217 -0.553,0.378 -0.154,0.259 -0.252,0.658 -0.252,0.693 0,0.091 0.098,0.091 0.119,0.091 0.098,0 0.105,-0.021 0.154,-0.21 0.105,-0.413 0.238,-0.756 0.511,-0.756 0.182,0 0.231,0.154 0.231,0.343 0,0.133 -0.063,0.392 -0.112,0.581 -0.049,0.189 -0.119,0.476 -0.154,0.63 l -0.224,0.896 c -0.028,0.091 -0.07,0.266 -0.07,0.287 0,0.154 0.126,0.224 0.238,0.224 0.126,0 0.238,-0.091 0.273,-0.154 0.035,-0.063 0.091,-0.287 0.126,-0.434 0.035,-0.133 0.112,-0.455 0.154,-0.63 0.042,-0.154 0.084,-0.308 0.119,-0.469 0.077,-0.287 0.091,-0.343 0.294,-0.63 0.196,-0.28 0.525,-0.644 1.05,-0.644 0.406,0 0.413,0.357 0.413,0.49 0,0.175 -0.021,0.266 -0.119,0.658 l -0.294,1.176 z"
+             inkscape:connector-curvature="0" />
+        </defs>
+        <g
+           id="equation_06_g">
+          <use
+             id="use4449"
+             y="63"
+             xlink:href="#equation_06_00"
+             x="77"
+             width="744.09448"
+             height="1052.3622" />
+          <use
+             id="use4451"
+             y="64.5"
+             xlink:href="#equation_06_01"
+             x="84.585098"
+             width="744.09448"
+             height="1052.3622" />
+        </g>
+      </g>
+      <path
+         transform="matrix(3.73079,0,0,3.73079,161.47883,389.97615)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-7-4-1-2-1-7"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc" />
+    </g>
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation2.png"
+       inkscape:connector-curvature="0"
+       id="path5392"
+       d="m 420,556.36218 -86,63"
+       style="fill:none;stroke:#000000;stroke-width:3.73;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker9356)" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation2.png"
+       inkscape:connector-curvature="0"
+       id="path5394"
+       d="m 438,572.36218 c 0,4 -17,44 -17,44"
+       style="fill:none;stroke:#000000;stroke-width:3.73;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker9356)" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation2.png"
+       inkscape:connector-curvature="0"
+       id="path5396"
+       d="m 480,554.36218 c 7,5 72,68 72,68"
+       style="fill:none;stroke:#000000;stroke-width:3.73;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker9356)" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation2.png"
+       inkscape:connector-curvature="0"
+       id="path5398"
+       d="m 467,654.36218 47,0"
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:2,8;stroke-dashoffset:0" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation6.png"
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path6488"
+       d="m 1020,613.36218 c -6,3 -46,54 -46,54"
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker9356)" />
+    <path
+       inkscape:export-ydpi="95.32"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation6.png"
+       inkscape:connector-curvature="0"
+       id="path6546"
+       d="m 865,610.36218 45,56"
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker9356)"
+       sodipodi:nodetypes="cc" />
+    <g
+       id="g8063"
+       transform="translate(-156,28.69233)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <g
+         transform="matrix(3.4855703,0,0,3.4855703,186.15986,551.63542)"
+         id="equation_00"
+         style="fill:#000000"
+         title="$ A_1$">
+        <defs
+           id="defs6949">
+          <path
+             inkscape:connector-curvature="0"
+             d="M 1.79,-1.15 C 1.39,-0.48 1,-0.34 0.56,-0.31 0.44,-0.3 0.35,-0.3 0.35,-0.11 0.35,-0.05 0.4,0 0.48,0 0.75,0 1.06,-0.03 1.34,-0.03 1.67,-0.03 2.02,0 2.34,0 2.4,0 2.53,0 2.53,-0.19 2.53,-0.3 2.44,-0.31 2.37,-0.31 2.14,-0.33 1.9,-0.41 1.9,-0.66 1.9,-0.78 1.96,-0.89 2.04,-1.03 L 2.8,-2.31 h 2.51 c 0.02,0.21 0.16,1.57 0.16,1.67 0,0.3 -0.52,0.33 -0.72,0.33 -0.14,0 -0.24,0 -0.24,0.2 C 4.51,0 4.63,0 4.65,0 5.06,0 5.49,-0.03 5.9,-0.03 6.15,-0.03 6.78,0 7.03,0 c 0.06,0 0.18,0 0.18,-0.2 0,-0.11 -0.1,-0.11 -0.23,-0.11 -0.62,0 -0.62,-0.07 -0.65,-0.36 L 5.72,-6.92 C 5.7,-7.12 5.7,-7.16 5.53,-7.16 c -0.16,0 -0.2,0.07 -0.26,0.17 l -3.48,5.84 z m 1.2,-1.47 1.97,-3.3 0.32,3.3 H 2.99 z"
+             id="path6951" />
+          <path
+             inkscape:connector-curvature="0"
+             d="m 2.345,-4.452 c 0,-0.189 -0.014,-0.196 -0.21,-0.196 C 1.687,-4.207 1.05,-4.2 0.763,-4.2 v 0.252 c 0.168,0 0.63,0 1.015,-0.196 v 3.57 c 0,0.231 0,0.322 -0.7,0.322 H 0.812 V 0 c 0.126,-0.007 0.987,-0.028 1.246,-0.028 0.217,0 1.099,0.021 1.253,0.028 V -0.252 H 3.045 c -0.7,0 -0.7,-0.091 -0.7,-0.322 v -3.878 z"
+             id="equation_00_01" />
+        </defs>
+        <g
+           id="equation_00_g">
+          <use
+             height="1052.3622"
+             width="744.09448"
+             x="77"
+             xlink:href="#equation_00_00"
+             y="63"
+             id="use6955" />
+          <use
+             height="1052.3622"
+             width="744.09448"
+             x="84.5"
+             xlink:href="#equation_00_01"
+             y="64.5"
+             id="use6957" />
+        </g>
+      </g>
+      <path
+         transform="matrix(3.73079,0,0,3.73079,9.700233,506.08998)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-7-4-0-7-5"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc" />
+    </g>
+    <g
+       id="g8053"
+       transform="translate(0,-17.878)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <g
+         transform="matrix(3.4855703,0,0,3.4855703,124.74113,598.20575)"
+         title="$ A_2$"
+         style="fill:#000000"
+         id="equation_05">
+        <defs
+           id="defs7338">
+          <path
+             inkscape:connector-curvature="0"
+             id="equation_05_00"
+             d="M 1.79,-1.15 C 1.39,-0.48 1,-0.34 0.56,-0.31 0.44,-0.3 0.35,-0.3 0.35,-0.11 0.35,-0.05 0.4,0 0.48,0 0.75,0 1.06,-0.03 1.34,-0.03 1.67,-0.03 2.02,0 2.34,0 2.4,0 2.53,0 2.53,-0.19 2.53,-0.3 2.44,-0.31 2.37,-0.31 2.14,-0.33 1.9,-0.41 1.9,-0.66 1.9,-0.78 1.96,-0.89 2.04,-1.03 L 2.8,-2.31 h 2.51 c 0.02,0.21 0.16,1.57 0.16,1.67 0,0.3 -0.52,0.33 -0.72,0.33 -0.14,0 -0.24,0 -0.24,0.2 C 4.51,0 4.63,0 4.65,0 5.06,0 5.49,-0.03 5.9,-0.03 6.15,-0.03 6.78,0 7.03,0 c 0.06,0 0.18,0 0.18,-0.2 0,-0.11 -0.1,-0.11 -0.23,-0.11 -0.62,0 -0.62,-0.07 -0.65,-0.36 L 5.72,-6.92 C 5.7,-7.12 5.7,-7.16 5.53,-7.16 c -0.16,0 -0.2,0.07 -0.26,0.17 l -3.48,5.84 z m 1.2,-1.47 1.97,-3.3 0.32,3.3 H 2.99 z" />
+          <path
+             inkscape:connector-curvature="0"
+             id="equation_05_01"
+             d="M 3.535,-1.274 H 3.297 C 3.276,-1.12 3.206,-0.707 3.115,-0.637 3.059,-0.595 2.52,-0.595 2.422,-0.595 H 1.134 c 0.735,-0.651 0.98,-0.847 1.4,-1.176 0.518,-0.413 1.001,-0.847 1.001,-1.512 0,-0.847 -0.742,-1.365 -1.638,-1.365 -0.868,0 -1.456,0.609 -1.456,1.253 0,0.357 0.301,0.392 0.371,0.392 0.168,0 0.371,-0.119 0.371,-0.371 0,-0.126 -0.049,-0.371 -0.413,-0.371 0.217,-0.497 0.693,-0.651 1.022,-0.651 0.7,0 1.064,0.546 1.064,1.113 0,0.609 -0.434,1.092 -0.658,1.344 L 0.511,-0.273 C 0.441,-0.21 0.441,-0.196 0.441,0 h 2.884 l 0.21,-1.274 z" />
+        </defs>
+        <g
+           id="equation_05_g">
+          <use
+             height="1052.3622"
+             width="744.09448"
+             id="use7343"
+             y="63"
+             xlink:href="#equation_05_00"
+             x="77" />
+          <use
+             height="1052.3622"
+             width="744.09448"
+             id="use7345"
+             y="64.5"
+             xlink:href="#equation_05_01"
+             x="84.5" />
+        </g>
+      </g>
+      <path
+         transform="matrix(3.73079,0,0,3.73079,-51.328112,552.66031)"
+         d="m 133.64318,68.423096 c 0,5.076816 -4.11557,9.192388 -9.19239,9.192388 -5.07682,0 -9.19239,-4.115572 -9.19239,-9.192388 0,-5.076816 4.11557,-9.192389 9.19239,-9.192389 5.07682,0 9.19239,4.115573 9.19239,9.192389 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-7-4-0-7-5-1"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc" />
+    </g>
+    <g
+       title="$ A_m$"
+       style="fill:#000000"
+       id="equation_09"
+       transform="matrix(3.4855703,0,0,3.4855703,276.74113,580.20575)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <defs
+         id="defs7740">
+        <path
+           id="equation_09_00"
+           d="M 1.79,-1.15 C 1.39,-0.48 1,-0.34 0.56,-0.31 0.44,-0.3 0.35,-0.3 0.35,-0.11 0.35,-0.05 0.4,0 0.48,0 0.75,0 1.06,-0.03 1.34,-0.03 1.67,-0.03 2.02,0 2.34,0 2.4,0 2.53,0 2.53,-0.19 2.53,-0.3 2.44,-0.31 2.37,-0.31 2.14,-0.33 1.9,-0.41 1.9,-0.66 1.9,-0.78 1.96,-0.89 2.04,-1.03 L 2.8,-2.31 h 2.51 c 0.02,0.21 0.16,1.57 0.16,1.67 0,0.3 -0.52,0.33 -0.72,0.33 -0.14,0 -0.24,0 -0.24,0.2 C 4.51,0 4.63,0 4.65,0 5.06,0 5.49,-0.03 5.9,-0.03 6.15,-0.03 6.78,0 7.03,0 c 0.06,0 0.18,0 0.18,-0.2 0,-0.11 -0.1,-0.11 -0.23,-0.11 -0.62,0 -0.62,-0.07 -0.65,-0.36 L 5.72,-6.92 C 5.7,-7.12 5.7,-7.16 5.53,-7.16 c -0.16,0 -0.2,0.07 -0.26,0.17 l -3.48,5.84 z m 1.2,-1.47 1.97,-3.3 0.32,3.3 H 2.99 z"
+           inkscape:connector-curvature="0" />
+        <path
+           id="equation_09_01"
+           d="M 3.038,-0.567 C 3.003,-0.427 2.94,-0.189 2.94,-0.154 2.94,0 3.066,0.07 3.178,0.07 c 0.126,0 0.238,-0.091 0.273,-0.154 0.035,-0.063 0.091,-0.287 0.126,-0.434 0.035,-0.133 0.112,-0.455 0.154,-0.63 0.042,-0.154 0.084,-0.308 0.119,-0.469 0.077,-0.301 0.077,-0.315 0.217,-0.532 0.224,-0.343 0.574,-0.742 1.12,-0.742 0.392,0 0.413,0.322 0.413,0.49 0,0.42 -0.301,1.197 -0.413,1.491 -0.077,0.196 -0.105,0.259 -0.105,0.378 0,0.371 0.308,0.602 0.665,0.602 0.7,0 1.008,-0.966 1.008,-1.071 0,-0.091 -0.091,-0.091 -0.112,-0.091 -0.098,0 -0.105,0.042 -0.133,0.119 -0.161,0.56 -0.462,0.847 -0.742,0.847 -0.147,0 -0.175,-0.098 -0.175,-0.245 0,-0.161 0.035,-0.252 0.161,-0.567 0.084,-0.217 0.371,-0.959 0.371,-1.351 0,-0.112 0,-0.406 -0.259,-0.609 C 5.747,-2.989 5.544,-3.087 5.215,-3.087 4.585,-3.087 4.2,-2.674 3.976,-2.38 3.92,-2.975 3.423,-3.087 3.066,-3.087 2.485,-3.087 2.093,-2.73 1.883,-2.45 1.834,-2.933 1.421,-3.087 1.134,-3.087 c -0.301,0 -0.462,0.217 -0.553,0.378 -0.154,0.259 -0.252,0.658 -0.252,0.693 0,0.091 0.098,0.091 0.119,0.091 0.098,0 0.105,-0.021 0.154,-0.21 0.105,-0.413 0.238,-0.756 0.511,-0.756 0.182,0 0.231,0.154 0.231,0.343 0,0.133 -0.063,0.392 -0.112,0.581 -0.049,0.189 -0.119,0.476 -0.154,0.63 l -0.224,0.896 c -0.028,0.091 -0.07,0.266 -0.07,0.287 0,0.154 0.126,0.224 0.238,0.224 0.126,0 0.238,-0.091 0.273,-0.154 0.035,-0.063 0.091,-0.287 0.126,-0.434 0.035,-0.133 0.112,-0.455 0.154,-0.63 0.042,-0.154 0.084,-0.308 0.119,-0.469 0.077,-0.287 0.091,-0.343 0.294,-0.63 0.196,-0.28 0.525,-0.644 1.05,-0.644 0.406,0 0.413,0.357 0.413,0.49 0,0.175 -0.021,0.266 -0.119,0.658 l -0.294,1.176 z"
+           inkscape:connector-curvature="0" />
+      </defs>
+      <g
+         id="equation_09_g">
+        <use
+           id="use7745"
+           y="63"
+           xlink:href="#equation_09_00"
+           x="77"
+           width="744.09448"
+           height="1052.3622" />
+        <use
+           id="use7747"
+           y="64.5"
+           xlink:href="#equation_09_01"
+           x="84.5"
+           width="744.09448"
+           height="1052.3622" />
+      </g>
+    </g>
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#000000"
+       id="path3187-1-7-4-0-7-5-1-7"
+       sodipodi:cx="124.45079"
+       sodipodi:cy="68.423096"
+       sodipodi:rx="9.1923885"
+       sodipodi:ry="9.1923885"
+       d="m 133.64318,68.423096 a 9.1923885,9.1923885 0 1 1 -18.38478,0 9.1923885,9.1923885 0 1 1 18.38478,0 z"
+       transform="matrix(3.73079,0,0,3.73079,106.28366,534.78231)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <g
+       id="g8049"
+       transform="translate(-11,-10)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <use
+         transform="matrix(3.73079,0,0,3.73079,158.84332,717.06304)"
+         height="1052.3622"
+         width="744.09448"
+         id="use3020-4-8"
+         y="63"
+         xlink:href="#equation_01_00"
+         x="77"
+         style="fill:#000000" />
+      <path
+         transform="matrix(3.73079,0,0,3.73079,-3.2997622,684.08996)"
+         d="m 133.64318,68.423096 a 9.1923885,9.1923885 0 1 1 -18.38478,0 9.1923885,9.1923885 0 1 1 18.38478,0 z"
+         sodipodi:ry="9.1923885"
+         sodipodi:rx="9.1923885"
+         sodipodi:cy="68.423096"
+         sodipodi:cx="124.45079"
+         id="path3187-1-7-4-0-7-5-1-7-1"
+         style="fill:none;stroke:#000000"
+         sodipodi:type="arc" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker9356)"
+       d="m 336,821.36218 84,84"
+       id="path8083"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker9356)"
+       d="m 423,824.36218 17,67"
+       id="path8085"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#marker9356)"
+       d="m 553,822.36218 -80,78"
+       id="path8087"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:2,12;stroke-dashoffset:0"
+       d="m 461,789.36218 63,0"
+       id="path8301"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation4.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="889"
+       y="415.36218"
+       id="text8322"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan8324"
+         x="889"
+         y="415.36218">l</tspan></text>
+    <g
+       id="g8851"
+       transform="translate(34,2.6875)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation6.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <path
+         transform="translate(-11.203125,-1.109375)"
+         sodipodi:type="arc"
+         style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="path6508"
+         sodipodi:cx="822.5"
+         sodipodi:cy="575.86218"
+         sodipodi:rx="62.5"
+         sodipodi:ry="36.5"
+         d="m 885,575.86218 c 0,20.1584 -27.9822,36.5 -62.5,36.5 -34.5178,0 -62.5,-16.3416 -62.5,-36.5 0,-20.15839 27.9822,-36.5 62.5,-36.5 34.5178,0 62.5,16.34161 62.5,36.5 z"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation5.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text8830"
+         y="588.89343"
+         x="771.45313"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         xml:space="preserve"><tspan
+           y="588.89343"
+           x="771.45313"
+           id="tspan8832"
+           sodipodi:role="line">故障</tspan></text>
+    </g>
+    <g
+       id="g8856"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation6.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <path
+         transform="matrix(0.61427973,0,0,1.0107472,545.69242,-4.610781)"
+         sodipodi:type="arc"
+         style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="path6508-0"
+         sodipodi:cx="822.5"
+         sodipodi:cy="575.86218"
+         sodipodi:rx="104.0117"
+         sodipodi:ry="36.5"
+         d="m 926.5117,575.86218 c 0,20.1584 -46.56762,36.5 -104.0117,36.5 -57.44408,0 -104.0117,-16.3416 -104.0117,-36.5 0,-20.15839 46.56762,-36.5 104.0117,-36.5 57.44408,0 104.0117,16.34161 104.0117,36.5 z"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation5.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text8834"
+         y="592.36218"
+         x="1014"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         xml:space="preserve"><tspan
+           y="592.36218"
+           x="1014"
+           id="tspan8836"
+           sodipodi:role="line">バグ</tspan></text>
+    </g>
+    <g
+       id="g8861"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation6.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32">
+      <path
+         transform="translate(120.57812,130.20312)"
+         sodipodi:type="arc"
+         style="fill:none;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="path6508-0-9"
+         sodipodi:cx="822.5"
+         sodipodi:cy="575.86218"
+         sodipodi:rx="102.5"
+         sodipodi:ry="36.5"
+         d="m 925,575.86218 a 102.5,36.5 0 1 1 -205,0 102.5,36.5 0 1 1 205,0 z"
+         inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\d-separation3.png"
+         inkscape:export-xdpi="95.32"
+         inkscape:export-ydpi="95.32" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text8838"
+         y="720.36218"
+         x="863"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         xml:space="preserve"><tspan
+           y="720.36218"
+           x="863"
+           id="tspan8840"
+           sodipodi:role="line">異常動作</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:24.43559647px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="548.97858"
+       y="95.71611"
+       id="text8881"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32"><tspan
+         sodipodi:role="line"
+         id="tspan8883"
+         x="548.97858"
+         y="95.71611">梅雨</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24.43559647px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="412.70236"
+       y="223.92593"
+       id="text8885"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32"><tspan
+         sodipodi:role="line"
+         id="tspan8887"
+         x="412.70236"
+         y="223.92593">スプリンクラー</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24.43559647px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="639.75281"
+       y="224.18625"
+       id="text8889"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32"><tspan
+         sodipodi:role="line"
+         id="tspan8891"
+         x="639.75281"
+         y="224.18625">雨</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24.43559647px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="515.42212"
+       y="370.33765"
+       id="text8893"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32"><tspan
+         sodipodi:role="line"
+         id="tspan8895"
+         x="515.42212"
+         y="370.33765">芝生が</tspan><tspan
+         sodipodi:role="line"
+         x="515.42212"
+         y="400.88214"
+         id="tspan8897">濡れている</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24.43559647px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="721.10083"
+       y="371.73474"
+       id="text8899"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32"><tspan
+         sodipodi:role="line"
+         id="tspan8901"
+         x="721.10083"
+         y="371.73474">道路が</tspan><tspan
+         sodipodi:role="line"
+         x="721.10083"
+         y="402.27924"
+         id="tspan8903">濡れている</tspan></text>
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#000000"
+       id="path3187-1-7-4-0-5"
+       sodipodi:cx="124.45079"
+       sodipodi:cy="68.423096"
+       sodipodi:rx="18.30574"
+       sodipodi:ry="14.553184"
+       d="m 142.75653,68.423096 a 18.30574,14.553184 0 1 1 -36.61148,0 18.30574,14.553184 0 1 1 36.61148,0 z"
+       transform="matrix(3.73079,0,0,3.73079,317.70024,123.08998)"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.7;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker9356)"
+       d="m 684,236.36218 c 6,5 74,90 74,90"
+       id="path8932"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\sprinkler.png"
+       inkscape:export-xdpi="95.32"
+       inkscape:export-ydpi="95.32" />
+  </g>
+</svg>
