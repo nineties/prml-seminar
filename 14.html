@@ -898,11 +898,10 @@
         </section>
 
         <section style="font-size:80%">
-        <img width="400px" src="fig/sprinkler.png" align="right">
         <p>
-        これはベイジアンネットワークの例題としてよく使われるものです.
-        いろいろと計算してみて下さい. ($\overline{A}$ などは $A$ が偽であるという事を表します。)
+        ベイジアンネットワークの例題としてよく使われる以下のものでやってみようと思います.
         </p>
+        <div align="center"> <img width="300px" src="fig/sprinkler.png"> </div>
         <p>
         \[ \small{\begin{aligned}
         &p(A) = 0.6\\
@@ -914,6 +913,55 @@
         </p>
         </section>
 
+        <section>
+        <p>
+        例として, $E$ が偽である事が解っている時の $D$ の確率を求めましょう. つまり
+        \[ p(D|E=F) = \frac{p(D, E=F)}{p(E=F)} \]
+        を計算します. ($F$は偽の意味)
+        </p>
+        <p class="fragment">
+        ファクターの集合 $\mathcal{S}$ の変化の様子が解りやすいようにexcelで様子を描いてみました.
+        </p>
+        </section>
+
+        <section>
+        <div align="center"> <img width="1000px" src="fig/bayesnet-example1.png"> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="1000px" src="fig/bayesnet-example2.png"> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="1000px" src="fig/bayesnet-example3.png"> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="1000px" src="fig/bayesnet-example4.png"> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="1000px" src="fig/bayesnet-example5.png"> </div>
+        </section>
+        <section>
+        <div align="center"> <img width="1000px" src="fig/bayesnet-example6.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        従って
+        \[ p(D=T, E=F) = 0.15987, p(D=F,E=F) = 0.47613 \]
+        が得られました. これを $D$ に関して周辺化して
+        \[ p(E=F) = 0.15987 + 0.47613 = 0.636 \]
+        となりますので,
+        \[ p(D=T|E=F) = \frac{p(D=T,E=F)}{p(E=F)} = \frac{0.15987}{0.636} \approx 0.25 \]
+        つまり, 道路が濡れていない時は25%の確率で芝が濡れているという事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        同様にして, 周辺事前分布 $p(D)$ を計算してみると
+        \[ p(D=T) = 0.4643 \]
+        となります. 道路が濡れていないという情報を得る事によって, 芝が濡れている確率が減少している事が分かります.
+        </p>
+        </section>
 
         <section>
         <p>
