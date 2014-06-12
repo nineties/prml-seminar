@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第15回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第15回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年6月12日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ベイジアンネットワーク上での推論(続き) </h2>
+        </section>
+
+        <section>
+        <p>
+        前回は単純な変数消去法による推論アルゴリズムを紹介しましたが, これは効率が悪いです.
+        </p>
+        <p class="fragment">
+        本日と来週の冒頭を使ってより効率的な厳密推論アルゴリズムであるジャンクションツリー法の解説を行います. この辺りもPRMLではあまり解説されていないので以下の参考書を用いました.
+        </p>
+        <ul>
+          <li> 植野 真臣著「ベイジアンネットワーク」コロナ社 </li>
+        </li>
+        </section>
+
+        <section>
+        <p>
+        以下が前回紹介したアルゴリズムです.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> 変数消去による周辺事後分布の計算 </h4>
+          <p>
+          クエリを $\mathbf{Q}$, エビデンスを $E$ とする.
+          \[ \mathcal{S} = \{ p(X_i|\mathrm{pa}(X_i))\}_i \]
+          とする. $\mathcal{S}$ 内の各テーブルについて $E$ と一致しない行を $0$ にする.
+          $\mathbf{Q}$ に含まれない変数 $X$ に対して以下を繰り返す.
+          </p>
+          <ol>
+            <li> $\mathbf{S}$ 内の$X$を含むファクターを全て除く. </li>
+            <li> ファクターを掛けて $X$ について足し合わせる. </li>
+            <li> それを $\mathbf{S}$ に追加する. </li>
+          </ol>
+          <p>
+          $\mathbf{S}$ 内のファクターを全て掛け合わせて出力する.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        このアルゴリズムは確率密度関数の因数分解
+        \[ p(\mathbf{X}) = \prod_i p(X_i|\mathrm{pa}(X_i)) \]
+        </p>
+        <p>
+        このアルゴリズムはネットワークのグラフ構造を一切考慮していないという点が問題です. グラフ理論的な考察によって計算量を削減する事が可能となります.
+        </p>
+        </section>
+
+        <section>
+        <img width="400px" src="fig/sprinkler2.png" align="right">
+        <p>
+        簡単に出来るのが <strong>枝刈り (pruning)</strong>です.
+        </p>
+        <p>
+        前回の例において $\mathbf{Q}=\{D\}$, $\mathbf{E}=\{A\}$ である場合を考えましょう.
+        </p>
+        </section>
+
+        <section>
+        <img width="400px" src="fig/sprinkler3.png" align="right">
+        <p>
+        まず, ノード $E$ は $D$ に関する推論とは全く無関係であるので除去出来ます.
+        </p>
+        <p class="fragment">
+        \[ \begin{aligned}
+        p(A,D)&=\sum_{B,C,E}p(E|C)p(D|B,C)p(C|A)p(B|A)p(A) \\
+        &=\sum_{B,C}p(D|B,C)p(C|A)p(B|A)p(A)\sum_EP(E|C)
+        \end{aligned} \]
+        において $\sum_EP(E|C) = 1$ であるからです.
+        </p>
+        </section>
+
+        <section>
+        <img width="300px" src="fig/sprinkler4.png" align="right">
+        <p>
+        続いてエビデンスノード $A$ も除去してしまう事が出来ます.
+        </p>
+        <p class="fragment">
+        例えば, $A$ の観測値が $a$ であるならば
+        \[ \begin{aligned}
+        p(A=a,D) &=\sum_{B,C}p(D|B,C)p(C|A= a)p(B|A= a)p(A= a) \\
+        \end{aligned} \]
+        であり $p(A=a)=1$ となる為です.
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> 枝刈り </h4>
+          <p>
+          クエリ集合 $\mathbf{Q}$ とエビデンス集合 $\mathbf{E}$ が与えられた時, 
+          </p>
+          <ol>
+            <li> $\mathbf{Q}$ に含まれない葉ノード(子を持たないノード)へ向かうエッジ </li>
+            <li> $\mathbf{E}$ に含まれるノードから張られたエッジ </li>
+          </ol>
+          <p>
+          を除去する事が出来る. これを除去出来るノードがなくなるまで繰り返えす.
+          </p>
+          <p>
+          また, 枝刈りの結果孤立した$\mathbf{Q},\mathbf{E}$に含まれないノードも除去する事が出来る.
+          </p>
+        </div>
+        <p>
+        </p>
+        </section>
+
+        <section>
+        <img width="400px" src="fig/pruning1.png" align="right">
+        <p>
+        例えば, 右図のような状況(青がクエリ, 赤がエビデンス)ならば
+        </p>
+        </section>
+
+        <section>
+        <img width="400px" src="fig/pruning2.png" align="right">
+        <p>
+        こうなります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        <a href="prog/prog15-1.py">prog15-1.py</a> に枝刈りの実装を行ってみましたので参考にしてください.
+        </p>
+        </section>
+
+        <section>
+        <h3> 変数消去法の計算量 </h3>
+        <p>
+        変数消去法の計算量には変数の数 $N$ はもちろんですが, 変数を消去する順番も関係します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例として, 
+        \[ p(A,B,C) = p(C|B)p(B|A)p(A) \]
+        から$A,B$を消去する場合, 消去順によって以下のような違いが出ます.
+        </p>
+        <p>
+        【$A\rightarrow B$の順に消した場合】<br>
+        <ol>
+          <li> $\varphi(B) = \sum_{A}p(B|A)p(A)$ を計算. </li>
+          <li> $p(C) = \sum_{B}p(C|B)\varphi(B)$ を計算. </li>
+        </ol>
+        </p>
+        <p>
+        【$B\rightarrow A$の順に消した場合】<br>
+        <ol>
+          <li> $\varphi(A,C) = \sum_{B}p(C|B)p(B|A)$ を計算. </li>
+          <li> $p(C) = \sum_A\varphi(A,C)p(A)$ を計算. </li>
+        </ol>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $B\rightarrow A$ の順に消去してしまった場合は
+        \[ \varphi(A, C) \]
+        という因子が残り計算量が増加してしまっています.
+        </p>
+        <p>
+        一般に以下の事が言えます.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> 変数消去法の計算量 </h4>
+          変数の数を $N$, 変数消去の途中に出現する因子の変数の数の最大値を $w$ (width) とすると, 変数消去法の計算量は
+          \[ \mathcal{O}(N^2\mathrm{exp}(w)) \]
+          となる.
+        </div>
+        </section>
+
+        <section>
+        <p>
+        従って $w$ が最小となるような変数消去順序を求めれば良いのですが, 残念ながらこの問題はNP困難である事が解っています.
+        </p>
+        <p class="fragment">
+        そこで, ヒューリスティックスによる<strong> 最小次数法 (minimum degree method)</strong> を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        まず, <strong> インタラクショングラフ (interaction graph)</strong> というものが必要です. これは以下のように定義されます.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> インタラクショングラフ </h4>
+          <p>
+          ファクターの集合 $\mathcal{S}=\{\varphi_1,\ldots,\varphi_n\}$ に対するインタラクショングラフ $\mathcal{G}_i$ とは無向グラフであり, 頂点集合 $\mathbf{V}$と辺集合 $\mathbf{E}$ は以下のように定める.
+          </p>
+          \[ \begin{aligned}
+          \mathbf{V} &= \{\varphi_1,\ldots\varphi_n\text{に含まれる各変数}\}\\
+          \mathbf{E} &= \{(x,y) \,|\, \text{$x,y$ が同一のファクターに含まれる}\} \end{aligned}\] 
+          </ul>
+        </div>
+        </section>
+
+        <section>
+        <p> 前回やった
+        \[ p(A,B,C,D,E) = p(A)p(B)p(C|A,B)p(D|B)p(E|C,D) \]
+        を例に考えてみます.
+        </p>
+        <div align="center"><img width="300px" src="fig/bayesian-network1.png"></div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        最初の $\mathbf{S}$ の状態は以下のようになるのでした
+        \[ \mathcal{S} = \{p(A),p(B),p(C|A,B),p(D|B),p(E|C,D)\} \]
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        そして, これと対応するインタラクショングラフは下図のようになります.
+        </p>
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"><img width="300px" src="fig/interaction-graph1.png"></div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        次にここから $B$ を消去してみると
+        \[ \varphi(A,C,D)= \sum_Bp(B)p(C|A,B)p(D|B) \]
+        より
+        \[ \mathcal{S}' = \{p(A),\varphi(A,C,D),p(E|C,D)\} \]
+        となります.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        これに対応するインタラクショングラフは以下です.
+        </p>
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"><img width="250px" src="fig/interaction-graph2.png"></div>
+        </section>
+
+        <section>
+        <p>
+        この推移は
+        </p>
+        <ul>
+          <li> $B$ に隣接していたノード同士を新たに繋ぎ直す </li>
+        </ul>
+        <p>
+        という事によって行う事が出来ます.
+        </p>
+        <div align="center"><img width="600px" src="fig/interaction-graph3.png"></div>
+        </section>
+
+        <section>
+        <p>
+        この時,
+        \[ \text{$X$を消去して出来る因子の変数の数} = \text{$X$の$\mathcal{G}_i$での次数} \]
+        となります.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        例えば最初に $C$ を消去すると
+        \[ \varphi(A,B,D,E) = \sum_{C}p(C|A,B)p(E|C,D) \]
+        という大きな因子が出来てしまいます.
+        </p>
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"><img width="600px" src="fig/interaction-graph4.png"></div>
+        </section>
+
+        <section>
+        <p>
+        そこで, 
+        </p>
+        <ul>
+          <li>常にインタラクショングラフ上で次数が最小の変数を消去する </li>
+        </ul>
+        <p>
+        というヒューリスティクス的な手法を考える事が出来ます. これが最小次数法です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        先ほどの問題で最小次数法を適用すると以下のように
+        \[ A\rightarrow B\rightarrow C\rightarrow E \]
+        などの順番で消去することになり, この場合 $w=3$ です.
+        </p>
+        <div align="center"><img width="800px" src="fig/interaction-graph5.png"></div>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ジョインツリーアルゴリズム </h2>
+        </section>
+
+        <section>
+        <p>
+        <strong> ジョインツリーアルゴリズム (jointree algorithm </strong> は $\mathcal{O}(N\mathrm{exp}(w))$ の計算量で厳密な推論を行う事が出来るアルゴリズムです.
+        </p>
+        <p class="fragment">
+        ジョインツリーアルゴリズムは <strong> ファクター消去法 (factor elimination) </strong> というものの特別な場合ですので, まずこれから説明します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例として再び
+        \[ p(A,B,C,D,E) = p(A)p(B)p(C|A,B)p(D|B)p(E|C,D) \]
+        において $p(D)$ を計算する問題を考えます.
+        </p>
+        <p class="fragment">
+        変数消去法では$D$ 以外の変数を１つずつ消す事によってこれを計算しました.
+        </p>
+        <p class="fragment">
+        ファクター消去法では $D$ を含む適当な1つのファクター(例えば $p(D|B)$) 以外のファクターを1つずつ消す事によってこれを計算します.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        やってみます.
+        \[ \mathcal{S} = \{\varphi(A),\varphi(B),\varphi(A,B,C),\varphi(B,D),\varphi(C,D,E)\} \]
+        から $\varphi(B,D)$ 以外を消去する事にします.
+        </p>
+        <p class="fragment">
+        まず $\varphi(A)$ を消去します. どれか別の適当なファクター(例えば $\varphi(B)$)に $\varphi(A)$ を掛けた
+        \[ \varphi(A,B)=\varphi(A)\varphi(B) \]
+        を計算して $\varphi(B)$ をこれで置換えます.
+        \[ \mathcal{S} = \{\varphi(A,B),\varphi(A,B,C),\varphi(B,D),\varphi(C,D,E)\} \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        次に $\varphi(C,D,E)$ を消去してみましょう. まず <strong> $E$ はこのファクターにしか含まれないので</strong> 消しちゃいます.
+        \[ \sum_E \varphi(C,D,E) \]
+        これを別のどれか(例えば $\varphi(B,D)$)に掛けた
+        \[ \varphi(B,C,D) = \varphi(B,D)\sum_E\varphi(C,D,E) \]
+        で $\varphi(B,D)$ を置換えます.
+        \[ \mathcal{S} = \{\varphi(A,B), \varphi(A,B,C),\varphi(B,C,D)\} \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        同様に, 次は $\varphi(A,B)$ を $\varphi(A,B,C)$ に掛けて消去しましょう.
+        \[ \varphi'(A,B,C) = \varphi(A,B)\varphi(A,B,C) \]
+        として
+        \[ \mathcal{S} = \{\varphi'(A,B,C),\varphi(B,C,D)\} \]
+        とします.
+        </p>
+        <p class="fragment">
+        次は $\varphi'(A,B,C)$ を消しますが $A$ はこのファクターにしか含まれないので消してしまいます.
+        \[ \sum_A \varphi'(A,B,C) \]
+        そして $\varphi(B,C,D)$ にかけてこのファクターを消します. つまり
+        \[ \varphi'(B,C,D) = \varphi(B,C,D)\sum_A\varphi'(A,B,C) \]
+        として
+        \[ \mathcal{S} = \{\varphi'(B,C,D)\} \]
+        とします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        最後に残ったファクター $\varphi'(B,C,D)$ には求める $D$ 以外のファクター $B,C$ が含まれていますがこれを足し合わせれば
+        \[ p(D) = \sum_{B,C}\varphi'(B,C,D) \]
+        となります. 以上でファクター消去法による確率計算が終わりました.
+        </p>
+        <p class="fragment">
+        ファクター $\varphi$ の変数 $\mathbf{Q}$ 以外を足しあわせて消去するという操作は良く使うので
+        \[ \mathrm{proj}(\varphi, \mathbf{Q}) \stackrel{\mathrm{def}}{=} \sum_{\mathrm{vars}\varphi-\mathbf{Q}}\varphi \]
+        と書きます. 但し $\mathrm{vars}\varphi$ は $\varphi$ に含まれる変数の集合です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p> まとめると以下の様になります. </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> ファクター消去による事前周辺確率の計算 </h4>
+          <p>
+          クエリ集合を $\mathbf{Q}$ とする.
+          </p>
+          <ol>
+            <li> $\mathcal{S} = \{ p(X_i|\mathrm{pa}(X_i)) \}_{1\leq i \leq N}$ とする. </li>
+            <li> $\varphi_r\in\mathcal{S}$ を $\mathbf{Q}$ の変数を全て含む適当なファクターとする. </li>
+            <li> $|\mathcal{S}|&gt;1$の間以下を繰り返す.
+            <ol>
+              <li> $\varphi_i \in \mathcal{S}, \varphi_i\neq \varphi_r$ を選び $\mathcal{S}$ から除く. </li>
+              <li> $\mathbf{V}$ を $\varphi_i$ のみが持つ変数の集合とする. </li>
+              <li> $\varphi_j \in \mathcal{S}$ を選ぶ. </li>
+              <li> $\varphi_j$ を$\varphi_j\sum_V \varphi_i$で置き換える. </li>
+            </ol>
+            </li>
+            <li> 以下が求める確率分布.
+            \[ \mathrm{proj}(\varphi_r,\mathbf{Q}) \]
+            </li>
+          </ol>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        ファクター消去法ではどの順番でファクターを消去するのかが重要となります. これを指定するものが <strong> エリミネーションツリー (elimination tree)</strong> です.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> エリミネーションツリー </h4>
+          <p>
+          エリミネーションツリー $\mathcal{T}$ とは, 各ファクター $\varphi_r$ をノードとする木構造(閉路のない単連結な無向グラフ)である.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        エリミネーションツリーを用いたファクター消去法を簡単に書くと以下のようになります.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> エリミネーションツリーによるファクター消去 </h4>
+          <p>
+          残すファクター $\varphi_r$ をエリミネーションツリー $\mathcal{T}$ のルートとみなして以下を繰り返してファクターを消去する.
+          </p>
+          <ul>
+            <li> 葉ノードを消去し, 親ノードに掛け合わせる </li>
+          </ul>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        例えば先ほどの例のファクター消去手順に対応するエリミネーションツリーは下図のようになります.
+        </p>
+        <div align="center"><img width="500px" src="fig/elimination-tree.png"></div>
+        </section>
+
+        <section>
+        <p>
+        ファクター消去法はどのようなエリミネーションツリーを用いても必ず正しい答えを得る事が出来ます.
+        </p>
+        <p class="fragment">
+        そこで問題となるのが「どのようなエリミネーションツリーを用いれば効率的に計算出来るか？」という事です.
+        </p>
+        <p class="fragment">
+       ジョインツリーアルゴリズムとはジョインツリーと呼ばれるものをエリミネーションツリーの構成に利用するものです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        もう少し準備が必要です.
+        </p>
+        <p>
+        エリミネーションツリー $\mathcal{T}$ の辺 $(i,j)$ に対して
+        \[ \mathbf{S}_{ij} \stackrel{\mathrm{def}}{=} \{\text{$\mathcal{T}$の$i$ 側にある変数}\}\cap\{\text{$\mathcal{T}$の$j$側にある変数}\} \]
+        をこの辺の <strong>セパレータ(separator)</strong> と呼びます.
+        </p>
+        <div align="center"><img width="500px" src="fig/separator.png"></div>
+        </section>
+
+        <section>
+        <p>
+        ファクター $\varphi_i$ を消去し $\varphi_j$ にまとめる時には
+        \[ \mathrm{vars}\varphi_i - \mathbf{S}_{ij} \]
+        が $\varphi_i$ のみに含まれる変数となります.
+        </p>
+        <p class="fragment">
+        つまり, $\varphi_j$ の更新ルールは
+        \[ \varphi_j \leftarrow \varphi_j\mathrm{proj}(\varphi_i, \mathbf{S}_{ij}) \]
+        と書くことが出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        エリミネーションツリー $\mathcal{T}$ のノード $i$ に対して
+        \[ \mathbf{C}_i \stackrel{\mathrm{def}}{=} \mathrm{vars}(i)\cup\bigcup_{j}\mathbf{S}_{ij} \]
+        をこのノードに対応する <strong> クラスター (cluster)</strong> と呼びます.
+        </p>
+        <p>
+        クラスターとは, ファクターを消去していってそのノードが葉になった時に含まれる変数の集合です.
+        </p>
+        <div align="center"><img width="500px" src="fig/cluster.png"></div>
+        </section>
+
+        <section>
+        <p>
+        \[ w \stackrel{\mathrm{def}}{=} \mathop{\rm max}\limits_{i}|\mathbf{C}_i|-1 \]
+        をエリミネーションツリーの<strong>幅(width)</strong>と言います.
+        </p>
+        <p class="fragment">
+        変数消去法の時と同様に $w$ に関して指数的に計算量が増加します. 従って $w$ を出来るだけ小さくする事が目標になります.
+        </p>
+        </section>
+
+        <section>
+        <h3> メッセージパッシング </h3>
+        <p>
+        ファクター消去法では, エリミネーションツリーの辺に沿ってファクターを流して行くわけですが, これを<strong>メッセージ(message)</strong> と呼びます.
+        </p>
+        <div align="center"><img width="500px" src="fig/elimination-tree.png"></div>
+        </section>
+
+        <section>
+        <p>
+        子ノード $i$ から親ノード $j$ へのメッセージは $m_{ij}$以下の様に定義されます.
+        \[ m_{ij} \stackrel{\mathrm{def}}{=} \mathrm{proj}\left(\varphi_i\prod_{k}m_{ki}, \mathbf{S}_{ij}\right) \]
+        但し $k$ はノード $i$ の子ノードです.
+        </p>
+        <div align="center"><img width="200px" src="fig/message-passing.png"></div>
+        </section>
+
+        <section>
+        <p>
+        葉ノード $i$ では子が存在しませんから
+        \[ m_{ij} \stackrel{\mathrm{def}}{=} \mathrm{proj}(\varphi_i, \mathbf{S}_{ij}) \]
+        となります.
+        </p>
+        <p class="fragment">
+        このメッセージをルートノード $r$ まで流していった時
+        \[ p(\mathbf{C}_r) = \varphi_r\prod_{k}m_{kr}\]
+        となります. つまりクラスターの同時確率が計算されます.
+        </p>
+        <p class="fragment">
+        これを周辺化すれば求める確率
+        \[ p(\mathbf{Q}) = \mathrm{proj}(p(\mathbf{C}_r),\mathbf{Q}) \]
+        を得る事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        メッセージパッシングというアルゴリズム, ルートを変えて再計算したい時に, <strong> メッセージを再利用出来る</strong> というとても良い特徴を持っています.
+        </p>
+        <div align="center"><img width="800px" src="fig/message-passing2.png"></div>
+        </section>
+
+        <section>
+        <p>
+        つまり, 一回ルートまでメッセージを流して, その後ルートから逆にメッセージを再分配すれば一辺に全てのクラスター $\mathbf{C}_i$ に関する同時確率を計算してしまうという事が可能です. これによって計算量を削減する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> メッセージパッシング </h4>
+          <p>
+          エリミネーションツリーのルート $r$ を決める.
+          </p>
+          <ol>
+            <li> 【集積フェーズ】葉ノードからルートに向かってメッセージを流す. </li>
+            <li> 【分配フェーズ】ルートノードから葉ノードに向かってメッセージを流す.
+          </ol>
+          <p>
+          ノード $i$ から $j$ へのメッセージ $m_{ij}$ は以下によって定義される.
+        \[ m_{ij} \stackrel{\mathrm{def}}{=} \mathrm{proj}\left(\varphi_i\prod_{k}m_{ki}, \mathbf{S}_{ij}\right) \]
+          但し, $k$ はメッセージが流れて来た方向の隣接ノード.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <h3> 第15回はここで終わります </h3>
+        <p>
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>

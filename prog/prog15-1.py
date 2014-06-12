@@ -2,7 +2,7 @@
 from copy import copy
 from itertools import product
 
-#== 単純な変数消去によるベイジアンネットワーク ==
+#== 変数消去(+枝刈り)によるベイジアンネットワーク ==
 
 class Factor:
     # xs:  ファクター内の変数リスト
@@ -19,7 +19,7 @@ class Factor:
             self.stride[xs[i]] = stride
             if i > 0:
                 stride *= sz[i-1]
-        self.title = u"phi(" + ",".join(xs) + ")"
+        self.title = "phi(" + ",".join(xs) + ")"
 
     # 変数の番号
     def index(self, x):
@@ -97,6 +97,21 @@ class Factor:
             if (i/stride)%sz != v: tbl[i] = 0.0
         return Factor(self.xs, self.sz, tbl)
 
+    # 枝刈り
+    def remove_evidence_node(self, x, v):
+        if not(x in self.xs): return self
+        new_tbl = []
+        stride = self.stride[x]
+        sz     = self.sz[self.index(x)]
+        for i in range(len(self.tbl)):
+            if (i/stride)%sz == v:
+                new_tbl.append(self.tbl[i])
+        new_xs = copy(self.xs)
+        new_sz = copy(self.sz)
+        new_xs.remove(x)
+        new_sz.remove(sz)
+        return Factor(new_xs, new_sz, new_tbl)
+
     def __repr__(self):
         prec = 10
         formatted = ""
@@ -135,6 +150,10 @@ class BayesNet:
         self.sz = {}
         self.cpts  = []
 
+        # グラフ構造
+        self.pa = {}
+        self.ch = {}
+
     # 条件付き確率表 (conditional probability table, CPT) を追加
     # x  : 変数名
     # n  : この変数が取る値の個数
@@ -143,10 +162,13 @@ class BayesNet:
     def addCPT(self, x, n, pa, tbl):
         self.xs.append(x)
         self.sz[x] = n
-
         xs = pa + [x]
         sz = map(lambda x: self.sz[x], xs)
         self.cpts.append( Factor(xs, sz, tbl) )
+        self.pa[x] = pa
+        self.ch[x] = []
+        for p in pa:
+            self.ch[p].append(x)
 
     # ファクター集合にエビデンス(x=v,..)を反映して返す.
     @classmethod
@@ -176,25 +198,22 @@ class BayesNet:
     # 同時分布 p(Q|E) を計算
     # Q: クエリ集合
     # E: エビデンス集合
-    def joint_prob(self, factors, Q, E):
+    def joint_prob(self, factors, Q, E, removed):
         if Q == []: return 1
-        Exs = E.keys()
         for x in self.xs:
             if x in Q: continue
-            if x in Exs: continue
+            if x in removed: continue
             factors = BayesNet.eliminate_var(factors, x)
         factor = reduce(lambda x,y: x*y, factors)
-        for x in Exs:
-            factor = factor.marginalize(x)
         return factor.normalize()
 
     # 条件付き確率 p(Q|C,E) を計算
     # Q: クエリ集合
     # C: 条件集合
     # E: エビデンス集合
-    def cond_prob(self, factors, Q, C, E):
+    def cond_prob(self, factors, Q, C, E, removed):
         # p(Q, C|E) を計算
-        pQC = self.joint_prob(factors, Q + C, E)
+        pQC = self.joint_prob(factors, Q + C, E, removed)
         if C != []:
             pC  = pQC
             for x in Q:
@@ -204,6 +223,46 @@ class BayesNet:
             pC = 1
         return pQC/pC
 
+    @classmethod
+    def remove_leaf(cls, factors, x):
+        return [f for f in factors if not (x in f.xs)]
+
+    @classmethod
+    def remove_evidence_node(cls, factors, x, v):
+        new_factors = []
+        for f in factors:
+            f = f.remove_evidence_node(x, v)
+            if f.xs == []: continue
+            new_factors.append(f)
+        return new_factors
+
+    def pruning(self, factors, Q, E):
+        xs = set(self.xs) - set(Q) - set(E.keys())
+        pa = self.pa.copy()
+        ch = self.ch.copy()
+        removed = []
+        for x in E:
+            for y in ch[x]:
+                i = self.xs.index(y)
+                f = factors[i]
+                factors[i] = f.remove_evidence_node(x, E[x])
+            if pa[x] == []:
+                removed.append(x)
+                del factors[self.xs.index(x)]
+        while True:
+            changed = False
+            for x in xs:
+                if x in removed: continue
+                if ch[x] == []:
+                    changed = True
+                    removed.append(x)
+                    factors = BayesNet.remove_leaf(factors, x)
+                    del ch[x]
+                    for y in ch:
+                        if x in ch[y]: ch[y].remove(x)
+            if not changed: break
+        return factors, removed
+
     # 推論を行う
     # Q: クエリ集合
     # C: 条件集合
@@ -211,9 +270,12 @@ class BayesNet:
     def query(self, Q, C=[], E={}):
         factors = copy(self.cpts)
 
-        # 推論
+        # エビデンスの反映
         factors = BayesNet.apply_evidences(factors, E)
-        f = self.cond_prob(factors, Q, C, E)
+        # 枝刈り
+        factors, removed = self.pruning(factors, Q+C, E)
+        # 推論
+        f = self.cond_prob(factors, Q, C, E, removed)
 
         # ファクターの名前を付ける.
         s = "p(" + ",".join(Q)
@@ -236,3 +298,12 @@ sample_net.addCPT('B', 2, ['A'], [0.2, 0.8, 0.75, 0.25])
 sample_net.addCPT('C', 2, ['A'], [0.8, 0.2, 0.1, 0.9])
 sample_net.addCPT('D', 2, ['B', 'C'], [0.95, 0.05, 0.9, 0.1, 0.8, 0.2, 0.0, 1.0])
 sample_net.addCPT('E', 2, ['C'], [0.7, 0.3, 0.0, 1.0])
+
+print sample_net.query(Q = ['D'], E = {'A':0})
+print sample_net.query(Q = ['D'], E = {'E':1})
+print sample_net.query(Q = ['B'], E={'D':0})
+print sample_net.query(Q = ['B'], E={'A':0, 'D':0})
+print sample_net.query(Q = ['B'], E={'A':1, 'D':0})
+print sample_net.query(Q = ['B'], C = ['C'], E={'A':0})
+print sample_net.query(Q = ['B'], C = ['C'], E={'A':0, 'D':0})
+print sample_net.query(Q = ['A', 'B', 'C', 'D', 'E'])
