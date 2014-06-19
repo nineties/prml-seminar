@@ -19,7 +19,7 @@ class Factor:
             self.stride[xs[i]] = stride
             if i > 0:
                 stride *= sz[i-1]
-        self.title = u"phi(" + ",".join(xs) + ")"
+        self.title = "phi(" + ",".join(xs) + ")"
 
     # 変数の番号
     def index(self, x):
@@ -119,15 +119,6 @@ class Factor:
             p = self.lookup(self.xs, i)
             formatted += "|" + str.center(("%." + str(prec) + "f") % p, rw) + "\n"
         return formatted[0:-1]
-
-# 推論結果を持たせる為のクラス
-class Report:
-    def __init__(self, factor, Q, C, E):
-        self.factor = factor
-        self.Q = Q
-        self.C = C
-        self.E = E
-        self.prec = 3
 
 class BayesNet:
     def __init__(self):
