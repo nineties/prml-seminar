@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第16回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第16回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年6月19日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ジョインツリーアルゴリズム(続き) </h2>
+        </section>
+
+        <section>
+        <div align="center"><img width="800px" src="fig/message-passing2.png"></div>
+        <p>
+        前回は, ファクター消去によってベイジアンネットワークに対する推論を行う場合, エリミネーションツリーという木構造の上で一回メッセージパッシングを行うだけで全てのクラスターについての同時分布を厳密に計算する事が出来るという所まで説明しました.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        残る問題は具体的にどのようなエリミネーションツリーを用いると効率的であるかという事になります. そこでジョインツリーという概念が登場します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        グラフ $G=(V,E)$ のノードの部分集合 $\mathbf{C}\subset V$ を <strong> クラスター (cluster) </strong> と呼びます.
+        </p>
+        <p class="fragment">
+        エリミネーションツリーに対して定義されたクラスター
+        \[ \mathbf{C}_i \stackrel{\mathrm{def}}{=} \mathrm{vars}(i)\cup\bigcup_{j}\mathbf{S}_{ij} \]
+        はこの一種です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        無向グラフのクラスター $\mathbf{C}$ 内の全てのノードが互いに接続されているならば $\mathbf{C}$ を <strong> クリーク(clique) </strong> と呼び, クリーク $\mathbf{C}$ が他のクリークに含まれないならばそれを <strong> 極大クリーク (maximal clique)</strong> と呼びます.
+        </p>
+        <p>
+        以下はあるグラフの極大クリークの例です.
+        </p>
+        <div align="center"><img width="800px" src="fig/maximal-clique.png"></div>
+        </section>
+
+        <section>
+        <p>
+        無向グラフ $G$ に対して, $G$ の極大クリークをノードとし, 
+        \[ \text{辺$(\mathbf{C}_i,\mathbf{C}_j)$が存在}\Rightarrow \mathbf{C}_i\cap\mathbf{C}_j\neq\emptyset \]
+        を満たすグラフを <strong> 極大クリークグラフ (maximal clique graph) </strong> と呼び,
+        </p>
+        <p class="fragment">
+        \[ \text{辺$(\mathbf{C}_i,\mathbf{C}_j)$が存在}\Leftrightarrow \mathbf{C}_i\cap\mathbf{C}_j\neq\emptyset \]
+        を満たすグラフを <strong> ジョイングラフ (join graph) </strong> もしくは <strong> ジャンクショングラフ (junction graph) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば以下のグラフの極大クリークは
+        \[ \{A,F\}, \{B,D,E\}, \{B,E,F\}, \{C,D,E\} \]  
+        が全てです.
+        </p>
+        <div align="center"><img width="300px" src="fig/clique-graph1.png"></div>
+        </section>
+
+        <section>
+        <p>
+        すると, ジョイングラフは右下のようになります. ジョイングラフは無向グラフ $G$ に対して一意的に定まります.
+        </p>
+        <div align="center"><img width="700px" src="fig/clique-graph2.png"></div>
+        </section>
+
+        <section>
+        <p>
+        ジョイングラフから $0$ 本以上のエッジを除いた物が極大クリークグラフです. 右下その例です.
+        </p>
+        <div align="center"><img width="700px" src="fig/clique-graph3.png"></div>
+        </section>
+
+        <section>
+        <p> 以上の準備の元にジョインツリーが以下の様に定義されます. </li>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> ジョインツリーの定義 </h4>
+          <p>
+          無向グラフ $G$ の<strong> ジョインツリー (jointree) </strong> もしくは <strong> ジャンクションツリー (junction tree)</strong> とは $G$ の極大クリークグラフ $\mathcal{T}$ であって以下の条件を満たすもの.
+          </p>
+          <ul>
+            <li> $\mathcal{T}$ は木である. </li>
+            <li> 任意の2つの極大クリーク $\mathbf{C}_i,\mathbf{C}_j$ について, $A\in\mathbf{C}_i\cap\mathbf{C}_j$ なるノードが存在するならば, $A$ は $\mathcal{T}$ 内の $\mathbf{C}_i$ から $\mathbf{C}_j$ への路上の全ての極大クリークに含まれる.
+            </li>
+          </ul>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        右下の木は左下のグラフのジョインツリーになっています.
+        </p>
+        <p>
+        例えば, $E$ は $BEF$ と $CDE$ の両方に含まれますが, この2つを結ぶ路上にある $BDE$ にも含まれています.
+        </p>
+        <div align="center"><img width="700px" src="fig/clique-graph5.png"></div>
+        </section>
+
+        <section>
+        <p>
+        こちらはジョインツリーではないツリーの例です.
+        </p>
+        <p>
+        $B$ は $BDE$ と $BEF$ に含まれますが, この2つを結ぶ路上にある $CDE$ には含まれないからです.
+        </p>
+        <div align="center"><img width="700px" src="fig/clique-graph6.png"></div>
+        </section>
+
+        <section>
+        <p>
+        ジョインツリーは任意の無向グラフ $G$ に対して存在するわけではありません.
+        </p>
+        <p>
+        例えば左下のグラフのジョイングラフは右下のようになりますが, ここからどのように辺を除いてもジョインツリーにはなりません.
+        </p>
+        <div align="center"><img width="700px" src="fig/clique-graph7.png"></div>
+        </section>
+
+        <section>
+        <p>
+        「長さ $4$ 以上の弦を持たないループ」が存在しないグラフを <strong> コーダルグラフ (chordal graph) </strong> もしくは <strong> 三角グラフ (triangulated graph)</strong> と呼びます.
+        </p>
+        <p>
+        先ほどのグラフは以下の様に弦を持たない長さ $4$ 以上のループが存在するのでコーダルグラフではありません.
+        </p>
+        <div align="center"><img width="300px" src="fig/clique-graph8.png"></div>
+        </section>
+
+        <section>
+        <p>
+        実は
+        \[ \text{$G$ のジョインツリーが存在}\Leftrightarrow\text{$G$ がコーダルグラフ} \]
+        であるという事が知られています.
+        </p>
+        <div align="center"><img width="700px" src="fig/clique-graph5.png"></div>
+        <ul>
+          <li> 参考: <a href="http://www.cs.berkeley.edu/~bartlett/courses/2009fall-cs281a/graphnotes.pdf">http://www.cs.berkeley.edu/~bartlett/courses/2009fall-cs281a/graphnotes.pdf</a>
+        </ul>
+        </section>
+
+        <section>
+        <p>
+        続いて, ベイジアンネットワークからコーダルグラフを得る方法の説明をします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        有向グラフ構造 $G$ に対して以下の操作を行って得られる無向グラフを $G$ の <strong> モラルグラフ (moral graph) </strong> と呼びます.
+        </p>
+        <ol>
+          <li> 各ノード $A$ について $\mathrm{pa}(A)$ の全てのノード間に辺を引く. </li>
+          <li> $G$ の各辺から向きを除去する </li>
+        </ol>
+        <div align="center"><img width="600px" src="fig/moral-graph.png"></div>
+        </section>
+
+        <section>
+        <p>
+        これはコーダルグラフになっていませんが長さ $4$ 以上のループに新たに弦を追加すればコーダルグラフになります. この操作を <strong> フィルイン (fill-in)</strong> と呼びます.
+        </p>
+        <div align="center"><img width="600px" src="fig/fill-in.png"></div>
+        </section>
+
+        <section>
+        <p>
+        フィルインの仕方は一意的ではなく, フィルインの良し悪しが推論の効率に影響します.
+        </p>
+        <p class="fragment">
+        ここでは <strong> MCS (maximum cardinality search) フィルイン </strong> というアルゴリズムを紹介します. これはベイジアンネットワークの計算量について最適なフィルインを保証するものではありません. 
+        </p>
+        </section>
+
+        <section>
+        <p>
+        無向グラフ $G$ に対して
+        \[ \mathrm{Nbr}(A) \stackrel{\mathrm{def}}{=}\{\text{$A$ に隣接するノード}\} \]
+        を $A$ の <strong> 近傍 (neighbours)</strong> と呼びます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> MCSフィルイン </h4>
+          <p>
+          $G$ を無向グラフとする. ノードに対するナンバリングを $\alpha$ とする. $G$ のノードのうち番号付けが行われたノード集合を $N$ とする.
+          </p>
+          <ol>
+            <li> 適当にノード $V_1$ を選び, $\alpha(1) = V_1$ とする. </li>
+            <li> $i = 2$ とする. </li>
+            <li> $|\mathrm{Nbr}(V_k)\cap N|$ が最大の $V_k$ を選び, $\alpha(i) = V_k$ とする. </li>
+            <li> $\mathrm{Nbr}(V_k)\cap\{\alpha(1),\ldots,\alpha(i-1)\}$ がクリークでないならば, これをクリークにする為に必要なエッジを追加し, $3$ に戻る. </li>
+            <li> $i = \text{(ノード数)}$ ならば終了. そうでなければ$i = i + 1$ として $3$ に戻る. </li>
+          </ol>
+        </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        先ほどのグラフでやってみます. $\alpha(1) = A$ からスタートしてみましょう.
+        </p>
+        <div align="center"><img width="300px" src="fig/fill-in1.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $N = \{A\}$ と隣接するのは $B,C$ のみで, どちらも $|\mathrm{Nbr}(V_k)\cap N|=1$ だから互角です.
+        </p>
+        <p class="fragment">
+        そこで $\alpha(2)=B$ としてみましょう. $\mathrm{Nbr}(B)\cap N=\{A\}B$ はクリークなので次に進みます.
+        </p>
+        <div align="center"><img width="300px" src="fig/fill-in2.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $N = \{A,B\}$ と隣接するのは $C,D$ ですが, $C$ の方が(既に番号付けられた)近傍が多いので $\alpha(3) = C$ です. $\{A,B\}$ はクリークなので次に進みます.
+        </p>
+        <div align="center"><img width="300px" src="fig/fill-in3.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $N = \{A,B,C\}$ と隣接するのは $D,E$ ですが, どちらも近傍は1つなのでどちらでも良いです. そこで $\alpha(4)=D$ としましょう. $D$ の近傍である $\{B\}$ はクリークなので次に進みます.
+        </p>
+        <div align="center"><img width="300px" src="fig/fill-in4.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $N = \{A,B,C,D\}$ と隣接するのは $E,F$ ですが, $E$ の方が近傍が多いので $\alpha(5)=E$ です. ところが $E$ の近傍 $\{C,D\}$ はクリークになっていないので辺を追加します.
+        </p>
+        <div align="center"><img width="300px" src="fig/fill-in7.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $N = \{A,B,C,D,E\}$ と隣接するのは $F$ のみなので $\alpha(6)=F$ とします. $F$ の近傍 $\{D,E\}$ はクリークになっているので辺の追加はありません.
+        </p>
+        <div align="center"><img width="300px" src="fig/fill-in8.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        出来上がったコーダルグラフの極大クリークは
+        \[ ABC, BCD, CDE, DEF \]
+        の4つです. これらをMCSフィルインで付けられた番号 $\alpha$ の最大値が小さい順番に並べると
+        \[ ABC \rightarrow BCD \rightarrow CDE \rightarrow DEF \]
+        となります.
+        </p>
+        <p>
+        これを得られたコーダルグラフの <strong> クリークチェーン (clique chain)</strong> と言います.
+        </p>
+        <div align="center"><img width="250px" src="fig/fill-in8.png"></div>
+        </section>
+
+        <section>
+        <p>
+        以上で
+        \[ \text{ベイジアンネットワーク}\rightarrow \text{モラルグラフ}\rightarrow\text{コーダルグラフ} \]
+        という所まで来ました. あとはこれからジョインツリーを導出すれば終わりです.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> ジョインツリーの生成 </h4>
+          <ol>
+            <li> コーダルグラフ $G$ を構築する. そのクリークチェーンを $\mathbf{C}_1,\mathbf{C}_2,\ldots,\mathbf{C}_m$ とする. </li>
+            <li> 各 $\mathbf{C}_i, (i=m,m-1,\ldots,2)$ について $\{\mathbf{C}_1,\ldots,\mathbf{C}_{i-1}\}$ の中で $|\mathbf{C}_i\cap\mathbf{C}_k|$ が最大となる $\mathbf{C}_k$ を選び, 辺 $(\mathbf{C}_i,\mathbf{C}_k)$ をジョインツリーに追加する.
+          </ol>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        先ほどの例ではクリークチェーンが
+        \[ ABC \rightarrow BCD \rightarrow CDE \rightarrow DEF \]
+        であるので $DEF$ から辺を追加します.
+        </p>
+        <p>
+        $\{ABC,BCD,CDE\}$ のうち共通するノードが最も多いので $CDE$ なので辺 $(CDE, DEF)$ を追加します.
+        </p>
+        <div align="center"><img width="300px" src="fig/jointree1.png"></div>
+        </section>
+
+        <section>
+        <p>
+        続いて $CDE$ と $\{ABC,BCD\}$ では $BCD$ との共通ノードが最も多いので辺 $(BCD,CDE)$ を追加します.
+        </p>
+        <div align="center"><img width="300px" src="fig/jointree3.png"></div>
+        </section>
+
+        <section>
+        <p>
+        これを繰り返すと以下のグラフを得ます. これがジャンクションツリーです.
+        </p>
+        <div align="center"><img width="300px" src="fig/jointree4.png"></div>
+        </section>
+
+        <section>
+        <p>
+        あるDAG(非循環有向グラフ) $G$ のノード $A$ に対して
+        \[ \{A\}\cup\mathrm{pa}(A) \]
+        つまり, $A$ と $A$の親ノードの集合を $A$ の<strong> ファミリー (family) </strong> と呼びます.
+        </p>
+        <div align="center"><img width="250px" src="fig/family.png"></div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        例えば, 以下のベイジアンネットワークに対するファミリーは
+        \[ A, B, ABC, BD, CE, DEF \]
+        となります. これは
+        \[ P(A,B,C,D,E,F) = P(A)P(B)P(C|A,B)P(D|B)P(E|C)P(F|D,E) \]
+        という同時分布の各因子と対応しています.
+        </p>
+        <div align="center"><img width="300px" src="fig/jointree5.png"></div>
+        </section>
+
+        <section>
+        <p>
+        この時, 以下の事実が言えます.
+        </p>
+        <div class="block" style="border-color:blue">
+          ベイジアンネットワークの各ファミリー $\varphi_i$ は, ベイジアンネットワークのグラフ構造 $G$ のモラルグラフを元に構築したジョインツリー $\mathcal{T}$ のいずれかのノード(極大クリーク)に含まれる.
+        </div>
+        <p class="fragment">
+        そこで, 各ファミリー $\varphi_i$ をそれを含むジョインツリーのノードに割り当てる事によってエリミネーションツリーを得る事が出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        先ほどの例でやってみると, 例えば
+        </p>
+        <ul>
+          <li> $P(A)P(B)P(C|A,B)$ をノード $ABC$ に </li>
+          <li> $P(D|B)$ をノード $BCD$ に </li>
+          <li> $P(E|C)$ をノード $CDE$ に </li>
+          <li> $P(F|D,E)$ をノード $DEF$ に </li>
+        </ul>
+        <p>
+        に割り当てる事によって以下のエリミネーションツリーを得る事が出来ます.
+        </p>
+        <div align="center"><img width="600px" src="fig/jointree6.png"></div>
+        </section>
+
+        <section>
+        <p>
+        ジョインツリーを用いてエリミネーションを構築した場合, ノード $\mathbf{C}_i,\mathbf{C}_j$ を結ぶ辺に関するセパレータは
+        \[ \mathbf{S}_{ij} = \mathbf{C}_i\cap\mathbf{C}_j \]
+        と, 非常に簡単な形になります.
+        </p>
+        <p class="fragment">
+        あとは, メッセージパッシングを行うのみという事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        MCSフィルインはその最適性が保証されないので, もっと良いフィルイン方法を考えたいのですが, 最適なフィルインを求める事はNP困難な問題となります.
+        </p>
+        <p class="fragment">
+        そこでやはり何らかのヒューリスティクスを用いたいのですが, 変数消去法の際に用いた最小次数法をここで用いる事も可能です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        復習すると, まず <strong> インタラクショングラフ (interaction graph)</strong> というものが必要でした.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> インタラクショングラフ </h4>
+          <p>
+          ファクターの集合 $\mathcal{S}=\{\varphi_1,\ldots,\varphi_n\}$ に対するインタラクショングラフ $\mathcal{G}_i$ とは無向グラフであり, 頂点集合 $\mathbf{V}$と辺集合 $\mathbf{E}$ は以下のように定める.
+          </p>
+          \[ \begin{aligned}
+          \mathbf{V} &= \{\varphi_1,\ldots\varphi_n\text{に含まれる各変数}\}\\
+          \mathbf{E} &= \{(x,y) \,|\, \text{$x,y$ が同一のファクターに含まれる}\} \end{aligned}\] 
+          </ul>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        例えば, 以下のベイジアンネットワークのインタラクショングラフは
+        </p>
+        <div align="center"><img width="300px" src="fig/bayesian-network1.png"></div>
+        </section>
+
+        <section>
+        <p>
+        以下のようになるのでしたが, 実はこれはモラルグラフと同じものです.
+        </p>
+        <div align="center"><img width="300px" src="fig/interaction-graph1.png"></div>
+        </section>
+
+        <section>
+        <p>
+        最小次数法というヒューリスティクス的な方法では, 最も隣接するノードの数が少ないノードから消去していくのでした.
+        </p>
+        <div align="center"><img width="900px" src="fig/interaction-graph5.png"></div>
+        </section>
+
+        <section>
+        <p>
+        この時, 消去するノード及びその隣接ノードを１つのクラスター $\mathbf{C}_i$ とすると, クリークの列を得る事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば, 先ほどの消去順の場合には
+        \[ ABC \rightarrow BCD \rightarrow CDE \rightarrow DE \rightarrow D\]
+        となります.
+        </p>
+        <div align="center"><img width="900px" src="fig/interaction-graph5.png"></div>
+        </section>
+
+        <section>
+        <p>
+        このクリークチェインに基づいてジョインツリーを構築すると以下のようになります.
+        </p>
+        <div align="center"><img width="500px" src="fig/jointree7.png"></div>
+        </section>
+
+        <section>
+        <h3> 第16回はここで終わります </h3>
+        <p>
+        次回はマルコフ確率場の紹介をします.
+        </p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
