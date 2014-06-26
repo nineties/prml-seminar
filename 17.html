@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第17回 @ ワークスアプリケーションズ</title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第17回</h2>
+        <h3>@ワークスアプリケーションズ</h3>
+        <small> 中村晃一 <br> 2014年6月26日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        この会の企画・会場設備の提供をして頂きました<br>
+        &#12849; ワークスアプリケーションズ様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> マルコフ確率場 </h2>
+        </section>
+
+        <section>
+        <p>
+        これまではベイジアンネットワークという有向グラフ構造を持つグラフィカルモデルの説明をしてきましたが, 本日は無向グラフによるグラフィカルモデルである <strong> マルコフ確率場 (Markov random field, MRF)</strong> の説明をします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        MRFの構造は無向グラフ $G=(V, E)$ により定まります。各頂点には異なる確率変数を割り当てます.
+        </p>
+        <div align="center"><img width="500px" src="fig/markov-random-field1.png"></div>
+        </section>
+
+        <section>
+        <p>
+        この際, グラフの構造とどのような条件付き確率性が対応するのかという事が重要となります.
+        </p>
+        <p class="fragment">
+        そこで, MRFでは, $\mathbf{X}$ から $\mathbf{Y}$ への任意のパスが $\mathbf{Z}$ によってブロックされている時に, 
+        $\mathbf{X}$ と $\mathbf{Y}$ が $\mathbf{Z}$ を所与として独立であるという条件を要請します.
+        <span style="font-size:80%"> (これを大域的マルコフ性といいますが, 実際にはもう少し弱めた局所的マルコフ性という性質を満たせばMRFと呼ぶ事が出来ます.) </span>
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば, 以下のグラフで $\{C,D\}$ にエビデンスが与えられると $\{A,B\}$ から $\{E\}$ への全てのパスがブロックされます. 従って, 以下のグラフでは
+        $\{C,D\}$ を所与として$\{A,B\}$ と $\{E\}$ が条件付き独立であるという事が表現されています.
+        </p>
+        <div align="center"><img width="500px" src="fig/markov-random-field2.png"></div>
+        </section>
+
+        <section>
+        <p>
+        従って, 同時分布上では
+        \[ P(A,B,E|C,D) = P(A,B|C,D)P(E|C,D) \]
+        つまり, 
+        \[ P(A,B,C,D,E) = P(A,B|C,D)P(E|C,D)P(C,D) \]
+        という因数分解が可能になります.
+        </p>
+        <div align="center"><img width="500px" src="fig/markov-random-field2.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        今の例だと, サイズ4のファクター $P(A,B|C,D)$ があるのでもっと小さく分解出来ないか考えてみましょう.
+        </p>
+        <p class="fragment">
+        まず, $\{B,C\}$ を所与として$\{A\}$ と $\{D,E\}$ は独立なので
+        \[ \begin{aligned}
+        P(A,B,C,D,E) &= P(A|B,C,D,E)P(B,C,D,E) \\
+        &= P(A|B,C)P(B,C,D,E) \end{aligned}\]
+        となります.
+        </p>
+        <div align="center"><img width="500px" src="fig/markov-random-field1.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        続いて, $\{D\}$ を所与として $\{B,C\}$ と $\{E\}$ は独立なので
+        \[ P(B,C,D,E) = P(B,C|D,E)P(D,E) = P(B,C|D)P(D,E) \]
+        と出来ます.
+        </p>
+        <p class="fragment">
+        つまり, 
+        \[ P(A,B,C,D,E) = P(A|B,C)P(B,C,|D)P(D,E) \]
+        と出来ます. ファクターサイズが最大で3なので, さっきよりも良い分解です.
+        </p>
+        <div align="center"><img width="500px" src="fig/markov-random-field1.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        今の
+        \[ P(A,B,C,D,E) = \varphi(A,B,C)\varphi(B,C,D)\varphi(D,E) \]
+        という分解においてノード集合 $\{A,B,C\}$, $\{B,C,D\}$, $\{D,E\}$ は極大クリークになっています.
+        これをMRFにおける <strong> クリーク因子分解 (clique factorization)</strong> と言います.
+        </p>
+        <div align="center"><img width="500px" src="fig/markov-random-field3.png"></div>
+        </section>
+
+        <section>
+        <p>
+        クリーク $C$ 内の変数集合 $\mathbf{X}_C$ の間にはいかなる条件付き独立性も成り立ちません.
+        従って, 同時分布
+        \[ P(\mathbf{X}_C) \]
+        はこれ以上小さなファクターに分解する事が出来ないので, クリーク因子分解を行った時に最大ファクターのサイズが最小となる事が解ります.
+        </p>
+        <div align="center"><img width="300px" src="fig/markov-random-field4.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        一般にクリーク因子分解を以下のように定める事が出来ます.
+        </p>
+        <div class="block" style="border-color:blue">
+          <h4 style="color:blue"> クリーク因子分解 </h4>
+          <p>
+          MRF上の同時分布は
+          \[ P(\mathbf{X}) = \frac{1}{Z}\prod_{C}\varphi(\mathbf{X}_C) \]
+          の形で表す事が出来る. 但し $C$ はMRFの各極大クリーク, $\mathbf{X}_C$ はクリーク $C$ 内の変数集合, $Z$ は正規化定数
+          \[ Z = \sum_{\mathbf{X}}\prod_{C}\varphi(\mathbf{X}_C) \]
+          である.
+          </p>
+          <p>
+          各 $\varphi(\mathbf{X}_C) \geq 0$ を <strong> ポテンシャル関数 (potential function) </strong> と呼ぶ.
+          </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        ここで登場したポテンシャル関数 $\varphi(\mathbf{X}_C)$ は必ずしも $P(A|B,C)$ の様な特定の形をしている必要はありません.
+        </p>
+        <p class="fragment">
+        むしろ, $P(\mathbf{X})$ よりもポテンシャル関数 $\varphi(\mathbf{X}_C)$ の方が主役であり(だから特別な名前が付いている),
+        $\varphi(\mathbf{X}_C)$ を定める事によって同時分布 $P(\mathbf{X})$ の形が定まるのだと考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ポテンシャル関数 $\varphi(\mathbf{X}_C)$ は
+        \[ \varphi(\mathbf{X}_C) &gt; 0 \]
+        の場合を考える事が多いです.
+        </p>
+        <p class="fragment">
+        この場合は
+        \[ \varphi(\mathbf{X}_C) = \exp\{-E(\mathbf{X}_C)\} \]
+        を満たす関数 $E(\mathbf{X}_C)$ が存在しますが, これを <strong> エネルギー関数 (energy function) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        エネルギー関数を用いるとMRF上の確率分布は
+        \[ P(\mathbf{X}) = \frac{1}{Z}\prod_C\exp\{-E(\mathbf{X}_C)\} = \frac{1}{Z}\exp\left\{- \sum_C E(\mathbf{X}_C)\right\} \]
+        となりますが, 
+        \[ E(\mathbf{X}) \stackrel{\mathrm{def}}{=} \sum_C E(\mathbf{X}_C) \]
+        を <strong> 全エネルギー (total energy) </strong> と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        全エネルギーを用いると
+        \[ P(\mathbf{X}) = \frac{1}{Z}\exp\left\{- E(\mathbf{X})\right\} \]
+        と書くことが出来ますが, この形で分布を書き表した時これを <strong> ボルツマン分布 (Boltzmann distribution)</strong> と呼びます.
+        </p>
+        <p class="fragment">
+        上の式から, 最も生じやすい状態 $\mathbf{X}$ というのはエネルギー $E(\mathbf{X})$ が最小の状態であるという事が解ります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        元々, マルコフ確率場は統計力学の分野で生まれた概念であり, ポテンシャルやエネルギー等の用語はこれに由来しています.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> マルコフ確率場:画像処理への応用 </h2>
+        </section>
+
+        <section>
+        <p>
+        画像のノイズ除去はMRFの有名な応用の１つです.
+        </p>
+        <div align="center"><img width="400px" src="prog/bayes-noise.png"></div>
+        </section>
+
+        <section>
+        <p>
+        今, 2値画像だけを考えて黒を $-1$, 白を $1$ とします. $D$ をピクセル数とすると, ノイズ入りの画像はベクトル
+        \[ y = (y_1,y_2,\ldots,y_D)\quad (y_i \in \{-1, 1\}) \]
+        として表す事が出来ます.
+        </p>
+        <p class="fragment">
+        同様に, ノイズの無い元画像を
+        \[ x = (x_1,x_2,\ldots,x_D)\quad (x_i \in \{-1, 1\}) \]
+        とします.
+        </p>
+        <p class="fragment">
+        $y$ は観測出来て $x$ は観測出来ません. $y$ から $x$ を復元する事が目標です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        一般に, あるピクセル $x_i$ の値は観測値 $y_i$ 及び隣接するピクセル $x_j$ と強い相関があると考えられます. これを以下のようなグラフで表現する事にしましょう. これをMRFと見なします.
+        </p>
+        <div align="center"><img width="500px" src="fig/image-denoising.png"></div>
+        </section>
+
+        <section>
+        <p>
+        このMRFの極大クリークは $\{x_i,x_j\} \quad \text{($x_i,x_j$ は隣接)}$ というものと $\{x_i,y_i\}$ というものです. 従ってエネルギー関数
+        \[ E(x_i,x_j)\text{と}E(x_i,y_i) \]
+        を定めれば良いです.
+        </p>
+        <div align="center"><img width="500px" src="fig/image-denoising.png"></div>
+        </section>
+
+        <section>
+        <p>
+        そこで $h$ を実数, $\eta &gt; 0$ として
+        \[ E(x_i,y_i) = hx_i - \eta x_iy_i \]
+        また, $\beta &gt; 0$ として
+        \[ E(x_i,x_j) = -\beta x_ix_j \]
+        とおいてみます.
+        </p>
+        <p class="fragment">
+        エネルギーが小さい状態の方が実現しやすい事を思い出しましょう. $x_i$ と $y_i$ が同じ色の時, $x_i$ と $x_j$ が同じ色の時にそれぞれのエネルギー関数の値は小さくなります. $hx_i$ は黒と白のピクセルのどちらの方が実現しやすいかに関する項です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        すると, 全エネルギーは各クリークに関するエネルギーの和なので
+        \[ E(\mathbf{x},\mathbf{y}) = h\sum_i x_i - \beta \sum_{i,j:\text{隣接}}x_ix_j - \eta \sum_i x_iy_i \]
+        となります.
+        </p>
+        <p class="fragment">
+        このモデルは統計力学においては <strong> イジングモデル (ising model) </strong> と呼ばれるものです. 色の代わりに原子のスピンの向きを割り当てて, 磁性体の振る舞いをモデル化する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        各ピクセルの値 $x_i$ を推定する為には, エネルギー
+        \[ E(\mathbf{x},\mathbf{y}) = h\sum_i x_i - \beta \sum_{i,j:\text{隣接}}x_ix_j - \eta \sum_i x_iy_i \]
+        が最小となるような $x_i$ を求めれば良いです.
+        </p>
+        <p class="fragment">
+        確率的勾配降下法を使えば簡単に局所最適化を得る事が出来ます. つまり, 各 $x_i$ についてその他のピクセルを固定した上で $x_i = 1$ の場合と $x_i = -1$ の場合を比べてより小さい方を採用するという事を変化が無くなるまで繰り返します.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $P(\mathbf{x}|\mathbf{y})$ が最大となる $\mathbf{x}$ を求める為には, エネルギー
+        \[ E(\mathbf{x}|\mathbf{y}) = h\sum_i x_i - \beta \sum_{i,j:\text{隣接}}x_ix_j - \eta \sum_i x_iy_i \]
+        を最小とすれば良いです.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        勾配法による実装例です.(<a href="prog/prog15-1.py">prog15-1.py</a> ) パラメータは $h = 0, \beta = 1,\eta = 2$ としています.
+        </p>
+        <div align="center"><img width="400px" src="prog/bayes-noise.png"><img width="400px" src="prog/bayes-denoise.png"></div>
+        </section>
+
+        <!--
+        <section>
+        <h2 class="chapter-title"> ファクターグラフ </h2>
+        </section>
+
+        <section>
+        <p>
+        ベイジアンネットワークもマルコフ確率場も, 確率分布の因子分解
+        \[ P(\mathbf{X}) = \prod_i \varphi_i(\mathbf{X}_i) \]
+        に基づくものでした.
+        </p>
+        <p class="fragment">
+        そこで, <strong>ファクターグラフ (factor graph)</strong> という概念を考える事によって, どちらも統一的に取り扱う事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ファクターグラフは二部グラフであって, 一方のノード群は確率変数, 他方のノード群はファクターからなります. ファクター $\varphi$ が変数 $x$ を含む場合にのみ辺 $(x, \varphi)$ を引きます.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        例えば, 以下のファクターグラフは
+        \[ P(x,y,z) = \varphi_1(x)\varphi_2(x,y)\varphi_3(x,z) \]
+        という因子分解を表しています.
+        </p>
+        <div class="fragment" data-fragment-index="1" align="center"><img width="300px" src="fig/factor-graph1.png"></div>
+        </section>
+
+        <section>
+        <p>
+        ベイジアンネットワークと同様にして, メッセージパッシング法によってファクターグラフ上での確率推論を行う事が出来ます. <strong> Sum-Productアルゴリズム </strong> とも呼ばれます.
+        </p>
+        <p class="fragment">
+        ファクターグラフ上でのメッセージパッシングでは変数からファクターへのメッセージと, ファクターから変数へのメッセージを考えます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        簡単の為, ファクターグラフが木である場合を考えます.
+        </p>
+        <p class="fragment">
+        ファクター $\varphi$ から変数 $x$ へのメッセージ
+        \[ \mu_{\varphi \rightarrow x}(x) = \]
+        はプライベート変数に関する畳込みを表しており, 
+        \[ \mu_{\varphi\rightarrow x}(x) = \sum_{\mathbf{X}}F(x, \mathbf{X}) \]
+        となります.
+        </p>
+        <div class="fragment" data-fragment-index="1" align="center"><img width="300px" src="fig/factor-graph2.png"></div>
+        </section>
+
+        -->
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
