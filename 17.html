@@ -369,26 +369,17 @@
         が最小となるような $x_i$ を求めれば良いです.
         </p>
         <p class="fragment">
-        確率的勾配降下法を使えば簡単に局所最適化を得る事が出来ます. つまり, 各 $x_i$ についてその他のピクセルを固定した上で $x_i = 1$ の場合と $x_i = -1$ の場合を比べてより小さい方を採用するという事を変化が無くなるまで繰り返します.
+        確率的勾配降下法を使えば簡単に局所最適解を得る事が出来ます. つまり, 各 $x_i$ についてその他のピクセルを固定した上で $x_i = 1$ の場合と $x_i = -1$ の場合を比べてより小さい方を採用するという事を変化が無くなるまで繰り返します.
         </p>
         </section>
 
         <section>
         <p>
-        $P(\mathbf{x}|\mathbf{y})$ が最大となる $\mathbf{x}$ を求める為には, エネルギー
-        \[ E(\mathbf{x}|\mathbf{y}) = h\sum_i x_i - \beta \sum_{i,j:\text{隣接}}x_ix_j - \eta \sum_i x_iy_i \]
-        を最小とすれば良いです.
+        勾配法による実装例です.(<a href="prog/prog17-2.py">prog17-2.py</a> ) パラメータは $h = 0, \beta = 3,\eta = 2$ としています.
         </p>
+        <div align="center"><img width="400px" src="prog/bayes-noise.png"><img width="400px" src="prog/bayes-denoise2.png"></div>
         </section>
 
-        <section>
-        <p>
-        勾配法による実装例です.(<a href="prog/prog15-1.py">prog15-1.py</a> ) パラメータは $h = 0, \beta = 1,\eta = 2$ としています.
-        </p>
-        <div align="center"><img width="400px" src="prog/bayes-noise.png"><img width="400px" src="prog/bayes-denoise.png"></div>
-        </section>
-
-        <!--
         <section>
         <h2 class="chapter-title"> ファクターグラフ </h2>
         </section>
@@ -427,19 +418,141 @@
 
         <section>
         <p>
-        簡単の為, ファクターグラフが木である場合を考えます.
+        簡単の為, ファクターグラフが木である場合を考えます. ルートを定め集積フェーズでは葉からルート, 分配フェーズではルートから葉に向かってメッセージを流します.
         </p>
-        <p class="fragment">
-        ファクター $\varphi$ から変数 $x$ へのメッセージ
-        \[ \mu_{\varphi \rightarrow x}(x) = \]
-        はプライベート変数に関する畳込みを表しており, 
-        \[ \mu_{\varphi\rightarrow x}(x) = \sum_{\mathbf{X}}F(x, \mathbf{X}) \]
-        となります.
-        </p>
-        <div class="fragment" data-fragment-index="1" align="center"><img width="300px" src="fig/factor-graph2.png"></div>
         </section>
 
-        -->
+        <section>
+        <p>
+        ファクター $\varphi$ から変数 $x$ へのメッセージ
+        \[ \mu_{\varphi \rightarrow x}(x) \]
+        はプライベート変数に関する畳込みを表しており, 
+        \[ \mu_{\varphi\rightarrow x}(x) = \sum_{\mathbf{X}}F(x, \mathbf{X}) \]
+        となります. $F(x,\mathbf{X})$ は $\varphi$ をルートとするサブツリーのファクターの積で, $\mathbf{X}$ は $\varphi$ に隣接する $x$ 以外の変数集合です.
+        </p>
+        <div align="center"><img width="400px" src="fig/factor-graph2.png"></div>
+        </section>
+
+        <section>
+        <p>
+        ここで, $F(x,\mathbf{x})$ というのはファクター $\varphi$ に流れて来たメッセージと $\varphi$ の積を取れば良く
+        \[ F(x, \mathbf{x}) = \varphi\prod_{y \in \mathrm{Ne}(\varphi)\setminus x} \mu_{y\rightarrow\varphi}(y) \]
+        となります.($\mathrm{Ne}(\varphi)$ は $\varphi$ の隣接ノード集合)
+        </p>
+        <div align="center"><img width="400px" src="fig/factor-graph2.png"></div>
+        </section>
+
+        <section>
+        <p>
+        従って,
+        \[ \mu_{\varphi\rightarrow x}(x) = \sum_{\mathbf{X}}\varphi\prod_{y \in \mathrm{Ne}(\varphi)\setminus x} \mu_{y\rightarrow\varphi}(y) \]
+        となります. これが Sum-Product アルゴリズムという命名の由来です.
+        </p>
+        <div align="center"><img width="400px" src="fig/factor-graph2.png"></div>
+        </section>
+
+        <section>
+        <p>
+        変数 $x$ から ファクター $\varphi$ へのメッセージは $x$ へ流れてきたメッセージの合算となります. つまり
+        \[ \mu_{x \rightarrow \varphi}(x) =\prod_{\psi \in \mathrm{Ne}(x)\setminus \varphi} \mu_{\psi\rightarrow x}(x) \]
+        となります.
+        </p>
+        <div align="center"><img width="400px" src="fig/factor-graph3.png"></div>
+        </section>
+
+        <section>
+        <p>
+        $x$ がファクターグラフの葉である場合には
+        \[ \mu_{x\rightarrow\varphi} = 1 \]
+        $\varphi$ がファクターグラフの葉である場合には
+        \[ \mu_{\varphi\rightarrow x}=\varphi(x) \]
+        と初期化します.
+        </p>
+        <p class="fragment">
+        あとは、ベイジアンネットワークの際にやった時にルートまでのメッセージ伝播と再分配を行えば各クリークに関する厳密な確率分布を求める事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        先ほどのファクターグラフはちょうど木になっているので, これでやってみましょう. $z$ をルートにしてみます.
+        </p>
+        <div align="center"><img width="800px" src="fig/factor-graph4.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $y$ から出発すると
+        \[ \begin{aligned}
+        \mu_{y\rightarrow\varphi_2} &= 1 \\
+        \mu_{\varphi_2 \rightarrow x} &= \sum_{y}\varphi_2\mu_{y\rightarrow\varphi_2}=\sum_{y}\varphi_2 \end{aligned}
+        \]
+        です. また
+        \[ \mu_{\varphi_1\rightarrow x} = \varphi_1 \]
+        です.
+        </p>
+        <div align="center"><img width="800px" src="fig/factor-graph4.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        これを掛けあわせて
+        \[ \mu_{x\rightarrow \varphi_3} = \mu_{\varphi_1\rightarrow x}\mu_{\varphi_2\rightarrow x}=\varphi_1\sum_{y}\varphi_2 \]
+        となり,
+        \[ \mu_{\varphi_3\rightarrow z} = \sum_x\varphi_3 \mu_{x\rightarrow\varphi_3} = \sum_x\varphi_3\varphi_1\sum_{y}\varphi_2 \]
+        となります.
+        </p>
+        <div align="center"><img width="800px" src="fig/factor-graph4.png"></div>
+        </section>
+
+        <section>
+        <p>
+        次は辺の向きを逆にしてルートから葉に向かってメッセージを流します. この際, 既に計算されたメッセージは再利用する事が出来ます.
+        </p>
+        <div align="center"><img width="400px" src="fig/factor-graph5.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        実際にやってみると
+        \[ \begin{aligned}
+        \mu_{z\rightarrow\varphi_3} &= 1 \\
+        \mu_{\varphi_3\rightarrow x} &= \sum_z\varphi_3 \\
+        \mu_{x\rightarrow\varphi_1} &= \mu_{\varphi_3\rightarrow x}{\color{red}{\mu_{\varphi_2\rightarrow x}}} = \sum_z\varphi_3\sum_{y}\varphi_2 \\
+        \mu_{x\rightarrow\varphi_2} &= \mu_{\varphi_3\rightarrow x}{\color{red}{\mu_{\varphi_1\rightarrow x}}} = \sum_z\varphi_3\varphi_1 \\
+        \mu_{\varphi_2\rightarrow y} &= \sum_x\varphi_2\sum_z\varphi_3\varphi_1 
+        \end{aligned} \]
+        となります. 赤いファクターは既に計算したものの再利用です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        変数ノード $x$ に到達したメッセージは $P(x)$ となります. 例えば $z$ に到達したメッセージは
+        \[ P(z) = \mu_{\varphi_3\rightarrow z} = \sum_x\varphi(x,z)\varphi_1(x)\sum_y\varphi(x,y) \]
+        </p>
+        <p class="fragment">
+        ファクターノード $\varphi(\mathbf{X})$ に到達したメッセージと $\varphi$ 自信の積は $\mathbf{X}$ に関する同時分布となります. 例えば $\varphi_2$ に到達したメッセージと $\varphi_2$ の積は
+        \[ P(x,y) = \varphi_2(x,y)\mu_{x\rightarrow\varphi_2}\mu_{y\rightarrow\varphi_2} = \varphi_2(x,y)\sum_z\varphi_3(x,z)\varphi_1(x) \]
+        となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以上の方法は, ファクターグラフが木でない場合には利用する事が出来ません.
+        その場合には,
+        \[ \mu_{\phi\rightarrow x} \]
+        を一様分布などで初期化しておいて, 収束するまでメッセージを流すという方法があります. これは <strong> loopy belief propagation </strong> と呼ばれます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 本勉強会は以上で終了します. </h3>
+        <p>
+        全17回お疲れ様でした. やり残した内容(主にEM法などの近似推論)がありますので, 今後資料に追加する予定です. その場合は @9_ties で告知しますのでよろしくお願いします.
+        </p>
+        </section>
 			</div>
 		</div>
 

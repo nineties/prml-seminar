@@ -24,7 +24,7 @@ for j in range(H):
         else:
             img[i, j] = -1
 
-BETA = 1.0
+BETA = 3.0
 ETA  = 2.0
 ENTH = 0.0
 
@@ -55,8 +55,7 @@ while changed:
                 new_img[i, j] = - new_img[i, j]
                 changed = True
 
-P_FLIP = 0.1
-outfile = open("bayes-denoise.ppm", "wb")
+outfile = open("bayes-denoise2.ppm", "wb")
 outfile.write("P6\n")
 outfile.write("%d %d\n" % (W, H))
 outfile.write("255\n")
