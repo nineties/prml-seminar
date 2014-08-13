@@ -349,11 +349,13 @@
         \[ \mathbf{w}_{k+1} = \mathbf{w}_k - \mathbf{H}_k^{-1}\nabla \ln L_k \]
         によって反復を行い $\mathbf{w}$ を収束させます.
         </p>
+        <p class="fragment">
+        この単純なニュートン・ラフソン法では必ずしも極小値に収束するとは限らず極大値に収束したり発散してしまう場合があります。そこで準ニュートン法というものが登場しますが、これは後の回に説明します。
+        </p>
         <p class="fragment" style="font-size:80%">
         一変数方程式 $f'(x)=0$ にニュートン・ラフソン法(<a href="http://nineties.github.io/math-seminar/4.html">参考</a>) を適用すると
         \[ x_{k+1} = x_k - \frac{f'(x_k)}{f''(x_k)} \]
         という反復公式が得られますが, これを多変数に拡張したものです. 二次収束します.
-        </p>
         </p>
         </section>
 

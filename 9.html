@@ -146,13 +146,10 @@
         <section>
         <h3> 準ニュートン法 </h3>
         <p>
-        前回は最急降下法を実装しましたが. これは1ステップの更新に掛かる時間が $\mathcal{O}(W)$ で済む一方, 収束するまでの反復回数が多くなってしまいます.
+        前回は最急降下法を実装しましたが、収束はあまり速くありません. ニュートン・ラフソン法を用いれば反復回数を大きく減らす事が出来ますが、その収束性は保証されておらず(これは勾配法も同じ)、さらに収束したからと言ってそれが極小値であるとは限りません.
         </p>
         <p class="fragment">
-        より効率的な手法として <strong> 共役勾配法 (conjugate gradient method) </strong> や <strong> 準ニュートン法 (quasi-Newton method) </strong> などがあります.
-        </p>
-        <p class="fragment">
-        第５回にニュートン・ラフソン法を解説しましたので, 今回はそれに基づく準ニュートン法を説明します. 共役勾配法については各自調べて下さい.
+        そこで，<strong> 準ニュートン法 (quasi-Newton method) </strong> という手法が登場します。
         </p>
         </section>
 
@@ -163,7 +160,10 @@
         によって反復を行う方法でした. $\nabla \mathbf{E}^{(k)}$ はステップ $k$ での誤差関数の勾配, $\mathbf{H}^{(k)}$ はステップ $k$ での誤差関数のヘッセ行列です.
         </p>
         <p class="fragment">
-        パラメータ数が $W$ の時, $\mathbf{H}^{(k)}$ は $W\times W$ 行列になるので計算量が問題となります. そこで $\left(\mathbf{H}^{(k)}\right)^{-1}$ を別の近似行列に置き換えたものが 準ニュートン法です.
+        ここでは主に2つの事が問題になります. １つは前頁で述べた収束性の問題です．もう一つはヘッセ行列の逆行列を計算するコストが非常に大きいということです．
+        </p>
+        <p class="fragment">
+        準ニュートン法では，ヘッセ行列を他の正定値対称行列で近似し，さらに逆行列を直接計算しなくても良いような工夫を行います.
         </p>
         </section>
 
@@ -272,48 +272,17 @@
         </section>
 
         <section>
-        <p>
-        今紹介した手法では, 局所解に陥ってしまう可能性がある事に注意する必要があります. 現在の点に関する局所的な情報しか見ていないからです. それ以前に収束するか否かも保証されません.
-        </p>
-        <div align="center"> <img width="500px" src="fig/local_optimal.png"> </div>
-        </section>
-
-        <section>
-        <p style="font-size:80%">
-        以下のグラフは先ほどの手法で $y=\sin \pi x$ のフィッティングを10回行ったものです. $\mathbf{w}$ の初期値をランダムに決めているので毎回結果が異なりますが, 最適解以外の曲線にも収束しています. これらが局所解です.
-        </p>
-        <div align="center"> <img width="700px" src="prog/fig8-5.png"> <a href="prog/prog8-5.py" style="font-size:60%">prog8-5.py</a> </div>
-        </section>
-
-        <section>
         <h3> 直線探索の利用 </h3>
         <p>
-        局所解を避ける為には大域的な情報を利用する必要があります.
-        </p>
-        <p>
-        しかし全空間を調べあげる事はとても出来ません. そこで <strong>線形探索 (line search)</strong>という手法が使えます.
-        これは,方向を決めた後進む距離だけを(ある程度)大域的な探索によって決定するというものです. これで局所解に陥る可能性を下げる事が出来ます。
+        今紹介した手法では, ヘッセ行列・その逆行列の計算量を削減する事は出来ましたが，収束性の問題が解決していません．
+        そこで <strong>線形探索 (line search)</strong>という手法を用いて，収束性が保証されるようにステップサイズを調整するという方法が取られます．
         </p>
         <div align="center"> <img width="500px" src="fig/local_optimal2.png"> </div>
         </section>
 
         <section>
-        <div class="block" style="border-color:blue;font-size:90%">
-        <h4> 直線探索の併用 </h4>
-        <ol>
-          <li> 次に進む方向 $\mathbf{p}^{(k)}$ を何らかの方法(準ニュートン法など)で決める. ($\mathbf{p}^{(k)}$ は $E$ の降下方向を向いていなければいけない.) </li>
-          <li> $E(\mathbf{w}^{(k)}+\alpha\mathbf{p}^{(k)})$ が最小となるステップ幅 $\alpha$ を何らかの直線探索で求める. </li>
-          <li> $\mathbf{w}^{(k+1)} = \mathbf{w}^{(k)}+\alpha\mathbf{p}^{(k)}$ とする. </li>
-        </ol>
-        </div>
-        </section>
-
-        <section>
         <p>
-        ここで, $E(\mathbf{w}+\alpha\mathbf{p})$ が最小となるステップ幅 $\alpha$ を厳密に求める代わりに, <strong> Armijoの条件 (Armijoの条件)</strong> と <strong> Wolfeの条件 (Wolfe condition) </strong> と呼ばれるものを満たせば大域的収束性が保証される事が分かっています.
-        </p>
-        <p>
-        大域的収束性とは簡単にいうと初期値を何処に取っても局所解のいずれかに必ず収束すると言う事です.
+        詳細は省きますが，<strong> Armijoの条件 (Armijoの条件)</strong> と <strong> Wolfeの条件 (Wolfe condition) </strong> と呼ばれるものを満たせば大域的収束性が保証される事が分かっています.
         </p>
         <div align="center"> <img width="700px" src="fig/local_optimal3.png"> </div>
         </section>
@@ -365,14 +334,6 @@
           </li>
         </ol>
         </div>
-        </section>
-
-        <section>
-        <p style="font-size:80%">
-        $y=\sin \pi x$ の例に適用して見ました. 準ニュートン法と同じく $\mathbf{p}=-\mathbf{H}^{-1}\nabla E$ としました.
-        以下のグラフでは50回のフィッティングを行っていますが局所解を回避する事が出来ました.
-        </p>
-        <div align="center"> <img width="700px" src="prog/fig8-6.png"> <a href="prog/prog8-6.py" style="font-size:60%">prog8-6.py</a> </div>
         </section>
 
         <section>

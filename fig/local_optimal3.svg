@@ -255,27 +255,6 @@
      sodipodi:type="arc"
      transform="translate(192.05335,164.19376)" />
   <path
-     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-     d="m 483.09714,173.54451 c -2.96378,1.77827 -96.61943,51.56988 -96.61943,51.56988"
-     id="path3026"
-     inkscape:connector-curvature="0"
-     sodipodi:nodetypes="cc" />
-  <text
-     xml:space="preserve"
-     style="font-size:17.11096191px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
-     x="491.87595"
-     y="169.38528"
-     id="text4008"
-     sodipodi:linespacing="125%"><tspan
-       sodipodi:role="line"
-       x="491.87595"
-       y="169.38528"
-       id="tspan4012">一歩で厳密な最小値を</tspan><tspan
-       sodipodi:role="line"
-       x="491.87595"
-       y="190.77399"
-       id="tspan3081">見つける必要はない</tspan></text>
-  <path
      sodipodi:type="arc"
      style="fill:none;stroke:#008000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:6, 6;stroke-dashoffset:0"
      id="path4028"
