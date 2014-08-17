@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="distributions.svg"
+   inkscape:export-filename="C:\Users\koichi\Desktop\distributions.png"
+   inkscape:export-xdpi="119.04"
+   inkscape:export-ydpi="119.04">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="587.37918"
+     inkscape:cy="376.49102"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="746"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <defs
+     id="defs4">
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lstart"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path3946" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Lend"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path3949" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-5"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-5"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-1"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-7-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-1-3"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-6"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-8"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-76"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-18"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-7-1"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-1-2"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5695"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path5697"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-8"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-7"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-7-2-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-1-3-9"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-86"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-50"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-8-0"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-7-2"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-8-5"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path3949-7-0"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-8-5i"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend-8-5i">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="stroke:#800080;stroke-width:1pt;fill:#800080;fill-rule:evenodd"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         id="path9083"
+         inkscape:connector-curvature="0" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-308.2677)">
+    <text
+       xml:space="preserve"
+       style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="49.497475"
+       y="206.69333"
+       id="text3049"
+       sodipodi:linespacing="125%"
+       transform="translate(0,308.2677)"
+       inkscape:export-xdpi="191.83141"
+       inkscape:export-ydpi="191.83141"><tspan
+         sodipodi:role="line"
+         id="tspan3051"
+         x="49.497475"
+         y="206.69333" /></text>
+    <text
+       transform="translate(0,308.2677)"
+       sodipodi:linespacing="125%"
+       id="text3168"
+       y="-207.46921"
+       x="181.82745"
+       style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\koichi\Desktop\text3049.png"
+       inkscape:export-xdpi="191.83141"
+       inkscape:export-ydpi="191.83141"><tspan
+         y="-207.46921"
+         x="181.82745"
+         id="tspan3170"
+         sodipodi:role="line" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="-98.994949"
+       y="-625.67236"
+       id="text9612"
+       sodipodi:linespacing="125%"
+       transform="translate(0,308.2677)"
+       inkscape:export-filename="C:\Users\koichi\Desktop\text3049.png"
+       inkscape:export-xdpi="191.83141"
+       inkscape:export-ydpi="191.83141"><tspan
+         sodipodi:role="line"
+         id="tspan9614"
+         x="-98.994949"
+         y="-625.67236" /></text>
+    <g
+       id="g3169"
+       transform="matrix(0.4536058,0,0,0.4536058,104.4299,574.41014)"
+       inkscape:export-filename="C:\Users\koichi\Desktop\text3049.png"
+       inkscape:export-xdpi="191.83141"
+       inkscape:export-ydpi="191.83141">
+      <text
+         sodipodi:linespacing="125%"
+         id="text2985"
+         y="-89.946472"
+         x="937.14288"
+         style="font-size:40.365345px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"
+         transform="scale(0.99360318,1.006438)"><tspan
+           y="-89.946472"
+           x="937.14288"
+           id="tspan2987"
+           sodipodi:role="line">離散一様分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text2989"
+         y="380.7677"
+         x="328.29999"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="380.7677"
+           x="328.29999"
+           id="tspan2991"
+           sodipodi:role="line">ベルヌーイ分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text2993"
+         y="380.7677"
+         x="724.13934"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="380.7677"
+           x="724.13934"
+           id="tspan2995"
+           sodipodi:role="line">カテゴリ分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text2997"
+         y="511.33179"
+         x="392.26285"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="511.33179"
+           x="392.26285"
+           id="tspan2999"
+           sodipodi:role="line">二項分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3001"
+         y="507.64551"
+         x="750.67126"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="507.64551"
+           x="750.67126"
+           id="tspan3003"
+           sodipodi:role="line">多項分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3005"
+         y="-87.15847"
+         x="344.79419"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="-87.15847"
+           x="344.79419"
+           id="tspan3007"
+           sodipodi:role="line">ポアソン分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3009"
+         y="209.16225"
+         x="242.19215"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="209.16225"
+           x="242.19215"
+           id="tspan3011"
+           sodipodi:role="line">幾何分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3013"
+         y="597.72241"
+         x="140.40395"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="597.72241"
+           x="140.40395"
+           id="tspan3015"
+           sodipodi:role="line">超幾何分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3017"
+         y="212.4794"
+         x="498.86362"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="212.4794"
+           x="498.86362"
+           id="tspan3019"
+           sodipodi:role="line">負の二項分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3021"
+         y="45.7453"
+         x="937.30054"
+         style="font-size:40.365345px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"
+         transform="scale(0.99360318,1.006438)"><tspan
+           y="45.7453"
+           x="937.30054"
+           id="tspan3023"
+           sodipodi:role="line">連続一様分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3025"
+         y="731.10699"
+         x="400.07108"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="731.10699"
+           x="400.07108"
+           id="tspan3027"
+           sodipodi:role="line">正規分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3029"
+         y="732.67181"
+         x="693.28394"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="732.67181"
+           x="693.28394"
+           id="tspan3031"
+           sodipodi:role="line">多次元正規分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3033"
+         y="72.339958"
+         x="242.74049"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="72.339958"
+           x="242.74049"
+           id="tspan3035"
+           sodipodi:role="line">指数分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3037"
+         y="76.557777"
+         x="517.74219"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="76.557777"
+           x="517.74219"
+           id="tspan3039"
+           sodipodi:role="line">ガンマ分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3041"
+         y="-95.766701"
+         x="1385.8176"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="-95.766701"
+           x="1385.8176"
+           id="tspan3043"
+           sodipodi:role="line">ベータ分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3045"
+         y="65.626442"
+         x="1316.4142"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="65.626442"
+           x="1316.4142"
+           id="tspan3047"
+           sodipodi:role="line">ディリクレ分布</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         x="997.24042"
+         y="293.51398"
+         id="text3150"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3152"
+           x="997.24042"
+           y="293.51398">カイ二乗分布</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         x="1342.2896"
+         y="354.95081"
+         id="text3154"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3156"
+           x="1342.2896"
+           y="354.95081">F分布</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         x="1152.6786"
+         y="438.27802"
+         id="text3158"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3160"
+           x="1152.6786"
+           y="438.27802">t分布</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.00643802px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 1038.2092,-74.546272 0,77.7632919"
+         id="path3172"
+         inkscape:connector-curvature="0" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.70689964px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="943.78717"
+         y="-25.604525"
+         id="text4386"
+         sodipodi:linespacing="125%"
+         transform="scale(0.99360318,1.006438)"><tspan
+           sodipodi:role="line"
+           id="tspan4388"
+           x="943.78717"
+           y="-25.604525">連続化</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="613.19531"
+         y="403.30896"
+         id="text4386-1"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7"
+           x="613.19531"
+           y="403.30896">多次元化</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="308.91129"
+         y="537.9776"
+         id="text4386-1-4"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-0"
+           x="308.91129"
+           y="537.9776">近似</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 622.25397,57.190752 90.91373,0"
+         id="path4432"
+         inkscape:connector-curvature="0"
+         transform="translate(0,308.2677)" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 478.81231,87.495328 0,64.649762"
+         id="path4616"
+         inkscape:connector-curvature="0"
+         transform="translate(0,308.2677)" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="346.55029"
+         y="433.61816"
+         id="text4386-9"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-4"
+           x="346.55029"
+           y="433.61816">成功回数</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="866.03851"
+         y="433.61816"
+         id="text4386-9-8"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-4-8"
+           x="866.03851"
+           y="433.61816">成功回数</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 842.46722,395.76303 0,64.64976"
+         id="path4616-1"
+         inkscape:connector-curvature="0" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="613.19531"
+         y="485.51041"
+         id="text4386-1-1"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-5"
+           x="613.19531"
+           y="485.51041">多次元化</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 616.60565,500.18778 90.91373,0"
+         id="path4432-2"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-7)"
+         d="M 434.36559,20.82526 C 357.594,-76.149384 357.594,-76.149384 357.594,-76.149384"
+         id="path4917"
+         inkscape:connector-curvature="0"
+         transform="translate(0,308.2677)" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="144.51979"
+         y="292.51941"
+         id="text4386-7"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-6"
+           x="144.51979"
+           y="292.51941">成功するまでの回数</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="532.13397"
+         y="292.51941"
+         id="text4386-7-1"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-6-4"
+           x="532.13397"
+           y="292.51941">k回成功するまでの回数</tspan></text>
+      <path
+         style="fill:#0000ff;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-7)"
+         d="m 474.77169,333.13356 c 76.77159,-96.97464 76.77159,-96.97464 76.77159,-96.97464"
+         id="path4917-2"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-7-2)"
+         d="m 401.42744,522.70198 -55.34199,53.20848"
+         id="path5359"
+         inkscape:connector-curvature="0" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="209.16957"
+         y="136.95593"
+         id="text4386-2"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-1"
+           x="209.16957"
+           y="136.95593">連続化</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 322.71976,159.38733 0,-76.771589"
+         id="path3172-5"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 619.42003,167.46855 0,-76.771591"
+         id="path3172-5-9"
+         inkscape:connector-curvature="0" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="624.53882"
+         y="136.95593"
+         id="text4386-2-2"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-1-7"
+           x="624.53882"
+           y="136.95593">連続化</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="140.19481"
+         y="-28.977922"
+         id="text4386-7-9"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-6-5"
+           x="140.19481"
+           y="-28.977922">成功するまでの時間</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="535.05951"
+         y="-28.977922"
+         id="text4386-7-1-4"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-6-4-3"
+           x="535.05951"
+           y="-28.977922">k回成功するまでの時間</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-7)"
+         d="M 434.36559,-72.947759 C 357.594,24.026881 357.594,24.026881 357.594,24.026881"
+         id="path4917-3"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-7)"
+         d="m 474.77169,-76.988359 c 76.77159,96.97464 76.77159,96.97464 76.77159,96.97464"
+         id="path4917-2-3"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart);marker-end:none"
+         d="m 355.5737,184.46997 c 0,0 -327.289429,-58.58885 -327.289429,-335.37064 0,-276.7818 301.025459,-258.59905 301.025459,-258.59905"
+         id="path5722"
+         inkscape:connector-curvature="0"
+         transform="translate(0,308.2677)" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="43.234791"
+         y="403.63617"
+         id="text4386-1-4-4"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-0-1"
+           x="43.234791"
+           y="403.63617">近似</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="1488.4"
+         y="-16.587238"
+         id="text4386-1-1-1"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-5-3"
+           x="1488.4"
+           y="-16.587238">多次元化</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 1454.6196,-65.87669 0,90.91373"
+         id="path4432-2-4"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cc"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-8)"
+         d="m 1211.262,-107.29294 128.2002,0"
+         id="path6382"
+         inkscape:connector-curvature="0" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="1231.8213"
+         y="-145.88681"
+         id="text4386-1-1-1-2"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-5-3-7"
+           x="1231.8213"
+           y="-145.88681">特別な場合</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-7-2-7)"
+         d="m 480.83261,360.23652 0,-135.36045"
+         id="path6629"
+         inkscape:connector-curvature="0"
+         transform="translate(0,308.2677)" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="408.91003"
+         y="601.62604"
+         id="text4386-1-4-1"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-0-9"
+           x="408.91003"
+           y="601.62604">近似</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="572.85516"
+         y="765.4364"
+         id="text4386-1-1-2"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-5-8"
+           x="572.85516"
+           y="765.4364">多次元化</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 578.21985,715.92956 90.91373,0"
+         id="path4432-2-6"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-8)"
+         d="m 414.16252,62.628118 76.7716,0"
+         id="path6382-4"
+         inkscape:connector-curvature="0" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="384.90707"
+         y="24.034258"
+         id="text4386-1-1-1-2-8"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-5-3-7-6"
+           x="384.90707"
+           y="24.034258">特別な場合</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-8)"
+         d="m 414.16252,193.94794 76.7716,0"
+         id="path6382-4-9"
+         inkscape:connector-curvature="0" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="384.90707"
+         y="155.3541"
+         id="text4386-1-1-1-2-8-0"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-5-3-7-6-0"
+           x="384.90707"
+           y="155.3541">特別な場合</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.01809895px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-8-5)"
+         d="M 1048.3262,247.02877 739.44071,68.482649"
+         id="path6944"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="870.04285"
+         y="259.16156"
+         id="text4386-1-1-1-2-8-6"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-5-3-7-6-1"
+           x="870.04285"
+           y="259.16156">特別な場合</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart);marker-end:none"
+         d="M 1164.6167,143.22703 525.27932,366.29743"
+         id="path7175"
+         inkscape:connector-curvature="0"
+         transform="translate(0,308.2677)"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:#800080;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 385.71428,638.07647 c -79.70004,0 -454.196187,70.8584 -433.93539,-371.54308 52.6909326,-460.24672 277.14851,-478.67477 521.56037,-503.0423 313.05989,-25.0705 634.83344,-21.99841 974.93524,14.05028 243.6007,20.95671 300.0556,328.62988 111.5343,476.37794 C 1199.554,435.10571 613.16483,639.09866 385.71428,638.07647 z"
+         id="path7391"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cccccc" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="748.3891"
+         y="629.41595"
+         id="text4386-1-4-1-9"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-0-9-3"
+           x="748.3891"
+           y="629.41595">近似</tspan></text>
+      <path
+         style="fill:none;stroke:#800080;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Lend-8-5i)"
+         d="m 134.45903,312.00239 c 0,0 5.54097,92.09209 91.25526,92.09209 85.71428,0 122.85714,2.85715 122.85714,2.85715"
+         id="path8298"
+         inkscape:connector-curvature="0"
+         transform="translate(0,308.2677)"
+         sodipodi:nodetypes="csc" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3021-6"
+         y="199.80255"
+         x="1451.9016"
+         style="font-size:40.365345px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"
+         transform="scale(0.99360318,1.006438)"><tspan
+           y="199.80255"
+           x="1451.9016"
+           id="tspan3023-0"
+           sodipodi:role="line">逆ガンマ分布</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lend-8-5);marker-end:url(#Arrow1Lend-8-5)"
+         d="m 762.85714,-241.6198 659.99996,120"
+         id="path8550"
+         inkscape:connector-curvature="0"
+         transform="translate(0,308.2677)"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="987.79028"
+         y="150.8271"
+         id="text4386-1-4-1-9-6"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-0-9-3-6"
+           x="987.79028"
+           y="150.8271">逆数</tspan></text>
+      <g
+         transform="translate(305.71429,114.28571)"
+         id="g9858">
+        <text
+           sodipodi:linespacing="125%"
+           id="text4386-1-1-2-4"
+           y="705.29962"
+           x="-96.872093"
+           style="font-size:36.10390091px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#800080;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+           xml:space="preserve"><tspan
+             y="705.29962"
+             x="-96.872093"
+             id="tspan4388-7-5-8-4"
+             sodipodi:role="line">中心極限定理</tspan></text>
+        <rect
+           style="fill:none;stroke:#800080;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect9358"
+           width="244.45691"
+           height="56.568542"
+           x="-109.09647"
+           y="664.46362" />
+      </g>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3029-8"
+         y="690.31122"
+         x="1666.941"
+         style="font-size:34.05463791px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="690.31122"
+           x="1666.941"
+           id="tspan3031-4"
+           sodipodi:role="line">離散的分布</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3029-8-9"
+         y="738.89722"
+         x="1667.074"
+         style="font-size:34.05463791px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           y="738.89722"
+           x="1667.074"
+           id="tspan3031-4-6"
+           sodipodi:role="line">連続的分布</tspan></text>
+      <path
+         sodipodi:nodetypes="cc"
+         transform="translate(0,308.2677)"
+         inkscape:connector-curvature="0"
+         id="path9377"
+         d="M 1186.4688,-2.9281924 1321.2795,16.78465"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-8-5)" />
+      <text
+         xml:space="preserve"
+         style="font-size:27.52966309px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGPMinchoE;-inkscape-font-specification:HGPMinchoE"
+         x="1215.9684"
+         y="350.30746"
+         id="text4386-1-4-1-9-6-3"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4388-7-0-9-3-6-7"
+           x="1215.9684"
+           y="350.30746">比</tspan></text>
+      <path
+         transform="translate(-18.182745,320.38953)"
+         d="m 872.77179,-351.92102 c 0,84.24167 -166.88419,152.53303 -372.74628,152.53303 -205.86208,0 -372.74627,-68.29136 -372.74627,-152.53303 0,-84.24167 166.88419,-152.53304 372.74627,-152.53304 205.86209,0 372.74628,68.29137 372.74628,152.53304 z"
+         sodipodi:ry="152.53304"
+         sodipodi:rx="372.74628"
+         sodipodi:cy="-351.92102"
+         sodipodi:cx="500.02551"
+         id="path9610"
+         style="fill:none;stroke:#ff6600;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:12, 12;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3005-8"
+         y="-232.04549"
+         x="-192.12877"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff6600;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           id="tspan9639"
+           y="-232.04549"
+           x="-192.12877"
+           sodipodi:role="line">連続的な事象の出現に関する分布</tspan><tspan
+           id="tspan9685"
+           y="-181.91156"
+           x="-192.12877"
+           sodipodi:role="line">(利用例：待ち行列理論など)</tspan><tspan
+           id="tspan9693"
+           y="-131.77765"
+           x="-192.12877"
+           sodipodi:role="line" /><tspan
+           id="tspan9637"
+           y="-81.64373"
+           x="-192.12877"
+           sodipodi:role="line" /></text>
+      <path
+         transform="translate(-17.172599,759.80587)"
+         d="m 987.92917,-351.92102 c 0,140.03086 -218.44191,253.548294 -487.90366,253.548294 -269.46175,0 -487.903653,-113.517434 -487.903653,-253.548294 0,-140.03086 218.441903,-253.54829 487.903653,-253.54829 269.46175,0 487.90366,113.51743 487.90366,253.54829 z"
+         sodipodi:ry="253.54829"
+         sodipodi:rx="487.90366"
+         sodipodi:cy="-351.92102"
+         sodipodi:cx="500.02551"
+         id="path9610-2"
+         style="fill:none;stroke:#0066ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:12, 12;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3005-8-9"
+         y="603.28906"
+         x="842.43427"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0066ff;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           id="tspan9639-1"
+           y="603.28906"
+           x="842.43427"
+           sodipodi:role="line">離散的な事象の出現に関する分布</tspan><tspan
+           id="tspan9689"
+           y="653.42297"
+           x="842.43427"
+           sodipodi:role="line">(利用例：自然言語処理など)</tspan><tspan
+           id="tspan9637-3"
+           y="703.55688"
+           x="842.43427"
+           sodipodi:role="line" /></text>
+      <path
+         sodipodi:open="true"
+         sodipodi:end="6.2792107"
+         sodipodi:start="0"
+         transform="matrix(-0.1772053,-0.98417391,0.98417391,-0.1772053,2087.7269,1383.1634)"
+         d="m 1734.1447,-350.19122 c 0,102.10345 -129.7743,184.87465 -289.8589,184.87465 -160.0847,0 -289.859,-82.7712 -289.859,-184.87465 0,-102.10345 129.7743,-184.87465 289.859,-184.87465 159.6349,0 289.2221,82.32404 289.8566,184.13984"
+         sodipodi:ry="184.87465"
+         sodipodi:rx="289.85892"
+         sodipodi:cy="-350.19122"
+         sodipodi:cx="1444.2858"
+         id="path9700"
+         style="fill:none;stroke:#008000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:12, 12;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3005-8-9-5"
+         y="-330.03317"
+         x="1187.6896"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#008000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           id="tspan9689-8"
+           y="-330.03317"
+           x="1187.6896"
+           sodipodi:role="line">パラメータ推定時の事前分布</tspan><tspan
+           id="tspan9896"
+           y="-279.89926"
+           x="1187.6896"
+           sodipodi:role="line">として用いる</tspan><tspan
+           id="tspan9637-3-4"
+           y="-229.76534"
+           x="1187.6896"
+           sodipodi:role="line" /></text>
+      <path
+         sodipodi:open="true"
+         sodipodi:end="6.2792107"
+         sodipodi:start="0"
+         transform="translate(-48.571429,265.41056)"
+         d="m 1522.8571,52.665913 c 0,88.365557 -117.6851,159.999997 -262.8571,159.999997 -145.172,0 -262.85715,-71.63444 -262.85715,-159.999997 0,-88.36556 117.68515,-160.000003 262.85715,-160.000003 144.7642,0 262.2797,71.24745 262.8551,159.364067"
+         sodipodi:ry="160"
+         sodipodi:rx="262.85715"
+         sodipodi:cy="52.665913"
+         sodipodi:cx="1260"
+         id="path9733"
+         style="fill:none;stroke:#ff00cc;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:12, 12;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3005-8-9-5-0"
+         y="476.07275"
+         x="1370.8105"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff00cc;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           id="tspan9731-6"
+           y="476.07275"
+           x="1370.8105"
+           sodipodi:role="line">古典統計における仮説検定</tspan><tspan
+           id="tspan9764"
+           y="526.20667"
+           x="1370.8105"
+           sodipodi:role="line">などで用いる</tspan><tspan
+           id="tspan9637-3-4-3"
+           y="576.34058"
+           x="1370.8105"
+           sodipodi:role="line" /></text>
+      <path
+         sodipodi:open="true"
+         sodipodi:end="6.2792107"
+         sodipodi:start="0"
+         transform="translate(-42.857143,316.83913)"
+         d="m 1274.2857,-363.04837 c 0,92.31045 -84.4263,167.14285 -188.5715,167.14285 -104.1451,0 -188.57141,-74.8324 -188.57141,-167.14285 0,-92.31045 84.42631,-167.14285 188.57141,-167.14285 103.8526,0 188.1572,74.42813 188.57,166.47852"
+         sodipodi:ry="167.14285"
+         sodipodi:rx="188.57144"
+         sodipodi:cy="-363.04837"
+         sodipodi:cx="1085.7142"
+         id="path9766"
+         style="fill:none;stroke:#ff0000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:12, 12;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3005-8-9-5-6"
+         y="-335.35583"
+         x="527.95331"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           id="tspan9803"
+           y="-335.35583"
+           x="527.95331"
+           sodipodi:role="line">一様分布を加工して</tspan><tspan
+           id="tspan9801"
+           y="-285.22192"
+           x="527.95331"
+           sodipodi:role="line">様々な分布を作る事が出来る。</tspan><tspan
+           id="tspan9825"
+           y="-235.088"
+           x="527.95331"
+           sodipodi:role="line" /></text>
+      <path
+         sodipodi:open="true"
+         sodipodi:end="6.2792107"
+         sodipodi:start="0"
+         transform="translate(-417.1428,1086.8391)"
+         d="m 1422.8571,-363.04837 c 0,33.92606 -150.944,61.42857 -337.1429,61.42857 -186.19882,0 -337.14282,-27.50251 -337.14282,-61.42857 0,-33.92606 150.944,-61.42857 337.14282,-61.42857 185.6758,0 336.4022,27.35393 337.1402,61.18442"
+         sodipodi:ry="61.428566"
+         sodipodi:rx="337.14285"
+         sodipodi:cy="-363.04837"
+         sodipodi:cx="1085.7142"
+         id="path9766-2"
+         style="fill:none;stroke:#800080;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:12, 12;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <path
+         sodipodi:open="true"
+         sodipodi:end="6.2792107"
+         sodipodi:start="0"
+         transform="matrix(0.87082372,-0.4915954,0.4915954,0.87082372,40.806118,1055.4889)"
+         d="m 1900.0001,8.3801966 c 0,52.3611974 -150.3044,94.8083334 -335.7143,94.8083334 -185.4099,0 -335.7143,-42.447136 -335.7143,-94.8083334 0,-52.3611976 150.3044,-94.8083346 335.7143,-94.8083346 184.889,0 334.9768,42.217824 335.7116,94.4315097"
+         sodipodi:ry="94.808334"
+         sodipodi:rx="335.71429"
+         sodipodi:cy="8.3801966"
+         sodipodi:cx="1564.2858"
+         id="path9863"
+         style="fill:none;stroke:#2b0000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:12, 12;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3005-8-9-5-0-7"
+         y="227.57967"
+         x="1681.7443"
+         style="font-size:40.10713577px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGMinchoE;-inkscape-font-specification:HGMinchoE"
+         xml:space="preserve"><tspan
+           id="tspan9731-6-2"
+           y="227.57967"
+           x="1681.7443"
+           sodipodi:role="line" /><tspan
+           id="tspan9637-3-4-3-0"
+           y="277.71359"
+           x="1681.7443"
+           sodipodi:role="line">平均・分散がないかも</tspan><tspan
+           id="tspan9894"
+           y="327.8475"
+           x="1681.7443"
+           sodipodi:role="line">しれないので注意</tspan></text>
+    </g>
+  </g>
+</svg>
