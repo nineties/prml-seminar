@@ -150,7 +150,7 @@
 
         <section>
         <p>
-        一方，正解のラベル $t_i$ が与えられない状態でも特徴ベクトルの分布の特徴に基いて分類等のパターン認識タスクを行う事が出来ます．このような学習を<strong>教師なし学習(supervised learning)</strong>と呼びます．
+        一方，正解のラベル $t_i$ が与えられない状態でも特徴ベクトルの分布の特徴に基いて分類等のパターン認識タスクを行う事が出来ます．このような学習を<strong>教師なし学習(unsupervised learning)</strong>と呼びます．
         </p>
         <div align="center"><img width="900px" src="prog/fig18-2.png"><a style="font-size:80%" href="prog/prog18-2.py">prog18-2.py</a></div>
         </section>
@@ -360,7 +360,7 @@
         <p>
         平均が $\boldsymbol{\mu}_c$、分散共分散行列が $\boldsymbol{\Sigma}_c$ である複数の正規分布を重み $\pi_c$ で足しあわせた分布
         \[ p(\mathbf{x}) = \sum_{c=1}^K \pi_c\mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_c,\boldsymbol{\Sigma}_c) \]
-        を<strong>混合ガウス分布(mixture gaussian distirbution)</strong>または<strong>混合正規分布(mixture normal distribution)</strong>と呼びます．
+        を<strong>混合ガウス分布(gaussian mixture distirbution)</strong>または<strong>混合正規分布(normal mixture distribution)</strong>と呼びます．
         </p>
         <p>
         重みは
@@ -602,6 +602,18 @@
         <section>
         <p> 以下が実装例です．反復10回目 </p>
         <div align="center"> <img width="70%" src="prog/fig18-7-10.png"> <a style="font-size:80%" href="prog/prog18-7.py">prog18-7.py</a> </div>
+        </section>
+
+        <section>
+        <p> 以下が実装例です．反復50回目 </p>
+        <div align="center"> <img width="70%" src="prog/fig18-7-50.png"> <a style="font-size:80%" href="prog/prog18-7.py">prog18-7.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        以下は自前の実装ではなく，scikit-learnのライブラリを用いた場合です．この計算ではデフォルトのセッティングを使っていて， $\boldsymbol{\Sigma}$ が対角行列(各変数が無相関)のモデルが使われています.
+        </p>
+        <div align="center"> <img width="70%" src="prog/fig18-8.png"> <a style="font-size:80%" href="prog/prog18-8.py">prog18-8.py</a> </div>
         </section>
 
         <section>

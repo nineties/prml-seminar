@@ -3,7 +3,7 @@ from numpy import *
 from skimage import io
 from sklearn.cluster import KMeans
 
-K = 2
+K = 50
 pixels = io.imread('../fig/lego.jpeg')
 original_shape = pixels.shape
 
