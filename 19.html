@@ -244,7 +244,8 @@
         混合ベルヌーイ分布の平均・共分散は次のようになります．
         \[ \begin{aligned}
         E[\mathbf{x}] &= \sum_{k=1}^K\pi_k\mathbf{p}_k \\
-        \mathrm{cov}[\mathbf{x}] &= \sum_{k=1}^K\pi_k\left\{\mathrm{diag}\{p_{ki}(1-p_{ki})\}+\mathbf{p}_k\mathbf{p}_k^T\right\} - E[\mathbf{x}]E[\mathbf{x}]^T
+        \mathrm{cov}[\mathbf{x}] &= \sum_{k=1}^K\pi_k\left\{\mathrm{diag}\{p_{ki}(1-p_{ki})\}+\mathbf{p}_k\mathbf{p}_k^T\right\}\\
+        & - E[\mathbf{x}]E[\mathbf{x}]^T
         \end{aligned} \]
         </p>
         </section>
@@ -360,7 +361,7 @@
         </p>
         </section>
 
-        <section>
+        <section style="font-size:90%">
         <p>
         そして
         \[ \begin{aligned}
@@ -375,7 +376,10 @@
 
         <section style="font-size:90%">
         <p>
-        \[ \log p(\mathbf{D},\mathbf{z}) = \sum_{i=1}^n\sum_{k=1}^K z_{ik}\left\{\log \pi_k + \sum_{j=1}^d\left(x_{ij}\log p_{kj} + (1-x_{ij})\log (1-p_{kj}) \right)\right\} \]
+        \[ \begin{aligned}
+        &\log p(\mathbf{D},\mathbf{z}) \\
+        &= \sum_{i=1}^n\sum_{k=1}^K z_{ik}\left\{\log \pi_k + \sum_{j=1}^d\left(x_{ij}\log p_{kj} + (1-x_{ij})\log (1-p_{kj}) \right)\right\}
+        \end{aligned} \]
         となります. これに $r_{ik}$ を掛けて足しあわせますが， $z_{ik}=1$ の項しか残らない為，最終的に $\mathcal{Q}$ 関数は
         \[ \sum_{i=1}^n\sum_{k=1}^Kr_{ik}\left\{\log \pi_k + \sum_{j=1}^d\left(x_{ij}\log p_{kj} + (1-x_{ij})\log (1-p_{kj}) \right)\right\} \]
         となります.次はこれを最大にする $\mathbf{p},\boldsymbol{\pi}$ を求めます.
@@ -721,7 +725,8 @@
 
         <section>
         <p>
-        もっと簡単に，2つの分布 $p,q$ の距離を表していると説明される事もあります. 数学的な意味での距離にはなっていないのですが， $p,q$ がどの程度異なる分布かを表した量だと考える事が出来ます.
+        もっと単純に，2つの分布 $p,q$ がどのくらい異なっているかを表していると考えてKL距離と呼ばれる事もあります.
+        数学的な意味での距離にはなっていませんので注意して下さい.
         </p>
         </section>
 
@@ -732,18 +737,44 @@
         \[ p(\theta) \propto \theta(1-\theta) \]
         を採用したとします. 
         </p>
-        <p class="fragment">
+        <div align="center"><img width="500px" src="fig/fig19-1.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
         ここで実験を行い$D=\text{「表、裏、裏、表」}$という結果が出たとしましょう。この時の事後分布は
         \[ p(\theta|D) \propto p(\theta)p(D|\theta) = \theta(1-\theta)\cdot \theta^2 (1-\theta)^2 = \theta^3(1-\theta)^3 \]
-        となります. この時のKL情報量は
+        となります. 
         </p>
-        <p class="fragment">
+        <div align="center"><img width="500px" src="fig/fig19-2.png"></div>
+        </section>
+
+        <section>
+        <p>
+        この学習で$p(\theta)\rightarrow p(\theta|D)$ という分布の変化が生じましたが，この時のKL情報量を実際に計算してみると
         \[ \begin{aligned}
-        \mathrm{KL}(p(\theta|D)||p(\theta)) &= \int_0^1 p(\theta|D) \frac{p(\theta|D)}{p(\theta)} \mathrm{d}\theta\\
+        \mathrm{KL}(p(\theta|D)||p(\theta)) &= \int_0^1 p(\theta|D) \log \frac{p(\theta|D)}{p(\theta)} \mathrm{d}\theta\\
         &= \int_0^1 140\theta^3(1-\theta)^3\log \frac{140\theta^3(1-\theta)^3}{6\theta(1-\theta)}\mathrm{d}\theta \\
         & \approx 0.111 
         \end{aligned} \]
         となります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        別の実験では $D'=\text{「表、表、表、表」}$ という結果が出たとします. この時のKL情報量を同様に計算すると
+        \[ \mathrm{KL}(p(\theta|D')||p(\theta)) \approx 0.708 \]
+        となり，先ほどより得た情報量が大きくなっています.
+        </p>
+        <p class="fragment">
+        $D'$ から得る情報量の方が大きかったのは次のように解釈出来ます. まず，事前分布では大体 $\theta=1/2$ あたりだろうと予想をしています. 結果 $D$ では4回中2回表が出ましたがこれはある程度予想通りだったので学習で得た情報はそれほど大きくありません.
+        一方, $D'$ は予想外の結果だったので $\theta$ の推定値を大きく修正する必要がありました. この意味でより大きな情報を得たと考える事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
         </p>
         </section>
 
