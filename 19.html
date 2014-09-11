@@ -504,7 +504,8 @@
         </p>
         <p>
         続いて $\mathcal{Q}$ 関数は次のようになります.
-        \[ \sum_{i=1}^n\sum_{k=1}^Kr_{ik}\left\{\log \pi_k + \sum_{j=1}^M x_{ij}\log p_{kj} + \log \frac{L_i!}{x_{i1}!\cdots x_{iM}!}\right\} \quad (L_i = \sum_{j=1}^Mx_{ij})\]
+        \[ \sum_{i=1}^n\sum_{k=1}^Kr_{ik}\left\{\log \pi_k + \sum_{j=1}^M x_{ij}\log p_{kj} + \log \frac{L_i!}{x_{i1}!\cdots x_{iM}!}\right\} \]
+        但し $L_i = \sum_{j=1}^Mx_{ij}$ です.
         </p>
         </section>
 
@@ -714,7 +715,7 @@
         と定義されます.
         </p>
         <p class="fragment">
-        よくある直感的な説明は，事前分布が $q(\mathbf{x})$ である状態から何らかの学習を行って事後分布が $p(\mathbf{x})$ になった場合の学習によって得た情報量であるというものです.
+        よくある直感的な説明は，事前分布が $p(\mathbf{x})$ である状態から何らかの学習を行って事後分布が $q(\mathbf{x})$ になった場合の学習によって得た情報量であるというものです.
         </p>
         </section>
 
@@ -724,10 +725,32 @@
         </p>
         </section>
 
+        <section style="font-size:90%">
+        <p>
+        簡単な例で実際にKL情報量を計算してみましょう．あるコインの表が出る確率 $\theta$ をMAP推定したいとします.
+        事前分布として $\mathrm{Beta}(2,2)$
+        \[ p(\theta) \propto \theta(1-\theta) \]
+        を採用したとします. 
+        </p>
+        <p class="fragment">
+        ここで実験を行い$D=\text{「表、裏、裏、表」}$という結果が出たとしましょう。この時の事後分布は
+        \[ p(\theta|D) \propto p(\theta)p(D|\theta) = \theta(1-\theta)\cdot \theta^2 (1-\theta)^2 = \theta^3(1-\theta)^3 \]
+        となります. この時のKL情報量は
+        </p>
+        <p class="fragment">
+        \[ \begin{aligned}
+        \mathrm{KL}(p(\theta|D)||p(\theta)) &= \int_0^1 p(\theta|D) \frac{p(\theta|D)}{p(\theta)} \mathrm{d}\theta\\
+        &= \int_0^1 140\theta^3(1-\theta)^3\log \frac{140\theta^3(1-\theta)^3}{6\theta(1-\theta)}\mathrm{d}\theta \\
+        & \approx 0.111 
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
         <section>
         <p>
         話を戻します. KL情報量は必ず $0$ 以上になる事が証明出来ます. 従って
-        \[ \mathcal{L}(q,\boldsymbol{\theta}) \leq  p(\mathbf{x}|\boldsymbol{\theta}) \]
+        \[ \mathcal{L}(q,\boldsymbol{\theta}) \leq \log p(\mathbf{x}|\boldsymbol{\theta}) \]
         が成り立ちます.
         </p>
         <p class="fragment">
@@ -771,8 +794,8 @@
         <section>
         <p>
         従って，反復が停止した時点では
-        \[ p(\mathbf{x}|\boldsymbol{\theta}) = \mathcal{L}(q,\boldsymbol{\theta}) \]
-        が成立する為，$\mathcal{L}$ を最大化する事と実際の尤度を最大化する事が一致するわけです.
+        \[ \log p(\mathbf{x}|\boldsymbol{\theta}) = \mathcal{L}(q,\boldsymbol{\theta}) \]
+        が成立する為，$\mathcal{L}$ を最大化する事と実際の対数尤度を最大化する事が一致するわけです.
         </p>
         </section>
 

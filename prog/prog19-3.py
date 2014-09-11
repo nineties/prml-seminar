@@ -6,12 +6,6 @@ from scipy.misc import logsumexp
 
 mnist = fetch_mldata('MNIST original')
 x  = array(mnist.data != 0, dtype=bool) # 二値化
-
-# サンプルが多すぎるので適当に減らす
-#N = 5000
-#select = arange(len(x))
-#random.shuffle(select)
-#x = x[select[:N]]
 N = len(x)
 
 W = 28
