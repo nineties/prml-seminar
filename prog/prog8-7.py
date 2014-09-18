@@ -125,10 +125,10 @@ def quasi_newton_step(x, t, w1, w2):
         diff2 += d2
 
         d1, d2 = diffcoef(x[i], a1, a2, w1, w2, y*(1-y))
-        b = append(d1.flatten(), d2.flatten())
+        b = append(d1.ravel(), d2.ravel())
         B -= outer(B.dot(b), b).dot(B)/(1 + b.dot(B.dot(b)))
 
-    delta_w = - B.dot(append(diff1.flatten(), diff2.flatten()))
+    delta_w = - B.dot(append(diff1.ravel(), diff2.ravel()))
     delta_w1 = delta_w[0:W1].reshape((M, D+1))
     delta_w2 = delta_w[W1:W].reshape((K, M+1))
     return (delta_w1, delta_w2)

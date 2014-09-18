@@ -96,6 +96,6 @@ for i in range(N):
     cdiff2 += cd2
 
 print u"誤差逆伝播で求めた微分係数"
-print append(bdiff1.flatten(), bdiff2.flatten())
+print append(bdiff1.ravel(), bdiff2.ravel())
 print u"中心差分 (eps=%f) で求めた微分係数" % DIFF_EPS
-print append(cdiff1.flatten(), cdiff2.flatten())
+print append(cdiff1.ravel(), cdiff2.ravel())

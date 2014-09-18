@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第20回 @ ナビプラス </title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第20回</h2>
+        <h3>@ナビプラス</h3>
+        <small> 中村晃一 <br> 2014年9月18日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        会場・設備の提供をしていただきました<br>
+        &#12849; ナビプラス様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 変分ベイズ </h2>
+        </section>
+
+        <section>
+        <p>
+        テキスト第10章「近似推論」に進みます. 内容は<strong>変分推論(variational inference)</strong>または<strong>変分ベイズ(variational Bayes)</strong>と呼ばれる手法の解説です. 非常にボリュームがある内容なので問題を1つだけやってみます. たった1つと言えども非常に難しいです.しかし，これを理解出来れば実用的な様々な複雑なモデルを解けるようになります.
+        </p>
+        <p class="fragment">
+        その後，変分ベイズに変わるアプローチである<strong>ランダムサンプリング(random sampling)</strong>を用いて同じ問題を解く方法を解説します.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        確率的なモデリングに基づく機械学習の問題の多くは，現象を観測変数 $\mathbf{x}$, 隠れ変数 $\mathbf{z}$ とパラメータ $\boldsymbol{\theta}$ で記述される分布
+        \[ p(\mathbf{x},\mathbf{z}|\boldsymbol{\theta}) \]
+        でモデリングし， $\mathbf{x}$ を観測した結果から $\boldsymbol{\theta}$ や $\mathbf{z}$ を推定するという問題に帰着します.
+        </p>
+        <p class="fragment">
+        $\boldsymbol{\theta}$ の推定には尤度
+        \[ p(\mathbf{x}|\boldsymbol{\theta}) \]
+        $\mathbf{z}$ の推定には事後分布
+        \[ p(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}) \]
+        の計算が必要です.
+        </p>
+        <p class="fragment">
+        問題は $p(\mathbf{x},\mathbf{z}|\boldsymbol{\theta})$ が複雑だとこれらを解析的に計算できなくなってしまうという事です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $p(\mathbf{x},\mathbf{z}|\boldsymbol{\theta})$ が複雑な場合には
+        </p>
+        <ol>
+            <li> マルコフ連鎖モンテカルロ法(MCMC法)などを使って数値的に計算を行う </li>
+            <li> 何らかの近似を行って，解析的に計算できるようにする </li>
+        </ol>
+        <p>
+        という方法を取ることが出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        数値計算の利点は，原理的には任意の精度で正確な計算が出来るという事です. 欠点は，高い計算機性能が必要になるという事です.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        近似を用いる場合の利点・欠点はこれとは正反対で， 正確さを犠牲にする変わりにより大きな問題を解くことが出来るようになります.
+        </p>
+        <div align="center"> <img width="400px" src="prog/fig3-9-1.png"> <img class="fragment" data-fragment-index="1" width="400px" src="fig/approx.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        変分ベイズは <strong> 変分法 (calculus of variations)</strong> という，物理学の分野で生まれた手法を基にしています.
+        </p>
+        <p class="fragment">
+        変分法とは関数 $f$ を変数として取り実数値等を返す <strong> 汎関数 (functional)</strong> $I[f]$ が極値または停留点を取るような $f$ を求める手法です.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        変分法を用いる問題を1つ紹介します. 但し，変分ベイズでは今からやるようないわゆる変分法の計算は使わないのでスキップしても良いです.
+        </p>
+        <p class="fragment">
+        【問題】<br>
+        $\mathbb{R}$ 上の連続分布 $p(x)$ で平均が $0$, 分散が $1$ であるもののうち，
+        エントロピー
+        \[ I[p] = -\int p(x)\log p(x)\mathrm{d} x \]
+        が最大になるようなものは何でしょうか？
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        通常の極値問題と同じく
+        \[ \text{$I[p]$ が極値ならば， $p$ に微小変化を加えても $I[p]$ は変化しない} \]
+        という事を使います.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        しかし, $p(x)$ は関数ですから，無数の微小変化の方法があります. そこで，関数 $\eta(x)$ を任意に固定し， $\varepsilon$ を実数値変数として
+        \[ p(x) \rightarrow p(x) + \varepsilon \times \eta(x) \]
+        と書けるものだけを考え，$\varepsilon=0$ 付近で変化率が $0$ になる条件を求めます.<br>
+        <span style="font-size:70%"> (直感的には, 点 $p$ での方向微分係数が任意の方向ベクトル $\eta$ に関して $0$ となれば良いという事です.) </span>
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"><img width="500px" src="fig/calculus-of-variation.png"></div>
+        </section>
+
+        <section style="font-size:60%">
+        <p>
+        確率の和が $1$, 平均が $0$, 分散が $1$ という制約条件があるのでラグランジュの未定乗数 $\alpha,\beta,\gamma$ を導入して
+        \[ \begin{aligned}
+        F[p] &= -\int p(x)\log p(x)\mathrm{d} x + \alpha\left(\int p(x)\mathrm{d}x - 1\right) + \beta\int xp(x)\mathrm{d}x + \gamma\left(\int x^2p(x)\mathrm{d}x - 1 \right)\\
+        &= - \int \left\{ \log p(x) - \alpha - \beta x- \gamma x^2\right\}p(x)\mathrm{d} x - \alpha - \gamma
+        \end{aligned} \]
+        が停留点を取る条件を求めます.
+        </p>
+        <p>
+        $p$ に微小変化を加えると,
+        \[ - \int \left\{ \log \color{red}{(p+\varepsilon\eta)} - \alpha - \beta x- \gamma x^2\right\}\color{red}{(p+\varepsilon\eta)}\mathrm{d} x - \alpha - \gamma \]
+        となります. これを $\varepsilon$ で微分すると
+        \[ - \int\left\{ \log (p+\varepsilon\eta) - \alpha - \beta x- \gamma x^2\right\}\eta\mathrm{d} x  - \int \eta\mathrm{d} x \]
+        となり，$\varepsilon=0$ でこれが $0$ となる事が必要です.
+        \[ - \int\left\{ \log p - \alpha - \beta x- \gamma x^2 + 1 \right\}\eta\mathrm{d} x  = 0 \]
+        </p>
+        </section>
+
+        <section style="font-size:60%">
+        <p>
+        これが任意の $\eta(x)$ で成立するので
+        \[ \log p - \alpha - \beta x- \gamma x^2 + 1 = 0 \Leftrightarrow p(x) = \exp\left\{\alpha+\beta x+\gamma x^2-1\right\}\]
+        となります. 発散しない為には $\gamma &lt; 0$ が必要であることに注意します. ここで
+        \[ \int p'(x)\mathrm{d} x = \left[p(x)\right]_{-\infty}^{\infty} = 0 \]
+        ですが，
+        \[ \text{(左辺)} = \int \{\beta + 2\gamma x\}p(x)\mathrm{d}x = \beta \]
+        なので $\beta = 0$ です.
+        </p>
+        <p>
+        すると, 制約条件より
+        \[ \int p(x)\mathrm{d} x = \sqrt{\frac{\pi}{-\gamma}}e^{\alpha-1}= 1 \Leftrightarrow e^{\alpha-1} = \sqrt{\frac{-\gamma}{\pi}} \]
+        から
+        \[ p(x) = \sqrt{\frac{-\gamma}{\pi}}\exp(\gamma x^2)  \]
+        となり，さらに
+        \[ \int x^2p(x)\mathrm{d} x = \frac{1}{-2\gamma} = 1\Leftrightarrow \gamma = -\frac{1}{2} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        以上より，平均が $0$で分散が $1$ の連続分布でエントロピー
+        \[ -\int p(x)\log p(x)\mathrm{d} x \]
+        が最大となる分布は標準正規分布
+        \[ N(x|0,1) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{x^2}{2}\right) \]
+        である事が証明されました. 平均を $\mu$, 分散を $\sigma^2$ と一般化した場合，多次元の場合も全く同様です.
+        </p>
+        <p class="fragment">
+        ある母集団についてその平均と分散以外に一切の事前知識がない場合，エントロピーという観点ではそれを正規分布だと仮定するのが妥当です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        話を変分ベイズに戻します. 前回紹介した対数尤度 $\log p(\mathbf{x})$ の分解公式
+        \[ \begin{aligned}
+        \log p(\mathbf{x}) &= \mathcal{L}(q) + \mathrm{KL}(q||p) \\
+        \mathcal{L}(q) &= \int q(\mathbf{z})\log \frac{p(\mathbf{x},\mathbf{z})}{q(\mathbf{z})}\mathrm{d}\mathbf{z} \\
+        \mathrm{KL}(q||p) &= -\int q(\mathbf{z}) \log \frac{p(\mathbf{z}|\mathbf{x})}{q(\mathbf{z})}\mathrm{d}\mathbf{z}
+        \end{aligned} \]
+        を考えます.
+        </p>
+        <p>
+        $\log p(\mathbf{x})$ を最大化する為には $\mathcal{L}(q)$ を最大化すれば良く，その時 $\mathrm{KL}(q||p)$ は最小値 $0$ を取ります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        \[ \mathrm{KL}(q||p)=0 \Leftrightarrow \color{red}{ p(\mathbf{z}|\mathbf{x}) = q(\mathbf{z}) } \]
+        なので，$\mathcal{L}(q)$ の最大化を行うことによって求めたかった $\mathbf{z}$ の事後分布 $p(\mathbf{z}|\mathbf{x})$ を求める事が出来ます.
+        </p>
+        <p class="fragment">
+        $\mathcal{L}(q)$ は関数 $q(\mathbf{z})$ を変数とする汎関数であるので，対数尤度の最大化及び事後分布の導出が変分問題に帰着しました.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        ここで
+        \[ \text{$\mathcal{L}(q)$ を最大にする $q(\mathbf{z})$ をありとあらゆる関数から探す} \]
+        事が難しいとしましょう.
+        </p>
+        <p class="fragment">
+        変分ベイズでは $q(\mathbf{z})$ の探索範囲を制限する事によって，近似的に $\mathcal{L}(q)$ の最大化を行います. 過学習を抑制する効果もあります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 平均場近似 </h3>
+        <p>
+        $q(\mathbf{z})$ が
+        \[ q(\mathbf{z}) = \prod_{i=1}^C q_i(\mathbf{z}_i) \]
+        と幾つかの独立な分布の積に分解出来る場合のみを考えるという近似を <strong> 平均場近似(mean field approximation)</strong> と呼びます. 
+        この近似では分解可能性のみを仮定し，各 $q_i(\mathbf{z}_i)$ がどのような分布であるかは一切仮定しません. 
+        </p>
+        <p style="font-size:70%"> <strong> 平均場(mean field)</strong> という用語は物理学に由来しており，もともとは解析的に解けない多体問題を解析的に解ける一体問題や二体問題に帰着させるという手法です. </p>
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $\mathcal{L}(q)$ に平均場近似を用いると
+        \[ \begin{aligned}
+        \mathcal{L}(q) &= \int q(\mathbf{z})\log \frac{p(\mathbf{x},\mathbf{z})}{q(\mathbf{z})}\mathrm{d}\mathbf{z} \\
+        &= \int q(\mathbf{z})\left\{\log p(\mathbf{x},\mathbf{z}) - \log q(\mathbf{z}) \right\}\mathrm{d}\mathbf{z} \\
+        &= \int \prod_{i=1}^C q_i(\mathbf{z}_i)\left\{\log p(\mathbf{x},\mathbf{z}) - \sum_{i=1}^C \log q_i(\mathbf{z}_i)\right\}\mathrm{d}\mathbf{z}
+        \end{aligned} \]
+        となり，
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        因子 $q_j(\mathbf{z}_j)$ だけを別にすれば
+        \[ \mathcal{L}(q) = \int q_j\left\{\int p(\mathbf{x},\mathbf{z})\prod_{i\neq j}q_i(\mathbf{z}_i)\mathrm{d}\mathbf{z}_i\right\}\mathrm{d}\mathbf{z}_j - \int q_j\log q_j\mathrm{d}\mathbf{z}_j + \mathrm{const}. \]
+        となります.
+        </p>
+        <p>
+        この $\{\cdots \}$ の部分は $\mathbf{z}_j$ 以外の変数群に関する $\log p(\mathbf{x},\mathbf{z})$ の期待値なので，これを
+        \[ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] = \int p(\mathbf{x},\mathbf{z})\prod_{i\neq j}q_i(\mathbf{z}_i)\mathrm{d}\mathbf{z}_i \]
+        と書くことにします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここで新しい確率分布 $\tilde{p}(\mathbf{x},\mathbf{z}_j)$ を
+        \[ \tilde{p}(\mathbf{x},\mathbf{z}_j) \propto \exp\left\{ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] \right\} \]
+        によって定めれば
+        \[ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] = \log\tilde{p}(\mathbf{x},\mathbf{z}_j) + \mathrm{const}. \]
+        となるので，
+        \[ \begin{aligned}
+        \mathcal{L}(q) &= \int q_j \log \tilde{p}(\mathbf{x},\mathbf{z}_j)\mathrm{d}\mathbf{z}_j - \int q_j \log q_j\mathrm{d}\mathbf{z}_j + \mathrm{const}. \\
+        &= \int q_j(\mathbf{z}_j)\log\frac{\tilde{p}(\mathbf{x},\mathbf{z}_j)}{q_j(\mathbf{z}_j)}\mathrm{d}\mathbf{z}_j + \mathrm{const}. \\
+        &= -\mathrm{KL}(q_j || \tilde{p}) + \mathrm{const}.
+        \end{aligned} \]
+        と書けます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        従って，$q_i(i\neq j)$ を固定して $q_j$ のみを動かした時に $\mathcal{L}(q)$ が最大となる条件は
+        カルバックライブラー情報量
+        \[\mathrm{KL}(q_j || \tilde{p}) \]
+        が最小となる条件なので
+        \[ q_j(\mathbf{z}_j) = \tilde{p}(\mathbf{x},\mathbf{z}_j) \]
+        となります. 明示的に書き下せば
+        \[ q_j(\mathbf{z}_j) = \frac{\tilde{p}(\mathbf{x},\mathbf{z}_j)}{\int\tilde{p}(\mathbf{x},\mathbf{z}_j)\mathrm{d}\mathbf{z}_j} = \frac{\exp\left\{ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] \right\}}{\int \exp\left\{ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] \right\}\mathrm{d}\mathbf{z}_j } \]
+        となります. この右辺の期待値計算は $q(\mathbf{z})$ に依存するので，反復計算が必要です.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <div class="block" style="border-color:blue">
+        <h4 style="color:blue"> 平均場近似による変分ベイズ </h4>
+        <p>
+        観測変数 $\mathbf{x}$, 隠れ変数 $\mathbf{z}$ に対する同時分布のモデル
+        \[ p(\mathbf{x},\mathbf{z}) \]
+
+        について $\mathbf{z}$ の事後分布 $p(\mathbf{z}|\mathbf{x})$ を計算する為には，
+        </p>
+        <p>
+        $\mathbf{z}$ を幾つかの変数群 $\mathbf{z}_i$ に分け，それらの分布 $q_i(\mathbf{z}_i)$ を適当に初期化し，
+        \[ q_j^{\mathrm{new}}(\mathbf{z}_j) \propto \exp\left\{ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] \right\} \]
+        によって収束するまで反復を行う.
+        </p>
+        <p>
+        求めた $q_i(\mathbf{z}_i)$ が事後分布 $p(\mathbf{z}_i|\mathbf{x})$ を近似する分布となる.
+        </p>
+        </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        では具体的な問題に適用してみます.
+        </p>
+        <p class="fragment">
+        最初は自然言語処理におけるトピックモデルの１つである<strong>潜在的ディリクレ配分モデル(latent dirichlet allocation, LDAモデル)</strong> をやる予定でしたが，入門用としては難しいと思うので「ディリクレ配分」のアイデアを使ったもっと簡単な問題を考えてみました.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        <a href="https://archive.ics.uci.edu/ml/about.html">UCI Machine Learning Repository</a> で見つけた
+        <a href="https://archive.ics.uci.edu/ml/datasets/Zoo">Zoo Data Set</a>を使って動物のカテゴリを教師なしで学習させてみようと思います.
+        </p>
+        <p>
+        データセットの内容
+        </p>
+        <ul>
+            <li> データ数: 101種 </li>
+            <li> 属性数: 16
+                <ul>
+                    <li> 全てカテゴリカル変数 </li>
+                    <li> 「体毛があるか？」などの二値属性が15種類 と 足の数(0,2,4,5,6,8本) </li>
+                </ul>
+            </li>
+        </ul>
+        <p class="fragment">
+        オリジナルの問題は生物種を独立な $K$ クラスに分離せよという問題です.
+        </p>
+        <p class="fragment">
+        しかしここでは，ちょっと趣向を変えて<strong> 各生物 $\mathbf{x}_i$ は複数のクラスを混合して出来る</strong>と考えてみましょう. 
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        どういう事かと言うと，まず「水棲生物」や「鳥類」などの大きなカテゴリが $K$ 個あるとします. 各カテゴリ毎に「泳ぐ」とか「飛ぶ」など属性値が異なります.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        次に，各カテゴリをいくらかずつ配合して生物が作られると考えます.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"><img width="500px" src="fig/penguin.png"></div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        観測データを $\mathbf{x}=\{\mathbf{x}_1,\ldots,\mathbf{x}_N\}$ とします. 各 $\mathbf{x}_i$ は $M$ 個の属性値からなるベクトルで， 第 $j$ 成分は $0,1,\ldots,n_j-1$ のいずれかの値を取るとします. 
+        </p>
+        <p class="fragment">
+        $\mathbf{x}_i$ は $K$ 個のクラスを比率
+        \[ \boldsymbol{\theta}_i = (\theta_{i1},\ldots,\theta_{iK}) \]
+        で混合して作られるとします. $\boldsymbol{\theta}_i$ は
+        \[ \theta_{i1},\ldots,\theta_{iK}\geq 0, \quad \theta_{i1} + \cdots + \theta_{iK} = 1 \]
+        を満たす確率変数です．
+        </p>
+        <p class="fragment">
+        このような変数に対する事前分布には <strong> ディリクレ分布(Dirichlet distribution)</strong> を使うと後の計算が楽になります(<strong> 共役事前分布(conjugate prior)</strong>). <br>
+        今回も各 $\boldsymbol{\theta_i}$ はパラメータが $\boldsymbol{\alpha}$ のディリクレ分布に従うと仮定しましょう.
+        \[ \boldsymbol{\theta_i} \sim \mathrm{Dir}(\boldsymbol{\alpha}) \]
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        次は各属性 $j=1,\ldots,M$ をどのクラスから持ってくるかを決めます. 
+        </p>
+        <p class="fragment">
+        確率変数
+        \[ \mathbf{z}_{i}=(z_{i1},\ldots,z_{iM}) \]
+        を
+        \[ z_{ij} = k \stackrel{\mathrm{def}}{\Leftrightarrow} \text{(データ $i$ の属性 $j$ はクラス $k$ から持ってくる)} \]
+        と定義します.
+        </p>
+        <p class="fragment">
+        どのクラスから持ってくるかは先ほどの混合比 $\boldsymbol{\theta}_i$ に従って選ぶとしましょう.
+        \[ p(z_{ij}=k) = \theta_{ik} \]
+        これは<strong>カテゴリ分布(categorical distribution)</strong>と呼ばれる分布で，以下のように書きます.
+        \[ z_{ij} \sim \mathrm{Cat}(\boldsymbol{\theta}_i) \]
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        属性 $j$ が$1,\ldots,n_j$ のどの値を取るかは，その属性を持ってきたクラス毎に異なるとしましょう. そこで，属性 $j$ の値が $\ell$ となる確率を
+        \[ p(x_{ij}=\ell) = \boldsymbol{\phi}_{jk\ell}\qquad \text{($z_{ij}=k$のとき)} \]
+        と置きます. これもやはりカテゴリ分布で
+        \[ x_{ij} \sim \mathrm{Cat}(\boldsymbol{\phi}_{j,z_{ij}}) \]
+        と書けます.
+        </p>
+        <p class="fragment">
+        各 $\boldsymbol{\phi}_{jk}$ は
+        \[ \boldsymbol{\phi}_{jk1},\ldots,\boldsymbol{\phi}_{jkn_j}\geq 0,\quad \boldsymbol{\phi}_{jk1}+\cdots + \boldsymbol{\phi}_{jkn_j} = 1 \]
+        を満たす必要があるので，その事前分布はやはりディリクレ分布とします. この分布は属性の種類 $j$ のみに依存するとして，以下のように置きます.
+        \[ \boldsymbol{\phi}_{jk} \sim \mathrm{Dir}(\boldsymbol{\beta}_j) \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        まとめると以下のようになります.
+        </p>
+        <ul>
+            <li> $N$: データ数, $M$:属性数, $K$: クラス数 </li>
+            <li> $n_j\,(j=1,\ldots,M)$: 属性 $j$ のカテゴリ数 </li>
+            <li> パラメータ:$\boldsymbol{\alpha}, \boldsymbol{\beta}_{j}\,(j=1,\ldots,M)$ </li>
+            <li> クラスの混合比 $\boldsymbol{\theta}_i\,(i=1,\ldots,N)$ </li>
+            <li> クラス毎の属性値の分布 $\phi_{jk}\,(k=1,\ldots,K,j=1,\ldots,M)$ </li>
+            <li> 属性の所属クラス $z_{ij}\,(i=1,\ldots,N,j=1,\ldots,M)$ </li>
+            <li> 観測データ $x_{ij}\,(i=1,\ldots,N,j=1,\ldots,M)$ </li>
+            <li> モデル
+            \[ \begin{aligned}
+            \boldsymbol{\theta}_i  &\sim \mathrm{Dir}(\boldsymbol{\alpha})\\
+            \boldsymbol{\phi}_{jk} &\sim \mathrm{Dir}(\boldsymbol{\beta}_j)\\
+            z_{ij} &\sim \mathrm{Cat}(\boldsymbol{\theta}_i)\\
+            x_{ij} &\sim \mathrm{Cat}(\boldsymbol{\phi}_{j,z_{ij}})\\
+            \end{aligned} \]
+            </li>
+        </ul>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        グラフィカルモデルは下図のようになります. 四角い囲みは<strong>プレート(plate)</strong>と呼ばれ，その内部が実際には同じ形の多数のノードからなる事を表しています.
+        </p>
+        <p>
+        $\boldsymbol{\theta}$ と $\mathbf{z}$ はもちろん独立ではありませんが， 合流部の $\mathbf{x}$ がインスタンス化されている為 $\boldsymbol{\phi}$ もこれらと独立では無いという事がわかります.(第14回資料のd分離性を復習して下さい)
+        </p>
+        <div align="center"><img width="500px" src="fig/zoo-model.png"> </div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        $\mathbf{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}$ の同時分布を計算すると以下のようになります.
+        \[ \begin{aligned}
+        p(\mathbf{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}) &= p(\mathbf{x}|\mathbf{z},\boldsymbol{\phi})p(\mathbf{z}|\boldsymbol{\theta})p(\boldsymbol{\theta})p(\boldsymbol{\phi})\\
+        &= \prod_{i=1}^Np(\boldsymbol{\theta}_i)\prod_{j=1}^M p(x_{ij}|z_{ij},\boldsymbol{\phi})p(z_{ij}|\boldsymbol{\theta}_i)\times \prod_{j=1}^M\prod_{k=1}^Kp(\boldsymbol{\phi}_{jk})\\
+        &= \prod_{i=1}^N\mathrm{Dir}(\boldsymbol{\theta}_i|\boldsymbol{\alpha})\prod_{j=1}^M \mathrm{Cat}(x_{ij}|\boldsymbol{\phi}_{j,z_{ij}})\mathrm{Cat}(z_{ij}|\boldsymbol{\theta}_i)\times \prod_{j=1}^M\prod_{k=1}^K\mathrm{Dir}(\boldsymbol{\phi}_{jk}|\boldsymbol{\beta}_{j})\\
+        &\propto \prod_{i=1}^N\left(\prod_{k=1}^K\theta_{ik}^{\alpha_{k}-1}\right)\prod_{j=1}^M\phi_{j,z_{ij},x_{ij}}\theta_{i,z_{ij}}\times \prod_{j=1}^M\prod_{k=1}^K\prod_{\ell=1}^{n_j}\phi_{jk\ell}^{\beta_{j\ell}-1}
+        \end{aligned} \]
+        目標は隠れ変数の事後分布
+        \[ q(\mathrm{z},\boldsymbol{\theta},\boldsymbol{\phi}) = p(\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}|\mathbf{x}) \]
+        を求める事です. 工夫なしでは結構大変そうですね.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        では変分ベイズの計算に進みます.
+        </p>
+        <p>
+        先ほど説明したように，真の事後分布 $p(\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}|\mathbf{x})$ において $\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}$ は互いに従属です. しかし，$\mathbf{z}$ と $\{\boldsymbol{\theta},\boldsymbol{\phi}\}$ が独立であると仮定して
+        \[ \color{red}{ q(\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}) = q(\mathbf{z})q(\boldsymbol{\theta},\boldsymbol{\phi}) } \]
+        を満たす $q$ で真の事後分布を近似する事を考えましょう.
+        </p>
+        <p class="fragment">
+        本モデルに対する近似はこの一箇所だけです. また，繰り返しになりますが $q(\mathbf{z})$ と $q(\boldsymbol{\theta},\boldsymbol{\phi})$ が具体的にどのような分布であるかは自然に導かれるので考えなくて良いです.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        まず $\mathbf{z}$ に関する更新式は以下のようになります. $\mathbf{z}$ を含まない項は定数である事に注意して下さい.
+        \[ \begin{aligned}
+        \log q^{\mathrm{new}}(\mathbf{z}) &= \mathbb{E}_{\boldsymbol{\theta},\boldsymbol{\phi}}[\log p(\mathbb{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi})] +\mathrm{const}.\\
+        &= \mathbb{E}_{\boldsymbol{\theta},\boldsymbol{\phi}}[\log p(\mathbf{x}|\mathbf{z},\boldsymbol{\phi})p(\mathbf{z}|\boldsymbol{\theta})p(\boldsymbol{\theta})p(\boldsymbol{\phi})]+\mathrm{const}.\\
+        &= \mathbb{E}_{\boldsymbol{\theta}}[\log p(\mathbf{z}|\boldsymbol{\theta})] + \mathbb{E}_{\boldsymbol{\phi}}[\log p(\mathbf{x}|\mathbf{z},\boldsymbol{\phi})]+\mathrm{const}.\\
+        &= \sum_{i=1}^N\sum_{j=1}^M\left\{\mathbb{E}_{\boldsymbol{\theta}_i}[\log p(z_{ij}|\boldsymbol{\theta}_i)] + \mathbb{E}_{\boldsymbol{\phi}}[\log p(x_{ij}|z_{ij},\boldsymbol{\phi})]\right\}+\mathrm{const}.\\
+        &= \sum_{i=1}^N\sum_{j=1}^M\left\{\mathbb{E}_{\boldsymbol{\theta}_i}[\log \theta_{i,z_{ij}}] + \mathbb{E}_{\boldsymbol{\phi}}[\log \phi_{j,z_{ij},x_{ij}}]\right\}+\mathrm{const}.\\
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        式を簡単にする為に新たな定数 $\gamma_{ijk}$ を
+        \[ \log \gamma_{ijk} \stackrel{\mathrm{def}}{=} \mathbb{E}_{\boldsymbol{\theta}_i}[\log \theta_{ik}] + \mathbb{E}_{\boldsymbol{\phi}}[\log \phi_{jk,x_{ij}}] \]
+        を満たすように取れば
+        \[ \log q^{\mathrm{new}}(\mathbf{z}) = \sum_{i=1}^N\sum_{j=1}^M\log \gamma_{ij,z_{ij}} + \mathrm{const}. \]
+        つまり
+        \[ q^{\mathrm{new}}(\mathbf{z}) \propto \prod_{i=1}^N\prod_{j=1}^M \gamma_{ij,z_{ij}} \]
+        となるので，
+        \[ r_{ijk}\stackrel{\mathrm{def}}{=} q^{\mathrm{new}}(z_{ij}=k) = \frac{\gamma_{ijk}}{\sum_{k=1}^K\gamma_{ijk}} \]
+        が得られます.
+        </p>
+        <p>
+        $\gamma_{ijk}$ の定義に出てくる期待値の計算は $\boldsymbol{\theta},\boldsymbol{\phi}$ の分布が分かった後です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        次は $\boldsymbol{\theta},\boldsymbol{\phi}$ の更新式を計算していきます.
+        \[ \begin{aligned}
+        \log q^{\mathrm{new}}(\boldsymbol{\theta},\boldsymbol{\phi}) &= \mathbb{E}_{\mathbf{z}}[\log p(\mathbb{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi})] +\mathrm{const}.\\
+        &= \mathbb{E}_{\mathbf{z}}[\log p(\mathbf{x}|\mathbf{z},\boldsymbol{\phi})p(\mathbf{z}|\boldsymbol{\theta})p(\boldsymbol{\theta})p(\boldsymbol{\phi})]+\mathrm{const}.\\
+        &= \log p(\boldsymbol{\theta})p(\boldsymbol{\phi}) + \mathbb{E}_{\mathbf{z}}[\log p(\mathbf{x}|\mathbf{z},\boldsymbol{\phi})p(\mathbf{z}|\boldsymbol{\theta})]+\mathrm{const}.\\
+        \end{aligned} \]
+        となり，期待値の部分は今定義した $r_{ijk}$ を使えば
+        \[ \begin{aligned}
+        \mathbb{E}_{\mathbf{z}}[\log p(\mathbf{x}|\mathbf{z},\boldsymbol{\phi})p(\mathbf{z}|\boldsymbol{\theta})] &= \sum_{i=1}^N\sum_{j=1}^M \mathbb{E}_{z_{ij}}[\log \phi_{j,z_{ij},x_{ij}}\theta_{i,z_{ij}}]\\
+        &= \sum_{i=1}^N\sum_{j=1}^M\sum_{k=1}^Kr_{ijk} \log \phi_{jk,x_{ij}}\theta_{ik} \\
+        &= \sum_{i=1}^N\sum_{j=1}^M\sum_{k=1}^K\sum_{\ell=1}^{n_j}[x_{ij}=\ell]r_{ijk} \log \phi_{jk\ell}\theta_{ik} \\
+        \end{aligned} \]
+        となります. 但し $[x_{ij}=\ell]$ は等式が成り立つなら $1$， そうでなければ $0$ です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        よって
+        \[ \begin{aligned}
+        \log q^{\mathrm{new}}(\boldsymbol{\theta},\boldsymbol{\phi}) &= 
+        \sum_{i=1}^N\sum_{k=1}^K\log \theta_{ik}^{\alpha_k-1}+\sum_{j=1}^M\sum_{k=1}^K\sum_{\ell=1}^{n_j}\log \phi_{jk\ell}^{\beta_{j\ell}-1}\\
+        &+ \sum_{i=1}^N\sum_{j=1}^M\sum_{k=1}^K\sum_{\ell=1}^{n_j}[x_{ij}=\ell]r_{ijk} \log \phi_{jk\ell}\theta_{ik}+\mathrm{const}. \\
+        \end{aligned} \]
+        つまり，
+        \[ \begin{aligned}
+        q^{\mathrm{new}}(\boldsymbol{\theta},\boldsymbol{\phi}) &\propto
+        \prod_{i=1}^N\left\{\prod_{k=1}^K\theta_{ik}^{\alpha_k+\sum_{j=1}^Mr_{ijk}-1}\right\}\times
+        \prod_{j=1}^M\prod_{k=1}^K\left\{\prod_{\ell=1}^{n_j}\phi_{jk\ell}^{\beta_{j\ell}+\sum_{i=1}^N[x_{ij}=\ell]r_{ijk}-1}\right\}
+        \end{aligned} \]
+        となります. これから，更新後も $\boldsymbol{\theta}_i$ や $\boldsymbol{\phi}_{jk}$ はディリクレ分布に従う事が解ります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        よって，見やすくする為に新しい変数を
+        \[ \begin{aligned}
+        A_{ik} &\stackrel{\mathrm{def}}{=} \alpha_k+\sum_{j=1}^Mr_{ijk} \\
+        B_{jk\ell} &\stackrel{\mathrm{def}}{=} \beta_{j\ell}+\sum_{i=1}^N[x_{ij}=\ell]r_{ijk}
+        \end{aligned}  \]
+        と定義すれば
+        \[ \begin{aligned}
+        q^{\mathrm{new}}(\boldsymbol{\theta}_i) &= \mathrm{Dir}(\boldsymbol{\theta}_i|\mathbf{A}_i) \\
+        q^{\mathrm{new}}(\boldsymbol{\phi}_{jk}) &= \mathrm{Dir}(\boldsymbol{\phi}_{jk}|\mathbf{B}_{jk}) \\
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        $\boldsymbol{\theta},\boldsymbol{\phi}$ の分布が分かったので，保留していた
+        \[ \log \gamma_{ijk} \stackrel{\mathrm{def}}{=} \mathbb{E}_{\boldsymbol{\theta}_i}[\log \theta_{ik}] + \mathbb{E}_{\boldsymbol{\phi}}[\log \phi_{jk,x_{ij}}] \]
+        の計算を進める事が出来ます.
+        </p>
+        <p class="fragment">
+        ディリクレ分布 $\mathrm{Dir}(\mathbf{x}|\boldsymbol{\alpha})$ における $\log x_i$ の期待値は解析的に求める事ができて
+        \[ \mathbb{E}[\log x_i] = \psi(\alpha_i) - \psi\left(\sum_{i}\alpha_i\right) \]
+        となります. $\psi(x)$ は <strong>ディガンマ関数(digamma function)</strong>と呼ばれる関数です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        よって
+        \[ \mathbb{E}_{\boldsymbol{\theta}_i}[\log \theta_{ik}] = \psi(A_{ik}) - \psi\left(\sum_{k=1}^KA_{ik}\right) \]
+        また
+        \[ \begin{aligned}
+        \mathbb{E}_{\boldsymbol{\phi}}[\log \phi_{jk,x_{ij}}] &= \sum_{\ell=1}^{n_j}[x_{ij}=\ell]\mathbb{E}_{\boldsymbol{\phi}}[\log \phi_{jk\ell}] \\
+        &= \sum_{\ell=1}^{n_j}[x_{ij}=\ell]\left\{\psi(B_{jk\ell})-\psi\left(\sum_{\ell}^{n_j}B_{jk\ell}\right)\right\} \\
+        &= \sum_{\ell=1}^{n_j}[x_{ij}=\ell]\psi(B_{jk\ell})-\psi\left(\sum_{\ell}^{n_j}B_{jk\ell}\right) \\
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <p> 以上全てをまとめると以下のようになります. </p>
+        <div class="block" style="border-color:blue">
+        <p>
+        \[ A_{ik} = \alpha_k,\quad B_{jk\ell} = \beta_{j\ell} \]
+        と初期化し収束するまで以下の反復を繰り返す.
+        \[ \begin{aligned}
+        \log\gamma^{\mathrm{new}}_{ijk} &= \psi(A_{ik}) - \psi\left(\sum_{k=1}^KA_{ik}\right) + \sum_{\ell=1}^{n_j}[x_{ij}=\ell]\psi(B_{jk\ell})-\psi\left(\sum_{\ell}^{n_j}B_{jk\ell}\right) \\
+        A^{\mathrm{new}}_{ik} &= \alpha_k + \sum_{j=1}^Mr_{ijk} \qquad \left(r_{ijk} = \frac{\gamma_{ijk}}{\sum_{k=1}^K\gamma_{ijk}}\right) \\
+        B^{\mathrm{new}}_{jk\ell} &= \beta_{j\ell} + \sum_{i=1}^N[x_{ij}=\ell]r_{ijk}
+        \end{aligned} \]
+        </p>
+        <p>
+        求める事後分布(の近似)は以下のようになる.
+        \[ \begin{aligned}
+        \boldsymbol{\theta}_i  &\sim \mathrm{Dir}(\mathbf{A}_i)\\
+        \boldsymbol{\phi}_{jk} &\sim \mathrm{Dir}(\mathbf{B}_{jk}) \\
+        q(z_{ij} = k) &= r_{ijk}
+        \end{aligned} \]
+        </p>
+        </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        では学習を行わせてみます. 今回は学習データが $101$ 個しかない為過学習に注意が必要です.
+        </p>
+        <p class="fragment">
+        最初は非常に少ないクラス数 $K=3$ にし， クラスの混合比率 $\boldsymbol{\theta}_i$, 属性値の分布 $\boldsymbol{\phi}$ に関する事前知識はないとします. その為には事前分布を一様分布にすれば良いです.
+        </p>
+        <p class="fragment">
+        ディリクレ分布 $\mathrm{Dir}(\boldsymbol{\alpha})$ は $\boldsymbol{\alpha}=(1,\ldots,1)$ の時に一様分布になります. 但し，事前分布が全て同じだと学習が全く進まないので，乱数で少しだけ $1$ からずらした物を事前分布として採用します.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        以下が学習された3つのクラスの属性値の組み合わせの様子で，$\boldsymbol{\phi}_i$の分布からわかります.
+        </p>
+        <p>
+        $99$% 以上の確率で確実にその値を取る属性には色をつけています.
+        </p>
+        <div align="center">
+        <table style="font-size:70%">
+        <tr><th></th> <th>体毛</th> <th>羽毛</th> <th>卵</th> <th>乳</th> <th>飛ぶ</th> <th>水棲</th> <th>肉食</th> <th>歯</th> <th>背骨</th> <th>呼吸</th> <th>毒</th> <th>ひれ</th> <th>足</th> <th>尾</th> <th>家畜化</th> <th>猫サイズ</th> </tr>
+        <tr><th>クラス0</th> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:black">0本</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> </tr>
+        <tr><th>クラス1</th> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">Y</td> </tr>
+        <tr><th>クラス2</th> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">2本</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">N</td> </tr>
+        </table>
+        </div>
+        <p>
+        クラス0は「水棲生物っぽいカテゴリ」，クラス1は「哺乳類っぽいカテゴリ」，クラス2は「鳥類っぽいカテゴリ」という感じでしょうか.
+        (<a href="prog/prog20-1.py">prog20-1.py</a>)
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        以下はクラスの混合比の学習例で, $\boldsymbol{\theta}_i$ の分布からわかります. なかなか面白い結果が出たと思います.
+        </p>
+        <div align="center">
+        <table style="font-size:80%">
+            <tr><th></th><th> 水棲生物? </th><th> 哺乳類? </th> <th> 鳥類? </th></tr>
+            <tr><th> コイ </th> <td> 80.0% </td> <td> 9.6% </td> <td> 10.4% </td> </tr>
+            <tr><th> クマ </th> <td> 4.9% </td> <td> 90.3% </td> <td> 4.8% </td> </tr>
+            <tr><th> ニワトリ </th> <td> 4.2% </td> <td> 5.8% </td> <td> 90.1% </td> </tr>
+            <tr><th> イルカ </th> <td> 52.8% </td> <td> 44.6% </td> <td> 2.7% </td> </tr>
+            <tr><th> ペンギン </th> <td> 32.8% </td> <td> 16.2% </td> <td> 50.9% </td> </tr>
+            <tr><th> コウモリ </th> <td> 4.6% </td> <td> 62.1% </td> <td> 33.3% </td> </tr>
+            <tr><th> カエル </th> <td> 56.2% </td> <td> 25.0% </td> <td> 18.9% </td> </tr>
+            <tr><th> ハマグリ </th> <td> 47.9% </td> <td> 5.4% </td> <td> 46.7% </td> </tr>
+            <tr><th> 女の子 </th> <td> 4.2% </td> <td> 83.6% </td> <td> 12.2% </td> </tr>
+            <tr><th> 吸血鬼 </th> <td> 4.6% </td> <td> 62.1% </td> <td> 33.3% </td> </tr>
+        </table>
+        </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        【問題】<br>
+        今の結果では「女の子」の属性の12.2%が「鳥類っぽいカテゴリ」に由来すると言っているのですが，これは何故でしょうか？
+        </p>
+        <p >
+        これを調べる為には $p(\mathbf{z}_{\text{女の子}})$ がどのような分布になっているかを見れば良いです.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        $K=10$ でやってみると以下のようになりました(<a href="prog/prog20-2.py">prog20-2.py</a>).こちらでは95%で値が確定している属性に色をつけています.
+        </p>
+        <div align="center">
+        <table style="font-size:70%">
+            <tr><th></th> <th>体毛</th> <th>羽毛</th> <th>卵</th> <th>乳</th> <th>飛ぶ</th> <th>水棲</th> <th>肉食</th> <th>歯</th> <th>背骨</th> <th>呼吸</th> <th>毒</th> <th>ひれ</th> <th>足</th> <th>尾</th> <th>家畜化</th> <th>猫サイズ</th><th> カテゴリ </th> </tr>
+            <tr><th>クラス0</th> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td> 肉食動物(クラス9と同じ) </td></tr>
+            <tr><th>クラス1</th> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td> 草食動物 </td></tr>
+            <tr><th>クラス2</th> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">6本</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td> 昆虫 </td> </tr>
+            <tr><th>クラス3</th> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">Y</td> <td style="color:red">0本</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td>魚類</td></tr>
+            <tr><th>クラス4</th> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td> 特徴なし </td></tr>
+            <tr><th>クラス5</th> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">2本</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td>鳥類</td></tr>
+            <tr><th>クラス6</th> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td> 特徴なし </td></tr>
+            <tr><th>クラス7</th> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">0本</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">N</td> <td>クラゲとかヒトデとか</td></tr>
+            <tr><th>クラス8</th> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td> 特徴なし </td></tr>
+            <tr><th>クラス9</th> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td> 肉食動物 </td></tr>
+        </table>
+        </div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        今回は事前分布に特に工夫を施しませんでしたが，事前分布の設計によって私達の知識を取り入れたり過学習を抑制するといった事が出来ます.
+        </p>
+        <p class="fragment">
+        例えば，$K$ クラスのうちの幾つかを「主要クラス」，残りを「瑣末クラス」として学習させたいとします. これは例えば，混合比 $\boldsymbol{\theta}_i$ の値が主要クラスの方が大きめの値になるように事前分布のパラメータ $\boldsymbol{\alpha}$ を調整するなどの方法でモデルに取り入れる事が出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        また，学習されたパラメータを使えば同時分布
+        \[ p(\mathbf{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}) \]
+        に対する様々な計算が可能です.
+        </p>
+        <p class="fragment">
+        例えば，ある特定の配合 $\boldsymbol{\theta}'$ をした時の観測データ $\mathbf{x}'$ はどんなものか？を知りたければ条件付き分布
+        \[ p(\mathbf{x}'|\boldsymbol{\theta}') \]
+        を計算すれば良いですし，次の観測データ $\mathbf{x}'$ がどのような物かは<strong> 予測分布 (predictive distribution)</strong>
+        \[ p(\mathbf{x}'|\mathbf{x}) \propto \int\int\int\int p(\mathbf{x}',\mathbf{z}',\mathbf{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi})\mathrm{d}\mathbf{z}'\mathrm{d}\mathbf{z}\mathrm{d}\boldsymbol{\theta}\mathrm{d}\boldsymbol{\phi} \]
+        を計算すれば良いです.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 周辺化ギブスサンプリング </h2>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        同じ問題をMCMC法でもやってみたいと思います. サンプリングアルゴリズムは第３・４回に既にやっていますのでアルゴリズムの解説は省略します.
+        </p>
+        <p class="fragment">
+        繰り返しになりますが，ランダムサンプリングの利点は近似をせずに事後分布を直接調べる事が出来る事です.
+        欠点は，各変数毎に数百～数千回はサンプリングを行う必要があるため，何の工夫もせずに事後分布 $p(\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}|\mathbf{x})$ からサンプリングを行うと非常に長い時間が掛かってしまう場合がある事です.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        そこで，サンプリングの前に興味のない隠れ変数は周辺化して消してしまいましょう. 今回の場合，例えば $\mathbf{z}$ に興味があるならば
+        \[ \begin{aligned}
+        p(\mathbf{z}|\mathbf{x}) &= \int\int p(\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}|\mathbf{x})\mathrm{d}\boldsymbol{\theta}\mathrm{d}\boldsymbol{\phi}\\
+        &\propto \int\int p(\mathbf{x}, \mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi})\mathrm{d}\boldsymbol{\theta}\mathrm{d}\boldsymbol{\phi}\\
+        \end{aligned} \]
+        としてからサンプリングを行います.
+        </p>
+        <p class="fragment">
+        更に，$p(\mathbf{z}|\mathbf{x})$ に対してギブスサンプリングを行います. つまり $\{z_{ij}\}_{(i,j)\neq (i',j')}$ を固定して $z_{i'j'}$ だけをサンプリングするという事を $i'=1,2,\ldots,N,j'=1,\ldots,M$ について繰り返します.
+        </p>
+        <p class="fragment">
+        この方法は<strong>周辺化ギブスサンプリング(collapsed gibbs sampling)</strong>と呼ばれます.
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        まず，同時分布の式を整理すると
+        \[ \begin{aligned}
+        p(\mathbf{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}) &\propto \prod_{i=1}^N\left(\prod_{k=1}^K\theta_{ik}^{\alpha_{k}-1}\right)\prod_{j=1}^M\phi_{j,z_{ij},x_{ij}}\theta_{i,z_{ij}}\times \prod_{j=1}^M\prod_{k=1}^K\prod_{\ell=1}^{n_j}\phi_{jk\ell}^{\beta_{j\ell}-1} \\
+        &\propto \prod_{i=1}^N\prod_{k=1}^K\theta_{ik}^{\alpha_k + M_{ik}-1} \times \prod_{j=1}^M\prod_{k=1}^K\prod_{\ell=1}^{n_j}\phi_{jk\ell}^{\beta_{j\ell}+N_{jk\ell} - 1}
+        \end{aligned} \]
+        となります. 但し
+        \[ \begin{aligned}
+        M_{ik}     &\stackrel{\mathrm{def}}{=} \sum_{j=1}^M[z_{ij}=k]\qquad(\text{データ$i$ の属性でクラス $k$ に由来するものの数}) \\
+        N_{jk\ell} &\stackrel{\mathrm{def}}{=} \sum_{i=1}^N[z_{ij}=k][x_{ij}=\ell]\qquad (\text{属性 $j$ がクラス $k$ に由来しその値が $\ell$ であるようなデータの数})
+        \end{aligned} \]
+        です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        ここで以下の積分公式を使います.
+        \[ \int \prod_{k=1}^Kx_k^{\alpha_k-1}\mathrm{d}\mathbf{x} = \frac{\prod_{k=1}^K\Gamma(\alpha_k)}{\Gamma(\sum_{k=1}^K\alpha_k)}\qquad (x_1,\ldots,x_K\geq 0, x_1+\cdots+x_K = 1) \]
+        但し $\Gamma(x)$ は<strong> ガンマ関数(gamma function) </strong>です.
+        </p>
+        <p class="fragment">
+        すると
+        \[ \begin{aligned}
+        p(\mathbf{z}|\mathbf{x}) &\propto \int\int p(\mathbf{x}, \mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi})\mathrm{d}\boldsymbol{\theta}\mathrm{d}\boldsymbol{\phi}\\
+        & = \prod_{i=1}^N\frac{\prod_{k=1}^K\Gamma(\alpha_k+M_{ik})}{\Gamma(\sum_{k=1}^K(\alpha_k+M_{ik}))}\times \prod_{j=1}^M\prod_{k=1}^K\frac{\prod_{\ell=1}^{n_j}\Gamma(\beta_{j\ell}+N_{jk\ell})}{\Gamma(\sum_{\ell=1}^{n_j}(\beta_{j\ell}+N_{jk\ell}))}
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        難しく見えますが，これを単純化する事が出来ます. まず
+        \[ \sum_{k=1}^KM_{ik} = (\text{データ $i$ の属性の数}) = M \]
+        でこれは定数です. また新たな変数・定数を
+        \[ \begin{aligned}
+        N_{jk} &\stackrel{\mathrm{def}}{=} \sum_{\ell=1}^{n_j}N_{jk\ell}\qquad (\text{属性 $j$ がクラス $k$ に由来するデータの数})\\
+        \beta_{j} &\stackrel{\mathrm{def}}{=} \sum_{\ell=1}^{n_j}
+        \end{aligned} \]
+        と定義すれば
+        \[ \begin{aligned}
+        p(\mathbf{z}|\mathbf{x}) &\propto \prod_{i=1}^N\prod_{k=1}^K\Gamma(\alpha_k+M_{ik})\times \prod_{j=1}^M\prod_{k=1}^K\frac{\prod_{\ell=1}^{n_j}\Gamma(\beta_{j\ell}+N_{jk\ell})}{\Gamma(\beta_j+N_{jk})}
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        次はギブスサンプリングを行う為に $z_{i'j'}$ 以外の $z$ 全てを固定した条件付き分布
+        \[ p(z_{i'j'}=k'|\{z_{ij}\}_{(i,j)\neq (i',j')}\mathbf{x}) \]
+        を導出します.
+        </p>
+        <p class="fragment">
+        そこで, $\tilde{M_{ik}}, \tilde{N_{jk\ell}},\tilde{N_{jk}}$ を既に定義した変数から $z_{i'j'}$ に依存する部分を全て取り除いたものとします. これらは定数値になる事に注意しましょう.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        すると， $z_{i'j'}=k'$ の時
+        \[\begin{aligned}
+        \prod_{k=1}^K\Gamma(\alpha_k + M_{i'k}) &= \Gamma(\alpha_{k'}+M_{i'k'})\times \prod_{k\neq k'}\Gamma(\alpha_k + M_{i'k})\\
+        &= \Gamma(\alpha_{k'}+\tilde{M}_{i'k'}+1)\times \prod_{k\neq k'}\Gamma(\alpha_k + \tilde{M}_{i'k})\\
+        \end{aligned} \]
+        となり，ガンマ関数の性質 $\Gamma(x+1)=x\Gamma(x)$ を使うと
+        \[ \begin{aligned}
+        \prod_{k=1}^K\Gamma(\alpha_k + M_{i'k}) &= (\alpha_{k'}+\tilde{M}_{i'k'})\Gamma(\alpha_{k'}+\tilde{M}_{i'k'})\times \prod_{k\neq k'}\Gamma(\alpha_k + \tilde{M}_{i'k})\\
+        &= (\alpha_{k'}+\tilde{M}_{i'k'})\prod_{k=1}^K\Gamma(\alpha_k + \tilde{M}_{i'k})\\
+        \end{aligned} \]
+        となります. この $\prod$ 以降は定数値です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        他の因子も同様の変換をしていくと
+        \[ \begin{aligned}
+        p(z_{i'j'}=k'|\{z_{ij}\}_{(i,j)\neq (i',j')},\mathbf{x})\propto (\alpha_{k'}+\tilde{M}_{i'k'})\frac{\beta_{j'x_{i'j'}}+\tilde{N}_{j'k'x_{i'j'}}}{\beta_j'+\tilde{N}_{j'k'}}
+        \end{aligned} \]
+        という四則演算のみで計算出来る式に辿りつきます. これに基いて $z_{i'j'}$ のサンプリングを行います.
+        </p>
+        <p class="fragment">
+        実際に計算する時は，毎回 $\tilde{M}_{jk}$ や $\tilde{N}_{jk\ell}$ を再計算すると遅いのでその差分のみを更新しながら計算していきます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        サンプルはまだ書いていません．休憩時間に実装をします.
+        </p>
+        </section>
+
+        <section>
+        <h3> 今回はここで終了します． </h3>
+        <p>
+        次回はちょっと飛びましてテキスト第13章の隠れマルコフモデルをやろうと思います.
+        </p>
+        </section>
+
+        </div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
