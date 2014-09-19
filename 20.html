@@ -180,7 +180,7 @@
         数値計算の利点は，原理的には任意の精度で正確な計算が出来るという事です. 欠点は，高い計算機性能が必要になるという事です.
         </p>
         <p class="fragment" data-fragment-index="1">
-        近似を用いる場合の利点・欠点はこれとは正反対で， 正確さを犠牲にする変わりにより大きな問題を解くことが出来るようになります.
+        近似を用いる場合の利点・欠点はこれとは正反対で， 正確さを犠牲にする代わりにより大きな問題を解くことが出来るようになります.
         </p>
         <div align="center"> <img width="400px" src="prog/fig3-9-1.png"> <img class="fragment" data-fragment-index="1" width="400px" src="fig/approx.png"> </div>
         </section>
@@ -271,7 +271,7 @@
         である事が証明されました. 平均を $\mu$, 分散を $\sigma^2$ と一般化した場合，多次元の場合も全く同様です.
         </p>
         <p class="fragment">
-        ある母集団についてその平均と分散以外に一切の事前知識がない場合，エントロピーという観点ではそれを正規分布だと仮定するのが妥当です.
+        ある母集団についてその平均と分散以外に一切の事前知識がない場合，エントロピーという観点ではそれを正規分布だと仮定すると余計な構造が入らないので妥当だと考える事が出来ます.
         </p>
         </section>
 
@@ -319,7 +319,7 @@
         と幾つかの独立な分布の積に分解出来る場合のみを考えるという近似を <strong> 平均場近似(mean field approximation)</strong> と呼びます. 
         この近似では分解可能性のみを仮定し，各 $q_i(\mathbf{z}_i)$ がどのような分布であるかは一切仮定しません. 
         </p>
-        <p style="font-size:70%"> <strong> 平均場(mean field)</strong> という用語は物理学に由来しており，もともとは解析的に解けない多体問題を解析的に解ける一体問題や二体問題に帰着させるという手法です. </p>
+        <p style="font-size:70%"> <strong> 平均場(mean field)</strong> という用語は物理学に由来しており，もともとは解析的に解けない多体問題を解析的に解ける一体問題や二体問題に帰着させる為の近似モデルです. </p>
         </p>
         </section>
 
@@ -338,12 +338,12 @@
         <section style="font-size:90%">
         <p>
         因子 $q_j(\mathbf{z}_j)$ だけを別にすれば
-        \[ \mathcal{L}(q) = \int q_j\left\{\int p(\mathbf{x},\mathbf{z})\prod_{i\neq j}q_i(\mathbf{z}_i)\mathrm{d}\mathbf{z}_i\right\}\mathrm{d}\mathbf{z}_j - \int q_j\log q_j\mathrm{d}\mathbf{z}_j + \mathrm{const}. \]
+        \[ \mathcal{L}(q) = \int q_j\left\{\int \log p(\mathbf{x},\mathbf{z})\prod_{i\neq j}q_i(\mathbf{z}_i)\mathrm{d}\mathbf{z}_i\right\}\mathrm{d}\mathbf{z}_j - \int q_j\log q_j\mathrm{d}\mathbf{z}_j + \mathrm{const}. \]
         となります.
         </p>
         <p>
         この $\{\cdots \}$ の部分は $\mathbf{z}_j$ 以外の変数群に関する $\log p(\mathbf{x},\mathbf{z})$ の期待値なので，これを
-        \[ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] = \int p(\mathbf{x},\mathbf{z})\prod_{i\neq j}q_i(\mathbf{z}_i)\mathrm{d}\mathbf{z}_i \]
+        \[ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] = \int \log p(\mathbf{x},\mathbf{z})\prod_{i\neq j}q_i(\mathbf{z}_i)\mathrm{d}\mathbf{z}_i \]
         と書くことにします.
         </p>
         </section>
@@ -369,10 +369,10 @@
         従って，$q_i(i\neq j)$ を固定して $q_j$ のみを動かした時に $\mathcal{L}(q)$ が最大となる条件は
         カルバックライブラー情報量
         \[\mathrm{KL}(q_j || \tilde{p}) \]
-        が最小となる条件なので
+        が最小となる条件で，それは
         \[ q_j(\mathbf{z}_j) = \tilde{p}(\mathbf{x},\mathbf{z}_j) \]
         となります. 明示的に書き下せば
-        \[ q_j(\mathbf{z}_j) = \frac{\tilde{p}(\mathbf{x},\mathbf{z}_j)}{\int\tilde{p}(\mathbf{x},\mathbf{z}_j)\mathrm{d}\mathbf{z}_j} = \frac{\exp\left\{ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] \right\}}{\int \exp\left\{ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] \right\}\mathrm{d}\mathbf{z}_j } \]
+        \[ q_j(\mathbf{z}_j) = \tilde{p}(\mathbf{x},\mathbf{z}_j) = \frac{\exp\left\{ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] \right\}}{\int \exp\left\{ \mathbb{E}_{i\neq j}\left[\log p(\mathbf{x},\mathbf{z}) \right] \right\}\mathrm{d}\mathbf{z}_j } \]
         となります. この右辺の期待値計算は $q(\mathbf{z})$ に依存するので，反復計算が必要です.
         </p>
         </section>
@@ -427,7 +427,7 @@
         オリジナルの問題は生物種を独立な $K$ クラスに分離せよという問題です.
         </p>
         <p class="fragment">
-        しかしここでは，ちょっと趣向を変えて<strong> 各生物 $\mathbf{x}_i$ は複数のクラスを混合して出来る</strong>と考えてみましょう. 
+        しかしここでは，ちょっと趣向を変えて<strong> 各生物 $\mathbf{x}_i$ は複数のクラスを配合して出来る</strong>と考えてみましょう. 
         </p>
         </section>
 
@@ -448,12 +448,12 @@
         <p class="fragment">
         $\mathbf{x}_i$ は $K$ 個のクラスを比率
         \[ \boldsymbol{\theta}_i = (\theta_{i1},\ldots,\theta_{iK}) \]
-        で混合して作られるとします. $\boldsymbol{\theta}_i$ は
+        で配合して作られるとします. $\boldsymbol{\theta}_i$ は
         \[ \theta_{i1},\ldots,\theta_{iK}\geq 0, \quad \theta_{i1} + \cdots + \theta_{iK} = 1 \]
         を満たす確率変数です．
         </p>
         <p class="fragment">
-        このような変数に対する事前分布には <strong> ディリクレ分布(Dirichlet distribution)</strong> を使うと後の計算が楽になります(<strong> 共役事前分布(conjugate prior)</strong>). <br>
+        このような変数に対する事前分布には <strong> ディリクレ分布(Dirichlet distribution)</strong> を使うと後の計算が楽になります(<strong> 共役事前分布(conjugate prior)</strong>と呼ばれる性質を持ちます). <br>
         今回も各 $\boldsymbol{\theta_i}$ はパラメータが $\boldsymbol{\alpha}$ のディリクレ分布に従うと仮定しましょう.
         \[ \boldsymbol{\theta_i} \sim \mathrm{Dir}(\boldsymbol{\alpha}) \]
         </p>
@@ -471,7 +471,7 @@
         と定義します.
         </p>
         <p class="fragment">
-        どのクラスから持ってくるかは先ほどの混合比 $\boldsymbol{\theta}_i$ に従って選ぶとしましょう.
+        どのクラスから持ってくるかは先ほどの配合比 $\boldsymbol{\theta}_i$ に従って選ぶとしましょう.
         \[ p(z_{ij}=k) = \theta_{ik} \]
         これは<strong>カテゴリ分布(categorical distribution)</strong>と呼ばれる分布で，以下のように書きます.
         \[ z_{ij} \sim \mathrm{Cat}(\boldsymbol{\theta}_i) \]
@@ -502,7 +502,7 @@
             <li> $N$: データ数, $M$:属性数, $K$: クラス数 </li>
             <li> $n_j\,(j=1,\ldots,M)$: 属性 $j$ のカテゴリ数 </li>
             <li> パラメータ:$\boldsymbol{\alpha}, \boldsymbol{\beta}_{j}\,(j=1,\ldots,M)$ </li>
-            <li> クラスの混合比 $\boldsymbol{\theta}_i\,(i=1,\ldots,N)$ </li>
+            <li> クラスの配合比 $\boldsymbol{\theta}_i\,(i=1,\ldots,N)$ </li>
             <li> クラス毎の属性値の分布 $\phi_{jk}\,(k=1,\ldots,K,j=1,\ldots,M)$ </li>
             <li> 属性の所属クラス $z_{ij}\,(i=1,\ldots,N,j=1,\ldots,M)$ </li>
             <li> 観測データ $x_{ij}\,(i=1,\ldots,N,j=1,\ldots,M)$ </li>
@@ -519,7 +519,7 @@
 
         <section style="font-size:80%">
         <p>
-        グラフィカルモデルは下図のようになります. 四角い囲みは<strong>プレート(plate)</strong>と呼ばれ，その内部が実際には同じ形の多数のノードからなる事を表しています.
+        グラフィカルモデルは下図のようになります. 四角い囲みは<strong>プレート(plate)</strong>と呼ばれ，実際にはプレート内部と同じ形のノードが多数ある事を表しています.
         </p>
         <p>
         $\boldsymbol{\theta}$ と $\mathbf{z}$ はもちろん独立ではありませんが， 合流部の $\mathbf{x}$ がインスタンス化されている為 $\boldsymbol{\phi}$ もこれらと独立では無いという事がわかります.(第14回資料のd分離性を復習して下さい)
@@ -693,7 +693,7 @@
         では学習を行わせてみます. 今回は学習データが $101$ 個しかない為過学習に注意が必要です.
         </p>
         <p class="fragment">
-        最初は非常に少ないクラス数 $K=3$ にし， クラスの混合比率 $\boldsymbol{\theta}_i$, 属性値の分布 $\boldsymbol{\phi}$ に関する事前知識はないとします. その為には事前分布を一様分布にすれば良いです.
+        最初は非常に少ないクラス数 $K=3$ にし， クラスの配合比率 $\boldsymbol{\theta}_i$, 属性値の分布 $\boldsymbol{\phi}$ に関する事前知識はないとします. その為には事前分布を一様分布にすれば良いです.
         </p>
         <p class="fragment">
         ディリクレ分布 $\mathrm{Dir}(\boldsymbol{\alpha})$ は $\boldsymbol{\alpha}=(1,\ldots,1)$ の時に一様分布になります. 但し，事前分布が全て同じだと学習が全く進まないので，乱数で少しだけ $1$ からずらした物を事前分布として採用します.
@@ -723,7 +723,7 @@
 
         <section style="font-size:90%">
         <p>
-        以下はクラスの混合比の学習例で, $\boldsymbol{\theta}_i$ の分布からわかります. なかなか面白い結果が出たと思います.
+        以下はクラスの配合比の学習例で, $\boldsymbol{\theta}_i$ の分布からわかります. なかなか面白い結果が出たと思います.
         </p>
         <div align="center">
         <table style="font-size:80%">
@@ -743,12 +743,16 @@
         </section>
 
         <section style="font-size:90%">
-        <p>
-        【問題】<br>
-        今の結果では「女の子」の属性の12.2%が「鳥類っぽいカテゴリ」に由来すると言っているのですが，これは何故でしょうか？
-        </p>
         <p >
-        これを調べる為には $p(\mathbf{z}_{\text{女の子}})$ がどのような分布になっているかを見れば良いです.
+        各属性がどのクラスに由来するかは $p(\mathbf{z})$ を見ればわかります.
+        </p>
+        <p class="fragment">
+        【問題】<br>
+        例えば，今の結果では「女の子」の属性の12.2%が「鳥類っぽいカテゴリ」に由来するという結果が出ましたがそれは何故でしょうか？
+        </p>
+        <p class="fragment">
+        【答え】<br>
+        足が２本である点.
         </p>
         </section>
 
@@ -756,9 +760,12 @@
         <p>
         $K=10$ でやってみると以下のようになりました(<a href="prog/prog20-2.py">prog20-2.py</a>).こちらでは95%で値が確定している属性に色をつけています.
         </p>
+        <p>
+        肉食動物と草食動物の間には「肉食か否か」という属性の他に「家畜化される傾向があるか」という属性の違いもあるようですね.
+        </p>
         <div align="center">
         <table style="font-size:70%">
-            <tr><th></th> <th>体毛</th> <th>羽毛</th> <th>卵</th> <th>乳</th> <th>飛ぶ</th> <th>水棲</th> <th>肉食</th> <th>歯</th> <th>背骨</th> <th>呼吸</th> <th>毒</th> <th>ひれ</th> <th>足</th> <th>尾</th> <th>家畜化</th> <th>猫サイズ</th><th> カテゴリ </th> </tr>
+            <tr><th></th> <th>体毛</th> <th>羽毛</th> <th>卵</th> <th>乳</th> <th>飛ぶ</th> <th>水棲</th> <th>肉食</th> <th>歯</th> <th>背骨</th> <th>呼吸</th> <th>毒</th> <th>ひれ</th> <th>足</th> <th>尾</th> <th>家畜化</th> <th>猫サイズ</th><th> カテゴリ(予想) </th> </tr>
             <tr><th>クラス0</th> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td> 肉食動物(クラス9と同じ) </td></tr>
             <tr><th>クラス1</th> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td> 草食動物 </td></tr>
             <tr><th>クラス2</th> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">6本</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td> 昆虫 </td> </tr>
@@ -778,22 +785,22 @@
         今回は事前分布に特に工夫を施しませんでしたが，事前分布の設計によって私達の知識を取り入れたり過学習を抑制するといった事が出来ます.
         </p>
         <p class="fragment">
-        例えば，$K$ クラスのうちの幾つかを「主要クラス」，残りを「瑣末クラス」として学習させたいとします. これは例えば，混合比 $\boldsymbol{\theta}_i$ の値が主要クラスの方が大きめの値になるように事前分布のパラメータ $\boldsymbol{\alpha}$ を調整するなどの方法でモデルに取り入れる事が出来ます.
+        例えば，$K$ クラスのうちの幾つかを「主要クラス」，残りを「瑣末クラス」として学習させたいとします. これは例えば，配合比 $\boldsymbol{\theta}_i$ の値が主要クラスの方が大きめの値になるように事前分布のパラメータ $\boldsymbol{\alpha}$ を調整するなどの方法でモデルに取り入れる事が出来ます.
         </p>
         </section>
 
         <section style="font-size:80%">
         <p>
-        また，学習されたパラメータを使えば同時分布
+        確率的生成モデルの良い所は，学習されたパラメータを使えば同時分布
         \[ p(\mathbf{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}) \]
-        に対する様々な計算が可能です.
+        を変形して様々な計算が出来るという所です.
         </p>
         <p class="fragment">
-        例えば，ある特定の配合 $\boldsymbol{\theta}'$ をした時の観測データ $\mathbf{x}'$ はどんなものか？を知りたければ条件付き分布
+        例えば，ある特定の配合 $\boldsymbol{\theta}'$ の観測データ $\mathbf{x}'$ はどんなものか？を知りたければ条件付き分布
         \[ p(\mathbf{x}'|\boldsymbol{\theta}') \]
-        を計算すれば良いですし，次の観測データ $\mathbf{x}'$ がどのような物かは<strong> 予測分布 (predictive distribution)</strong>
-        \[ p(\mathbf{x}'|\mathbf{x}) \propto \int\int\int\int p(\mathbf{x}',\mathbf{z}',\mathbf{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi})\mathrm{d}\mathbf{z}'\mathrm{d}\mathbf{z}\mathrm{d}\boldsymbol{\theta}\mathrm{d}\boldsymbol{\phi} \]
-        を計算すれば良いです.
+        を計算すれば良いですし，未知の観測データ $\mathbf{x}'$ については <strong> 予測分布 (predictive distribution)</strong>
+        \[ p(\mathbf{x}'|\mathbf{x}) \propto \int\int\int\int p(\mathbf{x}',\mathbf{z}',\boldsymbol{\theta}',\mathbf{x},\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi})\mathrm{d}\mathbf{z}'\mathrm{d}\boldsymbol{\theta}'\mathrm{d}\mathbf{z}\mathrm{d}\boldsymbol{\theta}\mathrm{d}\boldsymbol{\phi} \]
+        を計算すればその分布がわかります.
         </p>
         </section>
 
@@ -807,8 +814,15 @@
         </p>
         <p class="fragment">
         繰り返しになりますが，ランダムサンプリングの利点は近似をせずに事後分布を直接調べる事が出来る事です.
-        欠点は，各変数毎に数百～数千回はサンプリングを行う必要があるため，何の工夫もせずに事後分布 $p(\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}|\mathbf{x})$ からサンプリングを行うと非常に長い時間が掛かってしまう場合がある事です.
+        欠点は，何の工夫もせずに事後分布 $p(\mathbf{z},\boldsymbol{\theta},\boldsymbol{\phi}|\mathbf{x})$ から直接サンプリングを行うと非常に長い時間がかかってしまうという事です.
         </p>
+        <p class="fragment" data-fragment-index="1">
+        工夫出来るポイントは主に以下の２点です.
+        </p>
+        <ol class="fragment" data-fragment-index="1">
+            <li> 各変数毎に数百～数千サンプルが必要. 従って変数の数を出来るだけ減らしたい. </li>
+            <li> ディリクレ分布からの1回のサンプリングには内部的に複数回の乱数生成が必要. もっと単純な分布からサンプリング出来るようにしたい. </li>
+        </ol>
         </section>
 
         <section style="font-size:90%">
@@ -821,7 +835,7 @@
         としてからサンプリングを行います.
         </p>
         <p class="fragment">
-        更に，$p(\mathbf{z}|\mathbf{x})$ に対してギブスサンプリングを行います. つまり $\{z_{ij}\}_{(i,j)\neq (i',j')}$ を固定して $z_{i'j'}$ だけをサンプリングするという事を $i'=1,2,\ldots,N,j'=1,\ldots,M$ について繰り返します.
+        更に，$p(\mathbf{z}|\mathbf{x})$ に対してギブスサンプリングを行います. つまり $\{z_{ij}\}_{(i,j)\neq (i',j')}$ を固定して $z_{i'j'}$ だけをサンプリングするという事を繰り返します. サンプリングする次元を1つに絞る事によって，ディリクレ分布などよりずっと単純な分布からサンプリングする事が出来ます.
         </p>
         <p class="fragment">
         この方法は<strong>周辺化ギブスサンプリング(collapsed gibbs sampling)</strong>と呼ばれます.
@@ -867,12 +881,13 @@
         でこれは定数です. また新たな変数・定数を
         \[ \begin{aligned}
         N_{jk} &\stackrel{\mathrm{def}}{=} \sum_{\ell=1}^{n_j}N_{jk\ell}\qquad (\text{属性 $j$ がクラス $k$ に由来するデータの数})\\
-        \beta_{j} &\stackrel{\mathrm{def}}{=} \sum_{\ell=1}^{n_j}
+        \beta_{j} &\stackrel{\mathrm{def}}{=} \sum_{\ell=1}^{n_j}\beta_{j\ell}
         \end{aligned} \]
         と定義すれば
         \[ \begin{aligned}
         p(\mathbf{z}|\mathbf{x}) &\propto \prod_{i=1}^N\prod_{k=1}^K\Gamma(\alpha_k+M_{ik})\times \prod_{j=1}^M\prod_{k=1}^K\frac{\prod_{\ell=1}^{n_j}\Gamma(\beta_{j\ell}+N_{jk\ell})}{\Gamma(\beta_j+N_{jk})}
         \end{aligned} \]
+        となります.
         </p>
         </section>
 
