@@ -33,85 +33,59 @@ beta  = empty(M, dtype=object)
 for j in range(M):
     beta[j] = ones(nj[j])
 
-# 学習
-A = tile(alpha, (N, 1))
-B = beta.repeat(K).reshape(-1, K)
-r = zeros((N,M,K))
+# 周辺化ギブスサンプリング
+BURNIN  = 100
+NSAMPLE = 1000
 
-for it in range(1000):
-    print it
-    psi_Aik  = psi(A)
-    psi_Ai   = psi(A.sum(1))
-    psi_Bjk  = zeros((M, K))
-    psi_Bjkl = empty((M, K), dtype=object)
-    for j in xrange(M):
-        for k in xrange(K):
-            psi_Bjk[j,k]  = psi(B[j,k].sum())
-            psi_Bjkl[j,k] = psi(B[j,k])
+# 各生物 i の属性 j の所属クラスをランダムに初期化
+z = zeros((N, M), dtype=int)
+for i in range(N):
+    for j in range(M):
+        z[i, j] = random.randint(nj[j])
+beta_Njkl = zeros((M, K), dtype=object)
+for j in range(M):
+    for k in range(K):
+        beta_Njkl[j, k] = beta[j].copy()
+        for i in range(N):
+            if z[i, j] != k:
+                continue
+            beta_Njkl[j, k][x[i, j]] += 1
 
-    new_r = zeros((N, M, K))
+alpha_Mik = zeros((N, K))
+for i in range(N):
+    for k in range(K):
+        alpha_Mik[i, k] = alpha[k]
+        for j in range(M):
+            alpha_Mik[i, z[i, j]] += 1
+
+z_hist = zeros((N, M, K), dtype=int)
+for it in range(BURNIN + NSAMPLE):
+    if it%10==0:
+        print it
+        print z_hist
     for i in xrange(N):
         for j in xrange(M):
-            for k in xrange(K):
-                new_r[i, j, k] = psi_Aik[i,k]-psi_Ai[i]+psi_Bjkl[j,k][x[i,j]]-psi_Bjk[j, k]
-    new_r -= logsumexp(new_r, axis=2).reshape(N, M, 1)
-    new_r = exp(new_r)
-    if (new_r < 0).any():
-        print 'Invalid!'
-        exit(1)
+            # x[i,j], z[i,j] の頻度情報だけデクリメント
+            alpha_Mik[i, z[i,j]] -= 1
+            beta_Njkl[j, z[i, j]][x[i, j]] -= 1
 
-    # rが変化しなくなったら終了
-    if linalg.norm(new_r - r) < 1e-3*linalg.norm(r):
-        break
-    r = new_r
+            # サンプリング分布の確率を計算
+            p = zeros(K)
+            for k in range(K):
+                p[k] = alpha_Mik[i, k] * beta_Njkl[j, k][x[i, j]] / beta_Njkl[j, k].sum()
+            p /= p.sum()
 
-    A = alpha + r.sum(1)
-    for j in xrange(M):
-        for k in xrange(K):
-            B[j,k] = beta[j].copy()
-            for i in xrange(N):
-                B[j,k][x[i,j]] += r[i,j,k]
-print 'count =',it+1
+            new_zij = random.choice(K, p = p)
 
-# 結果の出力
-#== クラス-属性値分布(MAP推定) ==
-print '==== per class attribute distributions ===='
-for k in range(K):
-    print '> class %d' % k
-    for j in range(M):
-        print '%s:' % attributes[j],
-        for l in range(nj[j]):
-            print '\t[%d] %.3f' % (l, (B[j, k][l]-1)/(B[j, k].sum()-nj[j])),
-        print ''
+            z[i, j] = new_zij
 
+            if it >= BURNIN:
+                z_hist[i, j, new_zij] += 1
 
-print '<table>'
-print '<tr><th></th>',
-for j in range(M):
-    print '<th>%s</th>' % attributes[j],
-print '</tr>'
+            alpha_Mik[i, z[i,j]] += 1
+            beta_Njkl[j, z[i, j]][x[i, j]] += 1
 
-for k in range(K):
-    print u'<tr><th>クラス%d</th>' % k,
-    for j in range(M):
-        p = (B[j, k]-1)/(B[j, k].sum()-nj[j])
-        color='black'
-        if p.max() > 0.95: # 95%を超えている属性は色を付ける 
-            color='red'
-        if attributes[j] != u'足':
-            print '<td style="color:%s">%s</td>' % (color, ['N', 'Y'][p.argmax()]),
-        else:
-            print '<td style="color:%s">%d本</td>' % (color, legs_enc.classes_[p.argmax()]),
-    print '</tr>'
-print '</table>'
-
-#== 生物-所属クラス ==
-print '==== per animal class distributions ===='
-for i in range(N):
-    print zoo[u'名前'][i],':',
-    for k in range(K):
-        print '\t[%d] %.3f' % (k, (A[i, k] - 1)/(A[i].sum() - K)),
-    print ''
+print z_hist
 
 #== 属性-所属クラス ==
 print u'名前',
@@ -121,7 +95,7 @@ print ''
 for i in range(N):
     print zoo[u'名前'][i],
     for j in range(M):
-        print '\t%d' % r[i, j].argmax(),
+        print '\t%d' % z_hist[i, j].argmax(),
     print ''
 
 
