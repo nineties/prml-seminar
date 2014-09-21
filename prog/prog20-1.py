@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 random.seed(1)
 
 zoo = pd.read_csv('https://archive.ics.uci.edu/ml/machine-learning-databases/zoo/zoo.data', header=None)
-attributes = [u'体毛', u'羽毛', u'卵', u'乳', u'飛ぶ', u'水棲', u'肉食', u'歯', u'背骨', u'呼吸', u'毒', u'ひれ', u'足', u'尾', u'家畜化', u'猫サイズ']
+attributes = [u'体毛', u'羽毛', u'卵', u'乳', u'飛ぶ', u'水棲', u'肉食', u'歯', u'脊椎', u'呼吸', u'毒', u'ひれ', u'足', u'尾', u'家畜化', u'猫サイズ']
 
 zoo.columns = [u'名前'] + attributes + [u'種別']
 

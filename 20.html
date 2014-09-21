@@ -443,7 +443,7 @@
 
         <section style="font-size:90%">
         <p>
-        観測データを $\mathbf{x}=\{\mathbf{x}_1,\ldots,\mathbf{x}_N\}$ とします. 各 $\mathbf{x}_i$ は $M$ 個の属性値からなるベクトルで， 第 $j$ 成分は $0,1,\ldots,n_j-1$ のいずれかの値を取るとします. 
+        観測データを $\mathbf{x}=\{\mathbf{x}_1,\ldots,\mathbf{x}_N\}$ とします. 各 $\mathbf{x}_i$ は $M$ 個の属性値からなるベクトルで， 第 $j$ 成分は $1,\ldots,n_j$ のいずれかの値を取るとします. 
         </p>
         <p class="fragment">
         $\mathbf{x}_i$ は $K$ 個のクラスを比率
@@ -709,7 +709,7 @@
         </p>
         <div align="center">
         <table style="font-size:70%">
-        <tr><th></th> <th>体毛</th> <th>羽毛</th> <th>卵</th> <th>乳</th> <th>飛ぶ</th> <th>水棲</th> <th>肉食</th> <th>歯</th> <th>背骨</th> <th>呼吸</th> <th>毒</th> <th>ひれ</th> <th>足</th> <th>尾</th> <th>家畜化</th> <th>猫サイズ</th> </tr>
+        <tr><th></th> <th>体毛</th> <th>羽毛</th> <th>卵</th> <th>乳</th> <th>飛ぶ</th> <th>水棲</th> <th>肉食</th> <th>歯</th> <th>脊椎</th> <th>呼吸</th> <th>毒</th> <th>ひれ</th> <th>足</th> <th>尾</th> <th>家畜化</th> <th>猫サイズ</th> </tr>
         <tr><th>クラス0</th> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:black">0本</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> </tr>
         <tr><th>クラス1</th> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">Y</td> </tr>
         <tr><th>クラス2</th> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">2本</td> <td style="color:black">N</td> <td style="color:black">N</td> <td style="color:black">N</td> </tr>
@@ -765,7 +765,7 @@
         </p>
         <div align="center">
         <table style="font-size:70%">
-            <tr><th></th> <th>体毛</th> <th>羽毛</th> <th>卵</th> <th>乳</th> <th>飛ぶ</th> <th>水棲</th> <th>肉食</th> <th>歯</th> <th>背骨</th> <th>呼吸</th> <th>毒</th> <th>ひれ</th> <th>足</th> <th>尾</th> <th>家畜化</th> <th>猫サイズ</th><th> カテゴリ(予想) </th> </tr>
+            <tr><th></th> <th>体毛</th> <th>羽毛</th> <th>卵</th> <th>乳</th> <th>飛ぶ</th> <th>水棲</th> <th>肉食</th> <th>歯</th> <th>脊椎</th> <th>呼吸</th> <th>毒</th> <th>ひれ</th> <th>足</th> <th>尾</th> <th>家畜化</th> <th>猫サイズ</th><th> カテゴリ(予想) </th> </tr>
             <tr><th>クラス0</th> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:black">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td> 肉食動物(クラス9と同じ) </td></tr>
             <tr><th>クラス1</th> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:red">N</td> <td style="color:black">4本</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td style="color:black">Y</td> <td> 草食動物 </td></tr>
             <tr><th>クラス2</th> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:red">Y</td> <td style="color:red">N</td> <td style="color:black">Y</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">Y</td> <td style="color:black">N</td> <td style="color:red">N</td> <td style="color:black">6本</td> <td style="color:red">N</td> <td style="color:black">N</td> <td style="color:red">N</td> <td> 昆虫 </td> </tr>
@@ -928,12 +928,7 @@
         </p>
         <p class="fragment">
         実際に計算する時は，毎回 $\tilde{M}_{jk}$ や $\tilde{N}_{jk\ell}$ を再計算すると遅いのでその差分のみを更新しながら計算していきます.
-        </p>
-        </section>
-
-        <section>
-        <p>
-        サンプルはまだ書いていません．休憩時間に実装をします.
+        サンプル実装は<a src="prog/prog20-3.py">prog20-3.py</a>です.
         </p>
         </section>
 
