@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   inkscape:export-filename="\\euler\nineties\projects\prml-seminar\fig\part-of-speech-tagging.png"
+   inkscape:export-xdpi="119.04"
+   inkscape:export-ydpi="119.04"
+   sodipodi:docname="新規ドキュメント 1">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path4134"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="276.723"
+     inkscape:cy="577.7015"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="746"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#d5e5ff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3025"
+       width="120"
+       height="60"
+       x="-72.85714"
+       y="295.21933" />
+    <rect
+       style="fill:#d5e5ff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3025-1"
+       width="120"
+       height="60"
+       x="259.28574"
+       y="295.21933" />
+    <rect
+       style="fill:#d5e5ff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3025-1-7"
+       width="120"
+       height="60"
+       x="441.78574"
+       y="295.21933" />
+    <rect
+       style="fill:#d5e5ff;stroke:#000000;stroke-width:0.62171251000000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3025-1-7-4"
+       width="46.092571"
+       height="60.378288"
+       x="678.38232"
+       y="295.03018" />
+    <rect
+       style="fill:#d5e5ff;stroke:#000000;stroke-width:0.72696548999999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3025-1-7-4-0"
+       width="63.130177"
+       height="60.273033"
+       x="138.07777"
+       y="295.08282" />
+    <text
+       xml:space="preserve"
+       style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="-62.431938"
+       y="338.17062"
+       id="text2985"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan2987"
+         x="-62.431938"
+         y="338.17062">これ</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="277.68408"
+       y="338.17062"
+       id="text2993"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan2995"
+         x="277.68408"
+         y="338.17062">ペン</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="456.04297"
+       y="338.17062"
+       id="text2997"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan2999"
+         x="456.04297"
+         y="338.17062">です</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="693.39142"
+       y="338.17062"
+       id="text3001"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003"
+         x="693.39142"
+         y="338.17062">。</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+       x="147.57396"
+       y="338.17062"
+       id="text2989"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan2991"
+         x="147.57396"
+         y="338.17062">は</tspan></text>
+    <g
+       id="g3306"
+       transform="translate(-45.714287,0)">
+      <g
+         id="g3282">
+        <text
+           xml:space="preserve"
+           style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+           x="-35.439342"
+           y="233.11142"
+           id="text3005"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3007"
+             x="-35.439342"
+             y="233.11142">指示詞</tspan></text>
+      </g>
+      <rect
+         y="186.7491"
+         x="-54.184505"
+         height="59.797585"
+         width="174.0833"
+         id="rect3025-8"
+         style="fill:none;stroke:#000000;stroke-width:1.20241427;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       id="g3286"
+       transform="translate(-47.499992,0)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3009"
+         y="232.84004"
+         x="172.00386"
+         style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         xml:space="preserve"><tspan
+           y="232.84004"
+           x="172.00386"
+           id="tspan3011"
+           sodipodi:role="line">助詞</tspan></text>
+      <rect
+         y="186.62378"
+         x="162.83304"
+         height="60.048214"
+         width="108.61964"
+         id="rect3025-8-2"
+         style="fill:none;stroke:#000000;stroke-width:0.95178312;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       id="g3291"
+       transform="translate(-7.8571315,0)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3013"
+         y="233.20187"
+         x="281.46109"
+         style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         xml:space="preserve"><tspan
+           y="233.20187"
+           x="281.46109"
+           id="tspan3015"
+           sodipodi:role="line">名詞</tspan></text>
+      <rect
+         y="186.62378"
+         x="272.83304"
+         height="60.048214"
+         width="108.61964"
+         id="rect3025-8-2-1"
+         style="fill:none;stroke:#000000;stroke-width:0.95178312;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       id="g3296"
+       transform="translate(257.14289,0)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3021"
+         y="233.47325"
+         x="397.88028"
+         style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         xml:space="preserve"><tspan
+           y="233.47325"
+           x="397.88028"
+           id="tspan3023"
+           sodipodi:role="line">句点</tspan></text>
+      <rect
+         y="186.62378"
+         x="389.97589"
+         height="60.048214"
+         width="108.61964"
+         id="rect3025-8-2-1-7"
+         style="fill:none;stroke:#000000;stroke-width:0.95178312;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       id="g3301"
+       transform="translate(-108.21428,0)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3017"
+         y="233.20187"
+         x="541.43219"
+         style="font-size:46.31496811px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:HGGothicM;-inkscape-font-specification:HGGothicM"
+         xml:space="preserve"><tspan
+           y="233.20187"
+           x="541.43219"
+           id="tspan3019"
+           sodipodi:role="line">判定詞</tspan></text>
+      <rect
+         y="186.7491"
+         x="522.95837"
+         height="59.797585"
+         width="174.0833"
+         id="rect3025-8-1"
+         style="fill:none;stroke:#000000;stroke-width:1.20241427;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 74.285714,219.50504 39.999996,0"
+       id="path3341"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 222.85714,218.07647 42.85715,0"
+       id="path3343"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 372.85714,219.50504 40,0"
+       id="path3345"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 588.57143,219.50504 57.14286,0"
+       id="path3347"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m -17.142857,246.6479 0,48.57143"
+       id="path3349"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 168.57143,246.6479 0,47.14285"
+       id="path3351"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 318.57143,246.6479 0,47.14285"
+       id="path3353"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 505.71429,245.21933 0,48.57142"
+       id="path3355"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 701.42857,246.6479 0,48.57143"
+       id="path3357"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
