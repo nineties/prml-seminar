@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第21回 @ ナビプラス </title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第21回</h2>
+        <h3>@ナビプラス</h3>
+        <small> 中村晃一 <br> 2014年9月25日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        会場・設備の提供をしていただきました<br>
+        &#12849; ナビプラス様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 系列データ </h2>
+        </section>
+
+        <section>
+        <p>
+        テキスト第12章を一旦飛ばして、テキスト第13章「系列データ」をやります. 所謂「時系列データ解析」の話題ではなく<strong>隠れマルコフモデル(hidden markov model)</strong>の紹介が中心になります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 系列データとは </h3>
+        <p>
+        何らかの順序を持つデータの列を<strong> 系列データ (sequential data) </strong> と呼びます.
+        特に時間軸に沿って観測されるデータ列は<strong> 時系列データ (time series)</strong> と呼ばれます.
+        </p>
+        <div align="center"> <img width="600px" src="fig/sequential-data.png"> </div>
+        <p class="fragment" data-fragment-index="1">
+        例えば以下のようなものを系列データと考える事が出来ます.
+        </p>
+        <ul class="fragment" data-fragment-index="1">
+            <li> 株価の変動 </li>
+            <li> 音声データ </li>
+            <li> 文章(文字・単語の列) </li>
+            <li> ユーザーの行動履歴 </li>
+            <li> センサーデータ </li>
+        </ul>
+        </section>
+
+        <section>
+        <p>
+        これまで紹介した手法では，学習データ $\{\mathbf{x}_1,\ldots,\mathbf{x}_N\}$ がi.i.d.，つまり独立に同一の分布に従う場合を主に考えてきました.
+        この場合は
+        \[ p(\mathbf{x}_1,\ldots,\mathbf{x}_n) = \prod_{i=1}^Np(\mathbf{x}_i)=p(\mathbf{x}_1)\cdot p(\mathbf{x}_2)\cdots p(\mathbf{x}_n)\]
+        と分解できます.
+        </p>
+        <p>
+        しかし，系列データの多くではi.i.d.性を仮定出来ず，このような単純な分解は出来ません.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <h3> マルコフモデル </h3>
+        <p>
+        系列データ $\{\mathbf{x}_1,\ldots,\mathbf{x}_N\}$ において
+        \[ p(\mathbf{x}_{i}|\mathbf{x}_{i-1},\mathbf{x}_{i-2},\ldots,\mathbf{x}_1) = p(\mathbf{x}_{i}|\mathbf{x}_{i-1})\qquad (i=2,\ldots,N) \]
+        が成り立つとするモデルを<strong> 1次のマルコフモデル(first-order Markov model)</strong> と呼びます.
+        </p>
+        <p>
+        各時点のデータは一ステップ前のデータのみに依存し，それより前のデータとは独立であるとするモデルです.
+        </p>
+        <div align="center"> <img width="500px" src="fig/first-order-markov-model.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        1次のマルコフモデルの同時分布は
+        \[ \begin{aligned}
+        p(\mathbf{x}_1,\ldots,\mathbf{x}_N) &= p(\mathbf{x}_1)\prod_{i=2}^Np(\mathbf{x}_i|\mathbf{x}_{i-1}) \\
+        & =p(\mathbf{x}_1)p(\mathbf{x}_2|\mathbf{x}_1)p(\mathbf{x}_3|\mathbf{x}_2)\cdots p(\mathbf{x}_N|\mathbf{x}_{N-1}) 
+        \end{aligned} \]
+        となります.
+        </p>
+        <p class="fragment">
+        ここで， $p(\mathbf{x}_i|\mathbf{x}_{i-1})$ が全て同一の分布，つまり
+        \[ p(\mathbf{x}_i=\mathbf{x}'|\mathbf{x}_{i-1}=\mathbf{x}) = p(\mathbf{x}_2=\mathbf{x}'|\mathbf{x}_1=\mathbf{x}) \quad (i=2,\ldots,N)\]
+        が成り立つモデルを<strong>斉次マルコフモデル(homogeneous Markov model)</strong>，そうでないモデルを<strong>非斉次マルコフモデル(inhomogeneous Markov model)</strong>と呼びます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        2次，3次・・・のマルコフモデルも同様に定義されます. 例えば2次のマルコフモデルは
+        \[ \begin{aligned}
+        p(\mathbf{x}_1,\ldots,\mathbf{x}_N) &= p(\mathbf{x}_1,\mathbf{x}_2)\prod_{i=3}^Np(\mathbf{x}_i|\mathbf{x}_{i-1},\mathbf{x}_{i-2}) \\
+        &= p(\mathbf{x}_1,\mathbf{x}_2)p(\mathbf{x}_3|\mathbf{x}_1,\mathbf{x}_2)\cdots p(\mathbf{x}_N|\mathbf{x}_{N-1},\mathbf{x}_{N-2})
+        \end{aligned} \]
+        と表されます. 斉次性も同様に定義されます.
+        </p>
+        <div align="center"> <img width="500px" src="fig/second-order-markov-model.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        マルコフモデルの典型例は <strong> 自己回帰モデル (autoregressive model, ARモデル)</strong> で, 現時点の値は過去 $p$ 時点の値の線形和+ホワイトノイズ(正規ノイズ)であるとするものです.
+        \[ x_{i} = a_1x_{i-1} + \cdots + a_px_{i-p} + a_0 + \varepsilon_i \qquad \varepsilon_i \sim N(0,\sigma^2) \]
+        これは $p$ 次の(斉次)自己回帰モデルと呼ばれ $\mathrm{AR}(p)$ などと書かれます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        他には <strong> 移動平均モデル (moving average model, MAモデル) </strong> というものも有名です. これは現時点の値は過去 $q$ 時点のホワイトノイズの線形和+現時点のホワイトノイズであるとするものです.
+        \[ x_{i} = b_1\varepsilon_{i-1}+\cdots + b_q\varepsilon_{i-q}+b_0 + \varepsilon_i \qquad \varepsilon_i \sim N(0,\sigma^2) \]
+        これは $\mathrm{MA}(q)$ などと書かれます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        時系列のモデルにはその他ARとMAを組み合わせた <strong> 自己回帰移動平均モデル (ARMAモデル)</strong> や，更に和分という操作を入れた <strong> 自己回帰和分移動平均モデル (ARIMAモデル)</strong>，周期性を取り入れた <strong> 季節性自己回帰和分移動平均モデル (SARIMAモデル) </strong> など様々な物があります.
+        </p>
+        <p>
+        テキストではあまり詳しく説明がありませんので，これらに興味がありましたら他の書籍をあたって下さい.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 隠れマルコフモデル </h2>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        下のグラフィカルモデルの様に，観測変数 $\mathbf{x}_i$ 毎に隠れ変数 $\mathbf{z}_i$ を割り当て，隠れ変数がマルコフ過程に従うとするモデルを(広い意味での)<strong> 隠れマルコフモデル (hidden Markov model, HMMモデル)</strong> と呼びます. 一般に隠れマルコフモデルと言った場合には隠れ変数がカテゴリカル変数である物を指します.
+        </p>
+        <div align="center"> <img width="500px" src="fig/hmm.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        隠れマルコフモデルでモデル化出来る事例を紹介します.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        典型的な例は単語列に対する品詞タグ付けです. 観測変数 $x_i$ は各単語で，隠れ変数 $z_i$ が品詞タグとなります.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="700px" src="fig/part-of-speech-tagging.png"> </div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        音声認識の場合 $\mathbf{x}_i$ は音声データであり，隠れ変数 $z_i$ は発声されている音声を表すタグとなります.
+        </p>
+        <p>
+        (実際には $\mathbf{x}_i$ は下図のようなものではなく周波数領域に変換したもの，$z_i$ は「あいうえお」より更に細かい音の単位を使うと思います.多分.)
+        </p>
+        <div align="center"> <img width="700px" src="fig/aiueo.png"> </div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        以下はある人の <a href="http://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer">腰に付けた加速度計</a> の約50分間のデータ(キャリブレーションなし)です. このようなセンサーデータから行動を判定するという問題は，Activity recognitionと呼ばれます.
+        </p>
+        <p>
+        加速度計の値を観測変数 $\mathbf{x}_i$，その時の行動ラベルを $z_i$ としてHMMでモデル化出来そうです. (以下の論文では別の方法を使っています.)
+        </p>
+        <div align="center"> <img width="800px" src="fig/chest-mounted-accelerator.png"> <a href="prog/prog21-1.py" style="font-size:60%">prog21-1.py</a> </div>
+        <p style="font-size:60%">
+        Casale, P. Pujol, O. and Radeva, P.  'Personalization and user verification in wearable systems using biometric walking patterns' Personal and Ubiquitous Computing, 16(5), 563-580, 2012
+        </p>
+        </section>
+
+        <section>
+        <p>
+        今例に挙げた様な問題では主に隠れ変数を特定する事に興味があります. この様な問題は一般に<strong> 系列ラベリング (sequence labelling) </strong> と呼ばれます.
+        </p>
+        <p>
+        隠れマルコフモデルと言った場合，多くの場合は「ラベルが未知」の場合を指すと思います. しかし，系列ラベリングの問題ではラベルが教えられた状況での学習も良く行われ，その時も隠れマルコフモデルと呼ぶ場合があります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        以下は<a href="http://archive.ics.uci.edu/ml/datasets/UJI+Pen+Characters"> 手書き文字のストローク </a> のデータ例です. 以前やったようなピクセル単位のデータと異なり，
+        \[ (557, 844) \rightarrow (550, 803) \rightarrow (550, 803) \rightarrow \cdots \]
+        の様な座標列からなるデータとなります.
+        </p>
+        <p>
+        このようなデータは「今，文字のどのあたりを描いているのか？」を表すラベルを隠れ変数として教師なし学習をするモデル化する事が出来ます.
+        </p>
+        <div align="center"> <img width="500px" src="prog/UJI-0.png"> <a href="prog/prog21-2.py" style="font-size:60%">prog21-2.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        隠れ変数を持たない1次のマルコフモデルでは $\mathbf{x}_{i}$ が観測されると $\mathbf{x}_{i-1}$ と $\mathbf{x}_{i+1}$ が独立になります. 高次のマルコフモデルでも，やはりある程度離れた観測データ同士の間に条件付き独立性が存在します.
+        </p>
+        <div align="center"> <img width="700px" src="fig/dependency-property-of-markov-model1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        一方，隠れ変数を持つマルコフモデルでは隠れ変数の系列を通るパスが存在するので遠く離れた $\mathbf{x}_i$ と $\mathbf{x}_j$ も従属となります.
+        </p>
+        <div align="center"> <img width="700px" src="fig/dependency-property-of-markov-model2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        離れた $\mathbf{x}_i$ と $\mathbf{x}_j$ の関係をマルコフモデルで表現したければ，
+        </p>
+        <ul>
+            <li> 高次のマルコフモデルを使う </li>
+            <li> 隠れ変数を持つマルコフモデルを使う </li>
+        </ul>
+        <p>
+        という2通りの方法がありますが，前者では次数が高くなるほどパラメータの数が増え計算量が増大してしまいます.
+        </p>
+        <p>
+        隠れマルコフモデルではモデルの複雑さを抑えつつ，離れた観測データ間の関係を表現する事が出来ます.
+        </p>
+        <p>
+        また，間隔の伸び縮みする様な系列データ列に対しても隠れマルコフモデルは有効です.
+        </p>
+        </section>
+
+        <section>
+        <h3> HMMのパラメータ </h3>
+        <p>
+        HMMに従う観測データ $\mathbf{x}=\{\mathbf{x}_i\}$, 隠れ変数 $\mathbf{z}=\{\mathbf{z}_i\}$ の同時分布は
+        \[ p(\mathbf{x},\mathbf{z}) = \left\{p(\mathbf{z}_1)\prod_{i=2}^Np(\mathbf{z}_{i}|\mathbf{z}_{i-1})\right\}\left\{\prod_{i=1}^Np(\mathbf{x}_i|\mathbf{z}_i)\right\} \]
+        となります.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        従って斉次モデルならば, 以下の三種類のパラメータが必要となります.
+        </p>
+        <ul class="fragment" data-fragment-index="1">
+            <li> $p(\mathbf{z}_1)$ を記述するパラメータ $\boldsymbol{\pi}$ </li>
+            <li> $p(\mathbf{z}_{i}|\mathbf{z}_{i-1})$ を記述するパラメータ $\mathbf{A}$ </li>
+            <li> $p(\mathbf{x}_i|\mathbf{z}_i)$ を記述するパラメータ $\boldsymbol{\phi}$ </li>
+        </ul>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        隠れ変数 $\mathbf{z}_i$ は <strong> 状態 (state) </strong> と解釈する事ができます. 隠れた状態があり，それに基いて観測データが生成されるという考え方です. この意味で <strong> 状態空間モデル (state space model) </strong> と呼ばれる場合もあります.
+        </p>
+        <p class="fragment">
+        $p(\mathbf{z}_1)$ は初期状態の分布です. 状態数が $K$ のHMMの場合は $\sum_{k=1}^K\pi_k = 1$ を満たすパラメータ $\boldsymbol{\pi}$ を用いて
+        \[ p(z_1 = k) = \pi_k \]
+        と書く事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        \[ p(\mathbf{z}_i | \mathbf{z}_{i-1}) \]
+        は状態 $\mathbf{z}_{i-1}$ から 状態 $\mathbf{z}_{i}$ への<strong> 遷移確率 (transition probability)</strong>です.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        状態数 $K$ のHMMの場合は $K\times K$ 行列を用いて
+        \[ p(z_i = k | z_{i-1} = j) = A_{jk} \]
+        と表す事が出来ます. この $\mathbf{A}$ を<strong> 遷移行列 (transition matrix) </strong> と呼びます.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        $\mathbf{A}$ は
+        \[ \sum_{k=1}^KA_{jk} = 1 \qquad (j=1,\ldots,K) \]
+        を満たす必要があります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        以下が隠れ変数の状態遷移図の例と，対応する遷移行列です.
+        </p>
+        <div align="center"> <img width="700px" src="fig/state-space.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        \[ p(\mathbf{x}_i | \mathbf{z}_i) \]
+        は隠れ状態と観測値の関係を表しており，<strong> emission probability </strong> と呼ばれます.
+        </p>
+        <p class="fragment">
+        $ p(\mathbf{x}_i | \mathbf{z}_i) $ はどのような分布も考える事が出来ます. HMMの場合は $z_i = k$ の場合の分布のパラメータを $\boldsymbol{\phi}_k$ とすれば
+        \[ p(\mathbf{x}_i | z_i = k) = p(\mathbf{x}_i | \boldsymbol{\phi}_k) \]
+        という事になります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        まとめると，HMMは以下のように記述されます.
+        </p>
+        <div class="block" style="border-color:blue">
+        <h4 style="color:blue"> 隠れマルコフモデル </h4>
+        <p>
+        隠れ状態数を $K$ とする隠れマルコフモデルは
+        \[ \begin{aligned}
+        \text{(初期状態の分布)} & \quad p(z_1 = k) = \pi_k \\
+        \text{(遷移確率)}       & \quad p(z_i=k|z_{i-1}=j) = A_{jk} \\
+        \text{(emission確率)}   & \quad p(\mathbf{x}_i|z_k) = p(\mathbf{x}_i|\boldsymbol{\phi}_k)
+        \end{aligned} \]
+        で記述され，その同時分布は
+        \[ p(\mathbf{x},\mathbf{z}|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \left\{\pi_{z_1} \prod_{i=2}^N A_{z_{i},z_{i-1}}\right\}\left\{\prod_{i=1}^Np(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\} \]
+        となる.
+        </p>
+        </div>
+        </section>
+
+        <section style="font-size:90%">
+        <h3> HMMの学習(ラベルが隠れていない場合) </h3>
+        <p>
+        PRMLでは続いて状態(ラベル)が隠れている場合の学習に進みますが，まずは簡単なラベルが与えられている状況での学習を先に紹介します. 隠れてないのでHMMという呼び方は妥当じゃないと思うのですが，HMMと呼ぶ事にします.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        学習データを $D= \{(\mathbf{x}^{(1)},\mathbf{z}^{(1)}),\ldots, (\mathbf{x}^{(N)},\mathbf{z}^{(N)})\}$ とおきます. 第 $i$ 番目のデータ列の長さを $N_i$ とします. すると，尤度は
+        \[ p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \prod_{i=1}^N\left[ \left\{\pi_{z^{(i)}_1} \prod_{l=2}^{N_i} A_{z^{(i)}_{j},z^{(i)}_{j-1}}\right\}\left\{\prod_{j=1}^{N_i}p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right\}\right] \]
+        となりますので，
+        \[ \log p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \sum_{i=1}^N\left[\log \pi_{z^{(i)}_1} + \sum_{l=2}^{N_i} \log A_{z^{(i)}_{j},z^{(i)}_{j-1}} + \sum_{j=1}^{N_i}\log p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right] \]
+        の最大化を行えば良いです.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        ただし，$\boldsymbol{\pi},\mathbf{A}$ には制約条件が付くのでラグランジュの未定乗数を導入し
+        \[ \begin{aligned}
+        \log p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) &= \sum_{i=1}^N\left[\log \pi_{z^{(i)}_1} + \sum_{l=2}^{N_i} \log A_{z^{(i)}_{j},z^{(i)}_{j-1}} + \sum_{j=1}^{N_i}\log p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right] \\
+        & - \alpha (\sum_{k=1}^K \pi_k - 1) - \sum_{j=1}^K\beta_j (\sum_{k=1}^K A_{jk} - 1) 
+        \end{aligned} \]
+        の極値問題を解く必要があります.
+        </p>
+        <p>
+        難しく見えますが， $\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}$ を含む項は別々になっているので微分計算は非常に単純です.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        これは簡単に解くことが出来ます. まず $\boldsymbol{\pi}$ で微分すると
+        \[ \frac{\partial}{\partial \pi_k}\log p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \sum_{i=1}^N\frac{[z_1^{(i)}=k]}{\pi_k} - \alpha \]
+        となります. ただし $[z_1^{(i)} = k]$ は中が真ならば $1$, そうでなければ $0$ とします.
+        </p>
+        <p class="fragment">
+        これが $0$ になれば良いので
+        \[ \pi_k = \frac{1}{\alpha}\sum_{i=1}^N[z_1^{(1)}=k] \]
+        となります. これと $\sum_{k=1}^K \pi_k = 1$ を合わせて
+        \[ \pi_k = \frac{1}{N}\sum_{i=1}^N[z_1^{(1)}=k] = \frac{\text{(初期状態が $k$ であるデータ数)}}{\text{(全データ数)}} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        全く同様にして
+        \[ \begin{aligned}
+        A_{jk} &= \frac{\sum_{i=1}^N\sum_{\ell=1}^{N_i-1}[z^{(i)}_\ell=j][z^{(i)}_{\ell+1}=k]}{\sum_{i=1}^N\sum_{\ell=1}^{N_i-1} [z^{(i)}_\ell = j]}\\
+        &= \frac{\text{(状態 $j$ から $k$ へ遷移した回数)}}{\text{((最後を除き)状態 $j$ になった回数)}} 
+        \end{aligned} \]
+        となります. 
+        </p>
+        <p class="fragment">
+        emission確率 $p(\mathbf{x}_i|z_i)$ のパラメータ $\boldsymbol{\phi}_k$ の最尤推定値の計算方法は分布の種類によって変わりますが，普通の最尤法の計算を行えば良いです.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <h3> HMMの学習(ラベルが隠れている場合) </h3>
+        <p>
+        本題のラベルが隠れている場合の学習に進みます. この場合はこれまでにやりましたEM法や変分ベイズやランダムサンプリングなどを使う事になります.
+        </p>
+        <p>
+        HMM(隠れ状態がカテゴリカル)の場合は汎用的なEM法のアルゴリズムを導く事が出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}$ を全て合わせて $\boldsymbol{\theta}$ と書く事にします.
+        </p>
+        <p class="fragment">
+        EM法を復習すると，$\boldsymbol{\theta}$ を適当に初期化し $\mathcal{Q}$ 関数
+        \[ \mathcal{Q}(\boldsymbol{\theta},\boldsymbol{\theta}^{\mathrm{old}}) = \sum_{\mathbf{z}} p(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}^{\mathrm{old}})\log p(\mathbf{x},\mathbf{z}|\boldsymbol{\theta}) \]
+        が最大となるような $\boldsymbol{\theta}$ にそれを更新するという事を繰り返せば良いのでした.
+        </p>
+        <p class="fragment">
+        以下
+        \[ \begin{aligned}
+        \gamma_{ik} &= p(z_i =k | \mathbf{x},\boldsymbol{\theta}^{\mathrm{old}}) \\
+        \xi_{ijk} &= p(z_{i-1}=j,z_i=k|\mathbf{x},\boldsymbol{\theta}^{\mathrm{old}})
+        \end{aligned} \]
+        とおきます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        すると， $\mathcal{Q}$ 関数は以下のようになります.
+        \[ \begin{aligned}
+        \mathcal{Q}(\boldsymbol{\theta},\boldsymbol{\theta}^{\mathrm{old}}) &= \sum_{k=1}^K \gamma_{1k}\log \pi_k + \sum_{i=1}^N\sum_{j=1}^K\sum_{k=1}^K\xi_{ijk}\log A_{jk} \\
+        &+ \sum_{i=1}^N\sum_{k=1}^K\gamma_{ik}\log p(\mathbf{x}_i|\boldsymbol{\phi}_k)
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        EM法のM stepでは $\gamma,\xi$ を固定した上でこれが最大となる $\boldsymbol{\theta}$ を求めます. 先ほどのラベルが与えられている場合と全く同様にラグランジュの未定乗数法を用いて計算を行うと
+        \[ \begin{aligned}
+        \pi_k &= \frac{\gamma_{1k}}{\sum_{k=1}^K\gamma_{1k}} \\
+        A_{jk} &= \frac{\sum_{i=2}^N \xi_{ijk}}{\sum_{i=1}^N\sum_{k=1}^K \xi_{ijk}}
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $\boldsymbol{\phi}_k$ の更新式はemission確率 $p(\mathbf{x}_i|\boldsymbol{\phi}_k)$ のモデルに依存しますが，
+        \[ \begin{aligned}
+        \mathcal{Q}(\boldsymbol{\theta},\boldsymbol{\theta}^{\mathrm{old}}) &= \sum_{k=1}^K \gamma_{1k}\log \pi_k + \sum_{i=1}^N\sum_{j=1}^K\sum_{k=1}^K\xi_{ijk}\log A_{jk} \\
+        &+ \sum_{i=1}^N\sum_{k=1}^K\gamma_{ik}\log p(\mathbf{x}_i|\boldsymbol{\phi}_k)
+        \end{aligned} \]
+        の一番最後の項しか $\boldsymbol{\phi}_k$ に依存しないので，
+        \[ \begin{aligned}
+        \mathcal{Q}(\boldsymbol{\theta},\boldsymbol{\theta}^{\mathrm{old}}) & = \sum_{i=1}^N\sum_{k=1}^K\gamma_{ik}\log p(\mathbf{x}_i|\boldsymbol{\phi}_k) + \mathrm{const}.
+        \end{aligned} \]
+        の最大化を行えば良いです. これは第19回にやったのと全く同じ形になっているので，更新式も同じです.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        例えば $p(\mathbf{x}_i|\boldsymbol{\phi}_k)$ が正規分布
+        \[ p(\mathbf{x}_i|\boldsymbol{\phi}_k) = \mathcal{N}(\mathbf{x}_i | \boldsymbol{\mu}_k,\boldsymbol{\Sigma}_k) \]
+        ならば, 更新式は
+        \[ \begin{aligned}
+        \boldsymbol{\mu}_k &= \frac{\sum_{i=1}^N \gamma_{ik}\mathbf{x}_i}{\sum_{i=1}^N\gamma_{ik}} \\
+        \boldsymbol{\Sigma}_k &= \frac{\sum_{i=1}^N \gamma_{ik}(\mathbf{x}_i-\boldsymbol{\mu}_k)(\mathbf{x}_i-\boldsymbol{\mu}_k)^T}{\sum_{i=1}^N \gamma_{ik}} 
+        \end{aligned} \]
+        という事になります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        続いてE stepで行う $\gamma_{ik}$ と $\xi_{ijk}$ の学習です. こちらを効率よく計算する為には <strong> 前向き後ろ向きアルゴリズム (forward backward algorithm)</strong> という動的計画法に基づくアルゴリズムを使います.
+        </p>
+        <p class="fragment">
+        まず $\gamma_{ik}$ を求める為には
+        \[ \gamma_{i} = p(z_i|\mathbf{x}) = \frac{p(\mathbf{x}|z_i)p(z_i)}{p(\mathbf{x})} \]
+        より $\boldsymbol{\theta}^{\mathrm{old}}$ を使って $p(\mathbf{x}|z_i)$ を計算する事が出来れば良いです.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        ここで $z_i$ の値が定まると， $i$ より過去と未来が独立になります.
+        </p>
+        <div align="center"> <img width="500px" src="fig/forward-backward.png"> </div>
+        <p class="fragment">
+        つまり
+        \[ p(\mathbf{x}|z_i) = p(\mathbf{x}_1,\ldots,\mathbf{x}_i|z_i)p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N|z_i) \]
+        という分解が出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        すると,
+        \[ p(\mathbf{x}_1,\ldots,\mathbf{x}_i|z_i)p(z_i) = p(\mathbf{x}_1,\ldots,\mathbf{x}_i,z_i) \]
+        である事を使えば
+        \[ \gamma_{ik} = p(z_i|\mathbf{x}) = \frac{p(\mathbf{x}_1,\ldots,\mathbf{x}_i,z_i)p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N|z_i)}{p(\mathbf{x})} \]
+        となります.
+        </p>
+        <p class="fragment">
+        そこで
+        \[ \begin{aligned}
+        \alpha(z_i) &= p(\mathbf{x}_1,\ldots,\mathbf{x}_i,z_i) \\
+        \beta(z_i)  &= p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N|z_i)
+        \end{aligned} \]
+        とおきましょう.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        $\alpha$ は以下の漸化式を満たします.
+        \[ \begin{aligned}
+        \alpha(z_i) &= p(\mathbf{x}_1,\ldots,\mathbf{x}_i,z_i)  \\
+        &= p(\mathbf{x}_1,\ldots,\mathbf{x}_i|z_i) p(z_i) \\
+        &= p(\mathbf{x}_i|z_i)p(\mathbf{x}_1,\ldots,\mathbf{x}_{i-1}|z_i)p(z_i) \\
+        &= p(\mathbf{x}_i|z_i)p(\mathbf{x}_1,\ldots,\mathbf{x}_{i-1}, z_i) \\
+        &= p(\mathbf{x}_i|z_i)\sum_{z_{i-1}}p(\mathbf{x}_1,\ldots,\mathbf{x}_{i-1}, z_i, z_{i-1}) \\
+        &= p(\mathbf{x}_i|z_i)\sum_{z_{i-1}}p(\mathbf{x}_1,\ldots,\mathbf{x}_{i-1}, z_i|z_{i-1})p(z_{i-1}) \\
+        &= p(\mathbf{x}_i|z_i)\sum_{z_{i-1}}p(\mathbf{x}_1,\ldots,\mathbf{x}_{i-1}|z_{i-1})p(z_i|z_{i-1})p(z_{i-1}) \\
+        &= p(\mathbf{x}_i|z_i)\sum_{z_{i-1}}p(\mathbf{x}_1,\ldots,\mathbf{x}_{i-1},z_{i-1})p(z_i|z_{i-1}) \\
+        &= p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\sum_{z_{i-1}}\alpha(z_{i-1})A_{z_{i-1},z_i} \\
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        また，初期値は
+        \[ \alpha(z_1) = p(\mathbf{x}_1|z_1)p(z_1) = p(\mathbf{x}_1|\boldsymbol{\phi}_{z_1})\pi_{z_1} \]
+        となります.
+        </p>
+        <p class="fragment">
+        以上が前向き後ろ向きアルゴリズムにおける「前向き」の部分の計算です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        $\beta$ は以下の漸化式を満たします.
+        \[ \begin{aligned}
+        \beta(z_i) &= p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N|z_i) \\
+        &= \sum_{z_{i+1}} p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N,z_{i+1} |z_i) \\
+        &= \sum_{z_{i+1}} p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N|z_{i+1},z_i)p(z_{i+1} |z_i) \\
+        &= \sum_{z_{i+1}} p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N|z_{i+1})p(z_{i+1} |z_i) \\
+        &= \sum_{z_{i+1}} p(\mathbf{x}_{i+2},\ldots,\mathbf{x}_N|z_{i+1})p(\mathbf{x}_{i+1}|z_{i+1})p(z_{i+1} |z_i) \\
+        &= \sum_{z_{i+1}} \beta(z_{i+1})p(\mathbf{x}_{i+1}|\boldsymbol{\phi}_{z_{i+1}})A_{z_i,z_{i+1}}
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        こちらの初期値ですが，ステップ $N$ 以降の値は存在しないので $\beta(z_N) = 1$ とおく事になります.
+        </p>
+        <p class="fragment">
+        以上が前向き後ろ向きアルゴリズムにおける「後ろ向き」の部分の計算です.
+        </p>
+        <p class="fragment">
+        また $p(\mathbf{x})$ の計算が残っていますがこれは
+        \[ p(\mathbf{x}) = \sum_{z_N} p(\mathbf{x}_1,\ldots,\mathbf{x}_N,z_N) = \sum_{z_N}\alpha(z_N) \]
+        として計算する事が出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        続いて $\xi_{ijk}$ の更新式ですが，先ほどと同様に条件付き独立性に注意して式を変形していくと
+        \[ \begin{aligned}
+        \xi_{i} &= p(z_{i-1},z_i|\mathbf{x}) \\
+        &= \frac{p(\mathbf{x}|z_{i-1},z_i)p(z_{i-1},z_i)}{p(\mathbf{x})} \\
+        &= \frac{p(\mathbf{x}_1,\ldots,\mathbf{x}_{i-1}|z_{i-1})p(\mathbf{x}_i|z_i)p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_{N}|z_i)p(z_i|z_{i-1})p(z_{i-1})}{p(\mathbf{x})} \\
+        &= \frac{\alpha(z_{i-1})\beta(z_{i})p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})A_{z_{i-1},z_i}}{p(\mathbf{x})}
+        \end{aligned} \]
+        となり，既に計算した $\alpha,\beta$ を用いて求める事が出来ます.
+        </p>
+        </section>
+
+        </div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>
