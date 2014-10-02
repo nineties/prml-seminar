@@ -12,7 +12,7 @@ def read_traj_data(person, char):
     traj = [[], []]
     f = open('UJI/UJIpenchars-w%02d' % person)
     # .SEGMENT CHARACTER ... という行を見つける
-    pat = re.compile('.SEGMENT CHARACTER \d+ \? "%s"' % char)
+    pat = re.compile('.SEGMENT CHARACTER[^?]*\? "%s"' % char)
     cnt = 0
     while True:
         line = f.readline()
@@ -32,12 +32,10 @@ def read_traj_data(person, char):
     f.close()
     return traj
 
-# 11人分布の'a'の手書きデータを読み出す
+# 11人分布の'2'の手書きデータを読み出す
 data = []
 for person in range(1, 11+1):
-    data += read_traj_data(person, 'a')
-
-print data[0]
+    data += read_traj_data(person, '2')
 
 # 出力
 for i in range(22):

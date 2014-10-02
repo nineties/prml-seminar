@@ -271,10 +271,10 @@
 
         <section style="font-size:80%">
         <p>
-        以下はある人の <a href="http://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer">腰に付けた加速度計</a> の約50分間のデータ(キャリブレーションなし)です. このようなセンサーデータから行動を判定するという問題は，Activity recognitionと呼ばれます.
+        以下はある人の <a href="http://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer">腰に付けた加速度計</a> の約50分間のデータ(ただしキャリブレーションなし)です. このようなセンサーデータから行動を判定するという問題は，Activity recognitionと呼ばれます.
         </p>
         <p>
-        加速度計の値を観測変数 $\mathbf{x}_i$，その時の行動ラベルを $z_i$ としてHMMでモデル化出来そうです. (以下の論文では別の方法を使っています.)
+        加速度データを観測変数 $\mathbf{x}_i$，その時の行動ラベルを $z_i$ としてHMMでモデル化出来そうです. (以下の論文では別の方法を使っています.)
         </p>
         <div align="center"> <img width="800px" src="fig/chest-mounted-accelerator.png"> <a href="prog/prog21-1.py" style="font-size:60%">prog21-1.py</a> </div>
         <p style="font-size:60%">
@@ -414,7 +414,7 @@
         \text{(emission確率)}   & \quad p(\mathbf{x}_i|z_k) = p(\mathbf{x}_i|\boldsymbol{\phi}_k)
         \end{aligned} \]
         で記述され，その同時分布は
-        \[ p(\mathbf{x},\mathbf{z}|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \left\{\pi_{z_1} \prod_{i=2}^N A_{z_{i},z_{i-1}}\right\}\left\{\prod_{i=1}^Np(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\} \]
+        \[ p(\mathbf{x},\mathbf{z}|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \left\{\pi_{z_1} \prod_{i=2}^N A_{z_{i-1},z_{i}}\right\}\left\{\prod_{i=1}^Np(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\} \]
         となる.
         </p>
         </div>
@@ -430,9 +430,9 @@
         <section style="font-size:90%">
         <p>
         学習データを $D= \{(\mathbf{x}^{(1)},\mathbf{z}^{(1)}),\ldots, (\mathbf{x}^{(N)},\mathbf{z}^{(N)})\}$ とおきます. 第 $i$ 番目のデータ列の長さを $N_i$ とします. すると，尤度は
-        \[ p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \prod_{i=1}^N\left[ \left\{\pi_{z^{(i)}_1} \prod_{l=2}^{N_i} A_{z^{(i)}_{j},z^{(i)}_{j-1}}\right\}\left\{\prod_{j=1}^{N_i}p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right\}\right] \]
+        \[ p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \prod_{i=1}^N\left[ \left\{\pi_{z^{(i)}_1} \prod_{l=2}^{N_i} A_{z^{(i)}_{j-1},z^{(i)}_{j}}\right\}\left\{\prod_{j=1}^{N_i}p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right\}\right] \]
         となりますので，
-        \[ \log p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \sum_{i=1}^N\left[\log \pi_{z^{(i)}_1} + \sum_{l=2}^{N_i} \log A_{z^{(i)}_{j},z^{(i)}_{j-1}} + \sum_{j=1}^{N_i}\log p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right] \]
+        \[ \log p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \sum_{i=1}^N\left[\log \pi_{z^{(i)}_1} + \sum_{l=2}^{N_i} \log A_{z^{(i)}_{j-1},z^{(i)}_{j}} + \sum_{j=1}^{N_i}\log p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right] \]
         の最大化を行えば良いです.
         </p>
         </section>
@@ -441,7 +441,7 @@
         <p>
         ただし，$\boldsymbol{\pi},\mathbf{A}$ には制約条件が付くのでラグランジュの未定乗数を導入し
         \[ \begin{aligned}
-        \log p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) &= \sum_{i=1}^N\left[\log \pi_{z^{(i)}_1} + \sum_{l=2}^{N_i} \log A_{z^{(i)}_{j},z^{(i)}_{j-1}} + \sum_{j=1}^{N_i}\log p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right] \\
+        \log p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) &= \sum_{i=1}^N\left[\log \pi_{z^{(i)}_1} + \sum_{l=2}^{N_i} \log A_{z^{(i)}_{j-1},z^{(i)}_{j}} + \sum_{j=1}^{N_i}\log p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})\right] \\
         & - \alpha (\sum_{k=1}^K \pi_k - 1) - \sum_{j=1}^K\beta_j (\sum_{k=1}^K A_{jk} - 1) 
         \end{aligned} \]
         の極値問題を解く必要があります.
@@ -459,9 +459,9 @@
         </p>
         <p class="fragment">
         これが $0$ になれば良いので
-        \[ \pi_k = \frac{1}{\alpha}\sum_{i=1}^N[z_1^{(1)}=k] \]
+        \[ \pi_k = \frac{1}{\alpha}\sum_{i=1}^N[z_1^{(i)}=k] \]
         となります. これと $\sum_{k=1}^K \pi_k = 1$ を合わせて
-        \[ \pi_k = \frac{1}{N}\sum_{i=1}^N[z_1^{(1)}=k] = \frac{\text{(初期状態が $k$ であるデータ数)}}{\text{(全データ数)}} \]
+        \[ \pi_k = \frac{1}{N}\sum_{i=1}^N[z_1^{(i)}=k] = \frac{\text{(初期状態が $k$ である系列数)}}{\text{(全系列数)}} \]
         となります.
         </p>
         </section>
@@ -475,18 +475,76 @@
         \end{aligned} \]
         となります. 
         </p>
-        <p class="fragment">
-        emission確率 $p(\mathbf{x}_i|z_i)$ のパラメータ $\boldsymbol{\phi}_k$ の最尤推定値の計算方法は分布の種類によって変わりますが，普通の最尤法の計算を行えば良いです.
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        emission確率のパラメータ $\boldsymbol{\phi}_k$ ですが， $\boldsymbol{\phi}$ に依存する項だけ取り出すと
+        \[ \begin{aligned}
+        \log p(D|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) &= \sum_{i=1}^N\sum_{j=1}^{N_i}\log p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{z^{(i)}_j})+\mathrm{const}. \\
+        &= \sum_{k=1}^K\sum_{i=1}^N\sum_{j=1}^{N_i}[z^{(i)}_j=k]\log p(\mathbf{x}^{(i)}_j|\boldsymbol{\phi}_{k}) + \mathrm{const}.\\
+        &= \sum_{k=1}^K(\text{ラベルが $k$ の観測データの対数尤度の和}) + \mathrm{const}.
+        \end{aligned} \]
+        となりますので，各ラベル毎に観測データを分けて通常の最尤法の計算を行えば良いです.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        先ほどの加速度センサの例を使ってサンプルプログラム(<a href="prog/prog21-3.py">prog21-3.py</a>)を書いてみました. このデータセットには11人分のデータが入っています. これからパラメータ $\boldsymbol{\pi}, \mathbf{A}, \boldsymbol{\phi}$ を学習する事が目標です.
+        </p>
+        <div align="center"> <img width="800px" src="fig/chest-mounted-accelerator.png"> </div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        【データセットの注意】<br>
+        公開されているデータは以下の図のように一部の被験者の教師ラベルが明らかにずれていました. このズレは手作業で測って修正する事にしました. また，測定開始時直後にセンサの取り付けの際の大きなノイズが見られますので，最初の10秒ほどは学習データから削りました.
+        </p>
+        <div align="center"> <img width="800px" src="prog/prog21-1-1.png"> </div>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        【学習データの前処理】<br>
+        加速度センサのデータには人の動きに起因する加速度と重力に起因する加速度が混ざっており，後者はセンサーの取り付け位置や身長などで微妙に変わりますので除去する必要があります. また，センサーの取り付け角度や姿勢の影響を除去する為に加速度のノルムだけを考える事にします. また元データのサンプリングレート52Hzは高すぎるので1Hzまで減らしました. すると下図のような系列データが得られます. 詳しい処理内容はプログラムのコメントに書いてあります.
+        </p>
+        <div align="center"> <img width="800px" src="prog/prog21-3-1.png"> <a href="prog/prog21-3.py" style="font-size:60%">prog21-3.py</a> </div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        以下が状態遷移の様子です. このデータセットは全員が大体同じシナリオでやるみたいで, あまりおもしろくありませんでした. コンピュータで仕事をしている所から開始し，歩いたり階段の昇り降りをした後，人と立ち話をして終わるという流れの様です.
+        </p>
+        <p>
+        基本的には同じ状態にとどまり続ける確率が高い事，異なる動作と動作の間には必ずstandingが入る事などの特徴が学習されています.
+        </p>
+        <div align="center"> <img width="900px" src="prog/prog21-3-trans.png"> </div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        以下はemission分布の学習結果です. 分布の種類はガンマ分布としました. 前処理が正しければ，横軸は動加速度のノルムの二乗になっているはずです. スケーリング調整はしてません.
+        </p>
+        <p>
+        working at computer → standing → talking while standing → … → walking と順に加速度が大きくなる傾向がある事が分かります.
+        </p>
+        <div align="center"> <img width="500px" src="prog/prog21-3-2.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        パラメータ学習が完了したら，次はそれを使って新しい系列データに対するラベリングなどを行いたいですが，その為のアルゴリズムの紹介は次回にまわします.
         </p>
         </section>
 
         <section style="font-size:90%">
         <h3> HMMの学習(ラベルが隠れている場合) </h3>
         <p>
-        本題のラベルが隠れている場合の学習に進みます. この場合はこれまでにやりましたEM法や変分ベイズやランダムサンプリングなどを使う事になります.
+        本題のラベルが隠れている場合の学習に進みます. 隠れ変数がありますのでEM法や変分ベイズやランダムサンプリングを使う事になります.
         </p>
         <p>
-        HMM(隠れ状態がカテゴリカル)の場合は汎用的なEM法のアルゴリズムを導く事が出来ます.
+        以下，HMM(隠れ状態がカテゴリカル)の場合の汎用的なEM法のアルゴリズムの導出を行います.
         </p>
         </section>
 
@@ -500,7 +558,7 @@
         が最大となるような $\boldsymbol{\theta}$ にそれを更新するという事を繰り返せば良いのでした.
         </p>
         <p class="fragment">
-        以下
+        簡単の為, 系列データが一本の場合を考え
         \[ \begin{aligned}
         \gamma_{ik} &= p(z_i =k | \mathbf{x},\boldsymbol{\theta}^{\mathrm{old}}) \\
         \xi_{ijk} &= p(z_{i-1}=j,z_i=k|\mathbf{x},\boldsymbol{\theta}^{\mathrm{old}})
@@ -524,7 +582,7 @@
         EM法のM stepでは $\gamma,\xi$ を固定した上でこれが最大となる $\boldsymbol{\theta}$ を求めます. 先ほどのラベルが与えられている場合と全く同様にラグランジュの未定乗数法を用いて計算を行うと
         \[ \begin{aligned}
         \pi_k &= \frac{\gamma_{1k}}{\sum_{k=1}^K\gamma_{1k}} \\
-        A_{jk} &= \frac{\sum_{i=2}^N \xi_{ijk}}{\sum_{i=1}^N\sum_{k=1}^K \xi_{ijk}}
+        A_{jk} &= \frac{\sum_{i=2}^N \xi_{ijk}}{\sum_{i=2}^N\sum_{k=1}^K \xi_{ijk}}
         \end{aligned} \]
         となります.
         </p>
@@ -601,7 +659,7 @@
 
         <section style="font-size:80%">
         <p>
-        $\alpha$ は以下の漸化式を満たします.
+        条件付き独立性に注意して変形していくと，$\alpha$ の漸化式を導く事が出来ます.
         \[ \begin{aligned}
         \alpha(z_i) &= p(\mathbf{x}_1,\ldots,\mathbf{x}_i,z_i)  \\
         &= p(\mathbf{x}_1,\ldots,\mathbf{x}_i|z_i) p(z_i) \\
@@ -618,7 +676,7 @@
 
         <section style="font-size:80%">
         <p>
-        また，初期値は
+        初期値は
         \[ \alpha(z_1) = p(\mathbf{x}_1|z_1)p(z_1) = p(\mathbf{x}_1|\boldsymbol{\phi}_{z_1})\pi_{z_1} \]
         となります.
         </p>
@@ -629,7 +687,7 @@
 
         <section style="font-size:80%">
         <p>
-        $\beta$ は以下の漸化式を満たします.
+        同様にして $\beta$ の漸化式も導けます.
         \[ \begin{aligned}
         \beta(z_i) &= p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N|z_i) \\
         &= \sum_{z_{i+1}} p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N,z_{i+1} |z_i) \\
@@ -643,7 +701,7 @@
 
         <section style="font-size:80%">
         <p>
-        こちらの初期値ですが，ステップ $N$ 以降の値は存在しないので $\beta(z_N) = 1$ とおく事になります.
+        こちらの初期値ですが，ステップ $N$ 以降の値は存在しないので $\beta(z_N) = 1$ となります.
         </p>
         <p class="fragment">
         以上が前向き後ろ向きアルゴリズムにおける「後ろ向き」の部分の計算です.
@@ -665,6 +723,101 @@
         &= \frac{\alpha(z_{i-1})\beta(z_{i})p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})A_{z_{i-1},z_i}}{p(\mathbf{x})}
         \end{aligned} \]
         となり，既に計算した $\alpha,\beta$ を用いて求める事が出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:70%">
+        <div class="block" style="border-color:blue">
+        <h4 style="color:blue"> 前向き後ろ向きアルゴリズム </h4>
+        <p>
+        HMMのパラメータ $\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}$ をEM法で学習する際のE stepの計算に必要な
+        \[ \gamma_{ik} = p(z_i =k | \mathbf{x},\boldsymbol{\theta}^{\mathrm{old}}),\quad \xi_{ijk} = p(z_{i-1}=j,z_i=k|\mathbf{x},\boldsymbol{\theta}^{\mathrm{old}}) \]
+        を求める為には，以下の漸化式によって $\alpha(z_i),\beta(z_i)$ を求め,
+        \[ \begin{aligned}
+        \alpha(z_i) &= p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\sum_{z_{i-1}}\alpha(z_{i-1})A_{z_{i-1},z_i},\quad \alpha(z_1) = p(\mathbf{x}_1|\boldsymbol{\phi}_{z_1})\pi_{z_1}\\
+        \beta(z_i) &= \sum_{z_{i+1}} \beta(z_{i+1})p(\mathbf{x}_{i+1}|\boldsymbol{\phi}_{z_{i+1}})A_{z_i,z_{i+1}},\quad \beta(z_N) = 1 \\
+        \end{aligned} \]
+        以下によって更新を行う.
+        \[ \begin{aligned}
+        \gamma_{i} &= \frac{\alpha(z_i)\beta(z_i)}{p(\mathbf{x})},\quad \xi_{i} = \frac{\alpha(z_{i-1})\beta(z_{i})p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})A_{z_{i-1},z_i}}{p(\mathbf{x})} \\
+        p(\mathbf{x}) &= \sum_{z_N}\alpha(z_N)
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        系列が複数 $\mathbf{x}^{(1)},\ldots,\mathbf{x}^{(N)}$ ある場合ですが， E stepで計算する $\gamma_{i},\xi_{i}$ は各系列毎に独立なので別々に前向き後ろ向きアルゴリズムで計算すれば良いです.
+        </p>
+        <p class="fragment">
+        一方，M stepで計算する $\boldsymbol{\theta}$ は全系列で共有していますので, $\mathcal{Q}$ 関数を
+        \[ \begin{aligned}
+        \mathcal{Q}(\boldsymbol{\theta},\boldsymbol{\theta}^{\mathrm{old}}) &= \sum_{\ell=1}^N\left[ \sum_{k=1}^K \gamma^{(\ell)}_{1k}\log \pi_k + \sum_{i=1}^{N_\ell}\sum_{j=1}^K\sum_{k=1}^K\xi^{(\ell)}_{ijk}\log A_{jk}\right. \\
+        &+ \left.\sum_{i=1}^{N_\ell}\sum_{k=1}^K\gamma^{(\ell)}_{ik}\log p(\mathbf{x}_i|\boldsymbol{\phi}_k)\right]
+        \end{aligned} \]
+        に直して計算をします. $\Sigma$ が１つ付くだけで計算式は変わりません.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        実際に計算する際には浮動小数点数のアンダーフローへの対処が必要です.
+        $\alpha,\beta$ は以下の様に定義されているので，$\alpha(z_i)$ は $i$ が大きいほど $\beta(z_i)$ は $i$ が小さいほど
+        その値が指数的に小さくなっていきます.
+        \[ \begin{aligned}
+        \alpha(z_i) &= p(\mathbf{x}_1,\ldots,\mathbf{x}_i,z_i) \\
+        \beta(z_i)  &= p(\mathbf{x}_{i+1},\ldots,\mathbf{x}_N|z_i)
+        \end{aligned} \]
+        </p>
+        <p class="fragment">
+        対数を取って計算する場合には，$\Sigma$ が含まれている為以下のようにして <code>logsumexp</code> 関数を利用します.
+        \[ \log \alpha(z_i) = \log p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i}) + \log \sum_{z_{i-1}} \exp \left\{\log \alpha(z_{i-1}) + \log A_{z_{i-1},z_i} \right\} \]
+        スケーリングを用いる方法もありPRML本ではこちらが紹介されています. 一概にどちらかが優れているという事はありません.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        <a href="http://archive.ics.uci.edu/ml/datasets/UJI+Pen+Characters"> 手書き文字のストローク </a> のデータに今のアルゴリズムを適用して，「2」の書き方を学習させてみます. このデータセットには11人分, 22文字のサンプルが含まれています.
+        </p>
+        <div align="center"> <img width="500px" src="prog/UJI-0.png"> <a href="prog/prog21-2.py" style="font-size:60%">prog21-2.py</a> </div>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        PRML本で紹介されている方法では「今どの部分を描いているか？」を $K$ 個の値で表します. 状態 $1$ は描き始め, 状態 $K$ は描き終わった事を表します.
+        </p>
+        <p>
+        部分 $k$ を書いている状態からの遷移は，次も同じ部分であるか続く部分 $k+1$ に進むかの2通りしかないと考える事が出来ます. つまり状態遷移図は下のようになります. このようなモデルを <strong> left-to-right HMM</strong> と呼びます.
+        </p>
+        <p>
+        この場合，遷移行列 $A$ の成分の多くが $0$ になりパラメータ数を減らす事が出来ます.
+        </p>
+        <div align="center"> <img width="500px" src="fig/left-to-right-model.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        emission分布には分散を固定した対称的な二次元正規分布を使うことにしました. つまり
+        \[ p(\mathbf{x}_i|z_i=k) = N(\mathbf{x}_i|\boldsymbol{\mu}_k,\sigma^2I) \]
+        です. 今回は学習データ数が非常に少ない為モデルの自由度を下げました.
+        </p>
+        </section>
+
+        <section style="font-size:60%">
+        <p>
+        以下が学習された $\boldsymbol{\mu}_k$ の様子です. $\sigma=300$ としました.
+        </p>
+        <div align="center"> <img width="500px" src="prog/prog21-4.png"> <a href="prog/prog21-4.py" style="font-size:60%">prog21-4.py</a> </div>
+        <p>
+        よりデータ数が多いならば，emissionをもっと複雑にしたりleft-to-rightモデルよりも自由度の高い遷移を考える事が出来ると思います.
+        </p>
+        </section>
+
+        <section>
+        <h3> 今回はここで終了します． </h3>
+        <p>
+        次回はHMMの続きと，テキスト第12章「連続潜在変数」をやります.
         </p>
         </section>
 
