@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第22回 @ ナビプラス </title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第22回</h2>
+        <h3>@ナビプラス</h3>
+        <small> 中村晃一 <br> 2014年10月2日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        会場・設備の提供をしていただきました<br>
+        &#12849; ナビプラス様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> ビタビアルゴリズム </h2>
+        </section>
+
+        <section>
+        <p>
+        前回は系列データ $\mathbf{x}$ から, 隠れマルコフモデル(HMM)の３つのパラメータ $\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}$ をEM法で推定するアルゴリズムの紹介を行いました.
+        </p>
+        <p class="fragment">
+        続いて興味のある問題は，モデルパラメータ $\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}$ が既知の状況で観測データ $\mathbf{x}$ から，隠れラベルの系列 $\mathbf{z}$ を推定する事です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        この問題は $\mathbf{z}$ の事後確率が最大となる系列 $\hat{\mathbf{z}}$ を見つけるという問題であり，
+        \[ \begin{aligned}
+        \hat{\mathbf{z}} &= \mathop{\rm arg~max}\limits_{\mathbf{z}}p(\mathbf{z}|\mathbf{x}) \\
+        &= \mathop{\rm arg~max}\limits_{\mathbf{z}}\frac{p(\mathbf{x},\mathbf{z})}{p(\mathbf{x})} \\
+        &= \mathop{\rm arg~max}\limits_{\mathbf{z}}p(\mathbf{x},\mathbf{z}) \\
+        &= \mathop{\rm arg~max}\limits_{\mathbf{z}}\log p(\mathbf{x},\mathbf{z}) \\
+        \end{aligned} \]
+        を解けば良いです.
+        </p>
+        <p>
+        これを動的計画法に基いて計算するアルゴリズムを <strong> ビタビアルゴリズム (Viterbi algorithm)</strong> と呼びます.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        まず，
+        \[ \mathop{\rm max}\limits_{\mathbf{z}}\log p(\mathbf{x},\mathbf{z}) \]
+        について考えます.
+        </p>
+        <p>
+        これに，前回導きました
+        \[ p(\mathbf{x},\mathbf{z}|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \left\{\pi_{z_1} \prod_{i=2}^N A_{z_{i-1},z_{i}}\right\}\left\{\prod_{i=1}^Np(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\} \]
+        を代入すると
+        \[ \begin{aligned}
+        \mathop{\rm max}\limits_{\mathbf{z}}p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{\mathbf{z}}\left\{ \log \pi_{z_1} + \sum_{i=2}^N\log A_{z_{i-1},z_{i}} + \sum_{i=1}^N \log p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\}
+        \end{aligned} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        そこで
+        \[ \omega(z_n) = \mathop{\rm max}\limits_{z_1,\ldots,z_{n-1}}\left\{ \log \pi_{z_1} + \sum_{i=2}^n\log A_{z_{i-1},z_{i}} + \sum_{i=1}^n \log p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\} \]
+        と置くと
+        \[ \mathop{\rm max}\limits_{\mathbf{z}}p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{z_N}\omega(z_N) \]
+        となり，
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        $\omega$ は以下の漸化式を満たします.
+        \[ \begin{aligned}
+        \omega(z_{n+1}) &= \mathop{\rm max}\limits_{z_1,\ldots,z_n}\left\{ \log \pi_{z_1} + \sum_{i=2}^{n+1}\log A_{z_{i-1},z_{i}} + \sum_{i=1}^{n+1} \log p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\} \\
+        &= \mathop{\rm max}\limits_{z_1,\ldots,z_n}\left\{ \log \pi_{z_1} + \sum_{i=2}^n\log A_{z_{i-1},z_{i}} + \sum_{i=1}^n \log p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right. \\
+       &\qquad \left. + \log A_{z_n,z_{n+1}} + \log p(\mathbf{x}_{n+1}|\boldsymbol{\phi}_{z_{n+1}}) \right\} \\
+       &= \log p(\mathbf{x}_{n+1}|\boldsymbol{\phi}_{z_{n+1}}) + \mathop{\rm max}\limits_{z_n}\left\{\log A_{z_{n},z_{n+1}} + \omega(z_n)\right\}
+        \end{aligned} \]
+        </p>
+        <p>
+        但し，初期値は
+        \[ \omega(z_1) = \log \pi_{z_1} + \log p(\mathbf{x}_1|\boldsymbol{\phi}_{z_1}) \]
+        となります. 
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        ここまでを，一旦まとめると以下のようになります.
+        </p>
+        <div class="block" style="border-color:blue">
+        <h4 style="color:blue"> ビタビアルゴリズム(途中) </h4>
+        <p>
+        漸化式
+        \[ \begin{aligned}
+        \omega(z_1) &= \log \pi_{z_1} + \log p(\mathbf{x}_1|\boldsymbol{\phi}_{z_1})\\
+        \omega(z_{n+1}) &= \log p(\mathbf{x}_{n+1}|\boldsymbol{\phi}_{z_{n+1}}) + \mathop{\rm max}\limits_{z_n}\left\{\log A_{z_{n},z_{n+1}} + \omega(z_n)\right\}
+        \end{aligned} \]
+        を用いて $\omega(z_1),\ldots,\omega(z_N)$ を求めると
+        \[ \mathop{\rm max}\limits_{\mathbf{z}}p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{z_N}\omega(z_N) \]
+        </p>
+        </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        ここで，漸化式
+        \[ \omega(z_{n+1}) = \log p(\mathbf{x}_{n+1}|\boldsymbol{\phi}_{z_{n+1}}) + \mathop{\rm max}\limits_{z_n}\left\{\log A_{z_{n},z_{n+1}} + \omega(z_n)\right\} \]
+        において，$z_{n+1}$ が決まると $\mathop{\rm max}$ の部分の $z_n$ の値が決まります.
+        <p>
+        <p class="fragment">
+        この関数関係 $z_{n+1}\longmapsto z_n$ を $\mathrm{pred}$ と書く事にしましょう. つまり
+        \[ \mathrm{pred}(z_{n+1}) = \mathop{\rm arg~max}\limits_{z_n}\left\{\log A_{z_{n},z_{n+1}} + \omega(z_n)\right\} \]
+        です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        ここまでの様子を絵にしてみると以下のようになります. 赤いエッジは $\mathrm{pred}:z_{n+1}\rightarrow z_n$ に対応しています.
+        </p>
+        <div align="center"> <img width="800px" src="fig/viterbi1.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        求める隠れ変数の系列は
+        \[ \begin{aligned}
+        \hat{\mathbf{z}} &= \mathop{\rm arg~max}\limits_{\mathbf{z}}\log p(\mathbf{x},\mathbf{z}) \\
+        &= \mathop{\rm arg~max}\limits_{z_N}\omega(z_N)
+        \end{aligned} \]
+        だったので，まず $z_{N}$ が決まります. すると $\mathrm{pred}$ によって $z_{N-1}=\mathrm{pred}(z_N)$ が決まります. これを繰り返していくと系列
+        \[ z_1 \rightarrow z_2 \rightarrow \cdots \rightarrow z_{N-1} \rightarrow z_N \]
+        が右から順番に求まります. 所謂<strong> バックトラッキング(backtracking)</strong>という計算です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        この様子を絵にすると以下のようになります. この場合 $\mathbf{z}=(1,2,1,3,2)$ という系列が求める系列となります.
+        </p>
+        <div align="center"> <img width="800px" src="fig/viterbi2.png"> </div>
+        </section>
+
+        <section style="font-size:80%">
+        <div class="block" style="border-color:blue">
+        <h4 style="color:blue"> ビタビアルゴリズム </h4>
+        <p>
+        漸化式
+        \[ \begin{aligned}
+        \omega(z_1) &= \log \pi_{z_1} + \log p(\mathbf{x}_1|\boldsymbol{\phi}_{z_1})\\
+        \omega(z_{n+1}) &= \log p(\mathbf{x}_{n+1}|\boldsymbol{\phi}_{z_{n+1}}) + \mathop{\rm max}\limits_{z_n}\left\{\log A_{z_{n},z_{n+1}} + \omega(z_n)\right\}
+        \end{aligned} \]
+        を用いて $\omega(z_1),\ldots,\omega(z_N)$ を求める.
+        </p>
+        <p>
+        この際，関数
+        \[ \mathrm{pred}(z_{n+1}) = \mathop{\rm arg~max}\limits_{z_n}\left\{\log A_{z_{n},z_{n+1}} + \omega(z_n)\right\} \]
+        を計算しておく.
+        </p>
+        <p>
+        最後に $z_N = \mathop{\rm arg~max}\limits_{z_N}\omega (z_N)$ とし，$\mathrm{pred}$ によるバックトラッキングによって系列 $z_1,\ldots,z_N$ を求める.
+        </p>
+        </div>
+        </section>
+
+        <section>
+        <p>
+        前回使った<a href="http://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer">腰に付けた加速度計</a> のデータでやってみます.
+        </p>
+        <div align="center"> <img width="800px" src="fig/chest-mounted-accelerator.png"> <a href="prog/prog21-1.py" style="font-size:60%">prog21-1.py</a> </div>
+        <p style="font-size:60%">
+        Casale, P. Pujol, O. and Radeva, P.  'Personalization and user verification in wearable systems using biometric walking patterns' Personal and Ubiquitous Computing, 16(5), 563-580, 2012
+        </p>
+        </section>
+
+        <section>
+        <p>
+        11人分のデータがあるので，10人分を学習し11人目の行動の推測をしてみます.
+        </p>
+        <div align="center"> <img width="600px" src="prog/prog22-1-1.png"> </div>
+        <div align="center"> <img width="600px" src="prog/prog22-1-3.png"> <a href="prog/prog22-1.py" style="font-size:60%">prog22-1.py</a> </div>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 主成分分析 </h2>
+        </section>
+
+        <section>
+        <p>
+        テキスト第12章を少しだけやります. 章題は<strong>連続潜在変数(continuous latent variables)</strong>となっていますが，内容はほぼ<strong>主成分分析(principal component analysis)</strong>です. 
+        </p>
+        <p>
+        より一般には<strong>次元削減(dimentionality reduction)</strong>や <strong> 多様体学習 (manifold learning)</strong> といった話題に関係します.
+        </p>
+        </section>
+
+        <section>
+        <h3>多様体とは</h3>
+        <p>
+        局所的に見れば $m$ 次元ユークリッド空間と見なせるような空間を $m$次元の<strong>多様体(manifold)</strong>と呼びます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        例えば地球と地図をイメージして下さい. 地球表面のどの点も局所的に見れば2次元の地図に連続性を保ってマッピングする事が出来ます. 従って地球表面は2次元多様体であるという事になります.
+        </p>
+        <div align="center"> <img height="200px" src="http://upload.wikimedia.org/wikipedia/commons/6/6f/Earth_Eastern_Hemisphere.jpg"> <img height="200px" src="http://upload.wikimedia.org/wikipedia/commons/b/b3/World-map-2004-cia-factbook-large-1.7m-whitespace-removed.jpg"> </div>
+        </section>
+
+        <section>
+        <p>
+        高次元の観測データ $\mathbf{x}$ がより低次元の多様体上に分布しているという事が良くあります.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        例えば平面振り子を考えましょう. 各時刻の観測データはおもりの座標 $(x,y)$ とすると,これは2次元のデータです.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="400px" src="fig/pendulum.png"> </div>
+        <p class="fragment">
+        しかし，観測データは $x^2+y^2=\ell^2$ という円周上(1次元多様体)上にのみ分布する事になります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        $D$ 次元の観測データ $\mathbf{x}$ が $d$ 次元の多様体上に分布しているとします. すると，ある範囲(開集合)内の $\mathbf{x}$ は双方向に連続で一対一な写像 $\varphi: \mathbb{R}^d \rightarrow \mathbb{R}^D$ によって
+        \[ \mathbf{x} = \varphi(\mathbf{z}) \qquad (\mathbf{z} \in \mathbb{R}^d)\]
+        と書くことが出来ます.
+        </p>
+        <div align="center"> <img width="700px" src="fig/manifold.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        <strong> 多様体学習 (manifold learning) </strong> とは，観測データ $\mathbf{x}$ から変数 $\mathbf{z}$ や写像 $\phi$ を求める事を目標とする機械学習の分野です.
+        </p>
+        <p>
+        これによって高次元のデータをより低次のデータへ移して分析する事が出来る様になります.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <h3> 主成分分析 </h3>
+        <p>
+        <strong> 主成分分析 (principal component analysis, PCA)</strong> は多様体学習の特別な場合と考える事が出来ます.
+        </p>
+        <p>
+        これは観測データが線形な空間上に分布していると仮定するものです. (普通、多様体と言うと非線形な空間を考えるので若干奇妙ですが.)
+        </p>
+        <div align="center"> <img width="500px" src="prog/prog22-2.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $D$次元の観測データ $\{\mathbf{x}_1,\ldots,\mathbf{x}_N\}$ は
+        適当な正規直交基底 $\{\mathbf{u}_1,\ldots,\mathbf{u}_D\}$ によって
+        \[ \mathbf{x}_n = \sum_{i=1}^D \alpha_{ni}\mathbf{u}_i \]
+        と書くことが出来ます.
+        </p>
+        <p>
+        この時
+        \[ \mathbf{x}_n^T\mathbf{u}_i = \alpha_{ni} \]
+        であるので
+        \[ \mathbf{x}_n = \sum_{i=1}^D (\mathbf{x}_n^T\mathbf{u}_i)\mathbf{u}_i \]
+        が成り立つ事に注意しましょう.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        今，観測データがより低次の $d$ 次元空間上に近似的に分布していると仮定します. 先ほどの基底の最初の $d$ 個がこの空間を張るように選べば
+        \[ \tilde{\mathbf{x}}_n = \sum_{i=1}^d z_{ni}\mathbf{u}_i + \sum_{i=d+1}^{D}b_i\mathbf{u}_i \]
+        と書くことが出来ます.
+        </p>
+        <p>
+        $(z_{n1},\ldots,z_{nd})$ を $\mathbf{x}_n$ の <strong> 主成分 (principal component)</strong> と呼びます.
+        $\sum_{i=d+1}^{D}b_i\mathbf{u}_i$ は定数項部分なので係数 $b_i$ は全データに対して共通です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        基底 $\mathbf{u}_i$ 及び係数 $z_{ni},b_i$ を求める為に，元の観測データ $\mathbf{x}_n$ と近似したデータ $\tilde{\mathbf{x}}_n$ の残差平方の平均
+        \[ J = \frac{1}{N}\sum_{n=1}^N||\mathbf{x}_n - \tilde{\mathbf{x}}_n||^2 \]
+        を最小化する事を考えます.
+        </p>
+        <p>
+        いつもと同じく，これを $z_{ni}$ や $b_i$ などで微分したものを $0$ と置けば良いです.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        まず $z_{ni}$ で微分すると
+        \[ \frac{\partial \tilde{\mathbf{x}}_n}{\partial z_{ni}} = \mathbf{u}_i \]
+        なので
+        \[ \frac{\partial J}{\partial z_{ni}} = \frac{2}{N}\mathbf{u}_i^T(\mathbf{x}_n - \tilde{\mathbf{x}}_n) = \frac{2}{N}(\mathbf{u}_i^T\mathbf{x}_n - z_{ni})\]
+        となるので
+        \[ z_{ni} = \mathbf{x}_n^T\mathbf{u}_i \]
+        となります.
+        </p>
+        <p class="fragment">
+        $b_i$ についても同様の計算を行うと
+        \[ b_i = \overline{\mathbf{x}}^T\mathbf{u}_i \]
+        となります. ただし $\overline{\mathbf{x}} = \frac{1}{N}\sum_{n=1}^N\mathbf{x}_n$ です.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        以上を用いると
+        \[\begin{aligned}
+        \mathbf{x}_n-\tilde{\mathbf{x}}_n &= \sum_{i=1}^N(\mathbf{x}_n^T\mathbf{u}_i)\mathbf{u}_i - \sum_{i=1}^d(\mathbf{x}_n^T\mathbf{u}_i)\mathbf{u}_i - \sum_{i=d+1}^D(\overline{\mathbf{x}}^T\mathbf{u}_i)\mathbf{u}_i \\
+        &= \sum_{i=d+1}^D\left((\mathbf{x}_n-\overline{\mathbf{x}})^T\mathbf{u}_i\right)\mathbf{u}_i
+        \end{aligned} \]
+        と書くことが出来るので
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        \[ \begin{aligned}
+        J &= \frac{1}{N}\sum_{n=1}^N\sum_{i=d+1}^D\left((\mathbf{x}_n-\overline{\mathbf{x}})^T\mathbf{u}_i\right)^2\\
+        &= \frac{1}{N}\sum_{n=1}^N\sum_{i=d+1}^D \mathbf{u}_i^T(\mathbf{x}_n-\overline{\mathbf{x}})(\mathbf{x}_n-\overline{\mathbf{x}})^T\mathbf{u}_i
+        \end{aligned} \]
+        となります. つまり，共分散行列
+        \[ \mathbf{S} = \frac{1}{N}\sum_{n=1}^N(\mathbf{x}_n-\overline{\mathbf{x}})(\mathbf{x}_n-\overline{\mathbf{x}})^T \]
+        を用いて
+        \[ J = \sum_{i=d+1}^D \mathbf{u}_i^T\mathbf{S}\mathbf{u}_i \]
+        と書くことが出来ます.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        ここで各 $\mathbf{u}_i$ が共分散行列 $\mathbf{S}$ の固有ベクトルになる場合を考えると，固有ベクトルを $\lambda_i$ として
+        \[ \mathbf{S}\mathbf{u}_i = \lambda_i\mathbf{u}_i \]
+        が成り立ちます. これを先ほどの式に代入すると
+        \[ J = \sum_{i=d+1}^D \lambda_i \]
+        となるので，固有値が小さい順に $\mathbf{u}_{d+1},\ldots,\mathbf{u}_D$ を選ぶとこれが最小になります. そして，残りの固有ベクトルを $\mathbf{u}_1,\ldots,\mathbf{u}_d$ とすれば良いです.
+        </p>
+        <p style="font-size:80%">
+        (何故 $\mathbf{u}_i$ が $\mathbf{S}$ の固有ベクトルの場合だけを考える事が出来るのかについては面倒なのでテキストを参照して下さい.)
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <div class="block" style="border-color:blue">
+        <h4 style="color:blue"> 主成分分析 </h4>
+        <p>
+        $D$ 次元のデータ $\{\mathbf{x}_1,\ldots,\mathbf{x}_N\}$ に対する $d$ 次元の主成分を求める為には
+        </p>
+        <ol>
+            <li> 共分散行列 $\mathbf{S}$ を求める. </li>
+            <li> $\mathbf{S}$ の固有値 $\lambda_1 &gt; \lambda_2 &gt; \cdots &gt; \lambda_D$ と対応する固有ベクトル $\mathbf{u}_1,\ldots,\mathbf{u}_D$ を求める. </li>
+            <li> $\mathbf{u}_1,\ldots,\mathbf{u}_d$ が主成分の基底となる. </li>
+            <li> 具体的には
+            \[ \tilde{\mathbf{x}}_n = \sum_{i=1}^d z_{ni}\mathbf{u}_i + \sum_{i=d+1}^{D}b_i\mathbf{u}_i \]
+            と表した時
+            \[ z_{ni} = \mathbf{x}_n^T\mathbf{u}_i,\quad b_i = \overline{\mathbf{x}}^T\mathbf{u}_i \]
+            となる.
+            </li>
+        </ol>
+        </div>
+        </section>
+
+
+        <section>
+        <h3> 今回はここで終了します． </h3>
+        <p>
+        次回は第14章に入りましてブースティングや決定木など，単純なモデルを複数組み合わせてより大きなモデルを構築するという話題をやります.
+        </p>
+        </section>
+
+        </div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>

@@ -155,8 +155,18 @@ N = len(t)
 omega = zeros((N, K))
 pred  = zeros((N, K))
 for k in range(K):
-    omega[0, k] = log(pi[k]) + stats.gamma(shape_params[k], loc=0, scale=scale_params[k]).pdf(x[0])
+    omega[0, k] = log(pi[k]) + log(stats.gamma(shape_params[k], loc=0, scale=scale_params[k]).pdf(x[0]))
 for i in range(1, N):
     for k in range(K):
-        omega[
+        a = log(stats.gamma(shape_params[k], loc=0, scale=scale_params[k]).pdf(x[i]))
+        b = log(A[:, k]) + omega[i-1]
+        pred[i, k] = argmax(b)
+        omega[i, k] = a + max(b)
 
+# バックトラッキング
+z = zeros(N, dtype=int)
+z[N-1] = argmax(omega[N-1])
+for i in reversed(range(N-1)):
+    z[i] = pred[i+1, z[i+1]]
+print list(z+1)
+print list(t)
