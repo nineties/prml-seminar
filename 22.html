@@ -485,6 +485,21 @@
         </div>
         </section>
 
+        <section style="font-size:90%">
+        <p>
+        時間の関係上詳しくは省略しますが，PRML本では主成分分析の確率的な取り扱いが紹介されています. 
+        </p>
+        <p class="fragment">
+        立式は線形回帰と同様に変数 $\mathbf{z}$ から $\mathbf{x}$ への変換が $D\times d$ 行列 $\mathbf{W}$ と，$d$ 次元ベクトル $\boldsymbol{\mu}$ とホワイトノイズ $\boldsymbol{\varepsilon}$ によって
+        \[ \mathbf{x} = \mathbf{W}\mathbf{z} + \boldsymbol{\mu} + \boldsymbol{\varepsilon} \]
+        と記述出来ると考えます. 
+        </p>
+        <p class="fragment">
+        異なる点は $\mathbf{z}$ が隠れ変数であるという点で，
+        \[ p(\mathbf{x}|\mathbf{W},\boldsymbol{\mu}) = \int p(\mathbf{x},\mathbf{z}|\mathbf{W},\boldsymbol{\mu})\mathrm{d}\mathbf{z} \]
+        の最大化を計算する必要があります. 従ってEM法を使う事になります.
+        </p>
+        </section>
 
         <section>
         <h3> 今回はここで終了します． </h3>
