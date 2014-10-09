@@ -179,7 +179,7 @@
 
         <section style="font-size:90%">
         <p>
-        以下のようなデータセットに対してバギングの効果を見てみます. 青い点が訓練用，赤い点が検証用です.
+        以下のようなデータセットに対する回帰問題を用いてバギングの効果を見てみます. 青い点が訓練用，赤い点が検証用です.
         </p>
         <p>  弱学習器には単純な線形モデル $y=ax+b+\varepsilon$ を用いました. </p>
         <div align="center"> <img width="600px" src="prog/prog23-2-1.png"> <a href="prog/prog23-2.py" style="font-size:60%">prog23-2.py</a> </div>
@@ -187,31 +187,32 @@
 
         <section style="font-size:90%">
         <p>
-        弱学習器の数 $M$ を変えながら，検証用セットに対する二乗誤差平均の期待値の推定値をプロットすると以下のようになります. 学習記の数を増やすと(平均的に)性能が向上していく事が分かります.
+        弱学習器の数 $M$ を変えながら，検証用セットに対する二乗誤差平均の期待値の推定値をプロットすると以下のようになります. 学習器の数を増やすと(平均的に)性能が向上していく事が分かります.
         </p>
         <div align="center"> <img width="600px" src="prog/prog23-2-2.png"> <a href="prog/prog23-2.py" style="font-size:60%">prog23-2.py</a> </div>
         </section>
 
         <section style="font-size:90%">
         <p>
-        単純な線形モデル $M$ 個の平均を取っただけで何故精度が上がるのかを考えます．
+        単純に平均を取っただけで何故精度が上がるのかを考えます．
         </p>
         <p class="fragment">
         真の回帰方程式を $y=f(\mathbf{x})$ とします. $m$ 番目に学習されたモデルを
         \[ f_m(\mathbf{x}) = f(\mathbf{x}) + \varepsilon_m(\mathbf{x}) \]
         と表すと二乗誤差の期待値は
-        \[ \mathbb{E}[\{f_m(\mathbf{x}) - f(\mathbf{x})\}] = \mathbb{E}[\varepsilon_m(\mathbf{x})^2] \]
+        \[ \mathbb{E}[\{f_m(\mathbf{x}) - f(\mathbf{x})\}^2] = \mathbb{E}[\varepsilon_m(\mathbf{x})^2] \]
         となります.
         </p>
         <p class="fragment">
         すると，$M$ 個の弱学習器全体での二乗誤差の期待値の平均は
         \[ E_{\mathrm{AV}} = \frac{1}{M}\sum_{m=1}^M\mathbb{E}[\varepsilon_m(\mathbf{x})^2] \]
+        です.
         </p>
         </section>
 
         <section style="font-size:80%">
         <p>
-        ここで，バギングによるモデルは
+        バギングによるモデルは
         \[ \hat{f}(\mathbf{x}) = \frac{1}{M}\sum_{m=1}^M f_m(\mathbf{x}) \]
         なので，これと真のモデルの二乗誤差の期待値は以下のようになります.
         \[\begin{aligned}
@@ -241,7 +242,7 @@
         \[ E_{\mathrm{COM}} = \frac{1}{M^2}\mathbb{E}\left[\left\{\sum_{m=1}^M\varepsilon_m(\mathbf{x})\right\}^2\right] = \frac{1}{M^2}\sum_{m=1}^M\mathbb{E}\left[\varepsilon_m(\mathbf{x})^2\right] \]
         が成り立つので，
         \[ E_{\mathrm{COM}} = \frac{1}{M}E_{\mathrm{AV}} \]
-        となります. 実際には $\mathrm{Cov}[\varepsilon_i(\mathbf{x}),\varepsilon_j(\mathbf{x})] = 0$ という事はまずないのでこれよりも下がります.
+        となります. 実際には $\mathrm{Cov}[\varepsilon_i(\mathbf{x}),\varepsilon_j(\mathbf{x})] = 0$ という事はまずないので，ここまで良い精度にはなりません.
         </p>
         </section>
 
@@ -261,7 +262,7 @@
         Adaブーストでは，<strong> 重み付き誤差関数(weighted error function)</strong> を用いて学習セットに色を付けます.
         </p>
         <p>
-        つまり, モデル $\hat{f}$ の誤差を各データセット毎に重み $w_n$ を付与した
+        つまり, モデル $\hat{f}$ の誤差を各データ $(\mathbf{x}_n,t_n)$ 毎に重み $w_n$ を付与した
         \[ \sum_{n=1}^N w_n E(\hat{f}(\mathbf{x}_n), t_n) \]
         で計算します.
         </p>
@@ -272,7 +273,7 @@
 
         <section style="font-size:90%">
         <p>
-        $f_{m+1}$ を学習する際には，モデル $f_m$ が推定に失敗したデータにより大きな重みをつけるようにします.
+        基本的な考え方は $f_m$ が識別に失敗したデータには大きな重みを付与して次の $f_{m+1}$ を学習するというものです.
         </p>
         <div align="center"> <img width="500px" src="fig/adaboost.png"> </div>
         </section>
@@ -465,6 +466,93 @@
         </p>
         <p>
         これは弱学習器として決定木を用いて集団学習を行うアルゴリズムです.
+        </p>
+        </section>
+
+        <section>
+        <h3> まとめ </h3>
+        <p>
+        PRML本の各章で学んだ事を振り返りましょう.
+        </p>
+        </section>
+
+        <section>
+        <h3> 第3・4章 </h3>
+        <p>
+        線形回帰モデル・線形識別モデルという話題を扱いました. 
+        </p>
+        <p>
+        学習データを $\mathbf{x}$，それの基底変換関数を $\Psi$ として
+        \[ y = f(\mathbf{w}^T\Psi(\mathbf{x})) \]
+        の形で表されるものを扱いました.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        線形モデルは解析的に取り扱える物が多く，他の全ての手法の基礎となるモデルです.
+        </p>
+        <p>
+        識別問題については特にロジスティックモデルが重要です.
+        \[ y = \frac{1}{1 + \exp(\mathbf{w}^T\Psi(\mathbf{x})} \]
+        </p>
+        </section>
+
+        <section>
+        <h3> 第5章 </h3>
+        <p>
+        ニューラルネットワークの紹介をしました.
+        </p>
+        <div align="center"> <img width="500px" src="fig/neural-network.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        ニューラルネットワークは隠れ層が十分にある場合，任意の連続な非線形関数を表現出来るという極めて重要な特徴がありました.
+        </p>
+        <p>
+        その学習には誤差逆伝播法という手法を用います.
+        </p>
+        </section>
+
+        <section>
+        <h3> 第6,7章 </h3>
+        <p>
+        カーネル法という手法の紹介を行いました.
+        </p>
+        <p>
+        カーネル法は元の二次計画問題をその双対問題に移すことによって、データ数 $N$ のみによって計算量が決まるようにしたものです。特に無限次元の特徴ベクトルを用いる事が出来ます.
+        </p>
+        <p>
+        一方で識別関数を構築する為には基本的に学習データを全て保持しておく必要があります。
+        </p>
+        </section>
+
+        <section>
+        <p>
+        カーネル法を用いる最も重要な識別器はサポートベクターマシンです。
+        </p>
+        <p>
+        これはマージン最大化という考え方によって，汎化性能を高める仕組みがあらかじめ内包されたもので非常に使い勝手が良いです。
+        </p>
+        <p>
+        また，識別器の構築にサポートベクターしか必要ないという大きな特徴があります。
+        </p>
+        </section>
+
+        <section>
+        <h3> 第8章 </h3>
+        <p>
+        グラフィカルモデルという確率モデルの表現方法を紹介しました。
+        </p>
+        <p>
+        確率変数間の因果関係をグラフ構造を用いて表現する事により，他のモデルも含む非常に広範なモデルを表現する事が出来ます。
+        </p>
+        </section>
+
+        <section>
+        <p>
+        グラフィカルモデルの学習にはメッセージパッシングという方法を用います。これは根と葉の間でメッセージを一回伝播させるだけで，全てのクラスタに対する同時確率を求める事が出来てしまうというものです。
         </p>
         </section>
 

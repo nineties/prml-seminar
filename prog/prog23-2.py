@@ -26,12 +26,11 @@ for M in arange(1, 50):
         reg = BaggingRegressor(base_estimator=LinearRegression(), n_estimators=M)
         reg.fit(c_[x_train], t_train)
         m += average((reg.predict(c_[x_test]) - t_test)**2)
-    m/=10
-    err.append( m )
+    err.append( m/1000 )
 
 clf()
 title('mean squared error')
 ylabel('mse')
-xlabel('number of weak-learner')
+xlabel('number of weak-learner (M)')
 plot(err)
 savefig('prog23-2-2.png')
