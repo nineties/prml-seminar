@@ -13,5 +13,4 @@ x = data[mnist.target == 3].T
 S = cov(x.T)
 
 # 固有値・固有ベクトル
-print 'eig'
 print linalg.eig(S)

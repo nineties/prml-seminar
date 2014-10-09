@@ -171,7 +171,7 @@
         \[ p(\mathbf{x},\mathbf{z}|\boldsymbol{\pi},\mathbf{A},\boldsymbol{\phi}) = \left\{\pi_{z_1} \prod_{i=2}^N A_{z_{i-1},z_{i}}\right\}\left\{\prod_{i=1}^Np(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\} \]
         を代入すると
         \[ \begin{aligned}
-        \mathop{\rm max}\limits_{\mathbf{z}}p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{\mathbf{z}}\left\{ \log \pi_{z_1} + \sum_{i=2}^N\log A_{z_{i-1},z_{i}} + \sum_{i=1}^N \log p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\}
+        \mathop{\rm max}\limits_{\mathbf{z}}\log p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{\mathbf{z}}\left\{ \log \pi_{z_1} + \sum_{i=2}^N\log A_{z_{i-1},z_{i}} + \sum_{i=1}^N \log p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\}
         \end{aligned} \]
         となります.
         </p>
@@ -182,7 +182,7 @@
         そこで
         \[ \omega(z_n) = \mathop{\rm max}\limits_{z_1,\ldots,z_{n-1}}\left\{ \log \pi_{z_1} + \sum_{i=2}^n\log A_{z_{i-1},z_{i}} + \sum_{i=1}^n \log p(\mathbf{x}_i|\boldsymbol{\phi}_{z_i})\right\} \]
         と置くと
-        \[ \mathop{\rm max}\limits_{\mathbf{z}}p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{z_N}\omega(z_N) \]
+        \[ \mathop{\rm max}\limits_{\mathbf{z}}\log p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{z_N}\omega(z_N) \]
         となり，
         </p>
         </section>
@@ -204,7 +204,7 @@
         </p>
         </section>
 
-        <section style="font-size:90%">
+        <section style="font-size:80%">
         <p>
         ここまでを，一旦まとめると以下のようになります.
         </p>
@@ -217,7 +217,7 @@
         \omega(z_{n+1}) &= \log p(\mathbf{x}_{n+1}|\boldsymbol{\phi}_{z_{n+1}}) + \mathop{\rm max}\limits_{z_n}\left\{\log A_{z_{n},z_{n+1}} + \omega(z_n)\right\}
         \end{aligned} \]
         を用いて $\omega(z_1),\ldots,\omega(z_N)$ を求めると
-        \[ \mathop{\rm max}\limits_{\mathbf{z}}p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{z_N}\omega(z_N) \]
+        \[ \mathop{\rm max}\limits_{\mathbf{z}}\log p(\mathbf{x},\mathbf{z}) = \mathop{\rm max}\limits_{z_N}\omega(z_N) \]
         </p>
         </div>
         </section>
@@ -235,9 +235,9 @@
         </p>
         </section>
 
-        <section>
+        <section style="font-size:90%">
         <p>
-        ここまでの様子を絵にしてみると以下のようになります. 赤いエッジは $\mathrm{pred}:z_{n+1}\rightarrow z_n$ に対応しています.
+        ここまでの様子を絵にしてみると以下のようになります. 左から右に順番に「$z_i=k$ の時に，そこより左の部分の対数尤度が最大となるようなラベルの系列」が計算されていきます. 赤いエッジは $\mathrm{pred}:z_{n+1}\rightarrow z_n$ に対応しています.
         </p>
         <div align="center"> <img width="800px" src="fig/viterbi1.png"> </div>
         </section>
@@ -288,7 +288,7 @@
         <p>
         前回使った<a href="http://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer">腰に付けた加速度計</a> のデータでやってみます.
         </p>
-        <div align="center"> <img width="800px" src="fig/chest-mounted-accelerator.png"> <a href="prog/prog21-1.py" style="font-size:60%">prog21-1.py</a> </div>
+        <div align="center"> <img width="700px" src="fig/chest-mounted-accelerator.png"> <a href="prog/prog21-1.py" style="font-size:60%">prog21-1.py</a> </div>
         <p style="font-size:60%">
         Casale, P. Pujol, O. and Radeva, P.  'Personalization and user verification in wearable systems using biometric walking patterns' Personal and Ubiquitous Computing, 16(5), 563-580, 2012
         </p>
@@ -299,7 +299,8 @@
         11人分のデータがあるので，10人分を学習し11人目の行動の推測をしてみます.
         </p>
         <div align="center"> <img width="600px" src="prog/prog22-1-1.png"> </div>
-        <div align="center"> <img width="600px" src="prog/prog22-1-3.png"> <a href="prog/prog22-1.py" style="font-size:60%">prog22-1.py</a> </div>
+        <div align="center"> <img width="600px" src="prog/prog22-1-3.png"> </div>
+        <div align="center"> <a href="prog/prog22-1.py" style="font-size:60%">prog22-1.py</a> </div>
         </section>
 
         <section>

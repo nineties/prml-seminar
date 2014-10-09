@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>パターン認識・機械学習勉強会 第23回 @ ナビプラス </title>
+
+		<meta name="description" content="Seminar of category theory">
+    <meta name="author" content="Koichi Nakamura">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+		<!-- For syntax highlighting -->
+    <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+
+    <style type="text/css">
+      <!--
+      div.definition {
+        padding-left: 10px;
+        padding-right: 10px;
+        border: 4px solid #333333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .reveal .chapter-title {
+        margin-top: 3em;
+      }
+
+      .reveal {
+        font-size: 36px;
+        line-height: 1.4em;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal section img {
+        border: none;
+        background: 0;
+        margin-left: 1em;
+        margin-right: 1em;
+        box-shadow: none;
+      }
+
+      .reveal strong {
+        color: #ff6666;
+      }
+
+      .reveal sup {
+        font-size: 40%;
+      }
+
+      .reveal .note {
+        font-size: 40%;
+      }
+
+      .reveal .controls div.navigate-up,
+      .reveal .controls div.navigate-down {
+        display: none;
+      }
+
+      .reveal .block {
+        border: solid 2px;
+        position: relative;
+        border-radius: 8px;
+        margin: 0.5em;
+        padding: 1em 0.8em 0.5em 0.8em;
+      }
+
+      .reveal .block:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 1px;
+        overflow: hidden;
+      }
+      --> 
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+        <h2>パターン認識・<br> 機械学習勉強会 <br> 第23回</h2>
+        <h3>@ナビプラス</h3>
+        <small> 中村晃一 <br> 2014年10月9日 </small>
+        </section>
+
+        <section>
+        <h3>謝辞</h3>
+        <p>
+        会場・設備の提供をしていただきました<br>
+        &#12849; ナビプラス様<br>
+        にこの場をお借りして御礼申し上げます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        本日がこの勉強会シリーズの最終回となります.
+        </p>
+        <p>
+        本日はテキストの最後の章「モデルの結合」をやります. これまでに紹介しました学習器を複数組み合わせる事によってより複雑なデータに対する識別や回帰を行う方法を紹介します.
+        </p>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 集団学習 </h2>
+        </section>
+
+        <section>
+        <p>
+        学習データ $\mathbf{X}$ を元に複数のモデル $f_1(\mathbf{x}),\ldots,f_M(\mathbf{x})$ を学習させ，それらの合議(多数決や平均)によって最終的な結果を求めるというアプローチを <strong> 集団学習(ensemble learning) </strong> と呼びます. 各 $f_1,\ldots,f_M$ の事を <strong> 弱学習器(weak learner)</strong> と呼びます.
+        </p>
+        <p>
+        用いる弱学習器の種類，弱学習器の学習方法，合議の方法などによって幾つかの手法が存在します．
+        </p>
+        <div align="center"> <img width="500px" src="fig/ensemble-learning.png"> </div>
+        </section>
+
+        <section>
+        <h3> バギング </h3>
+        <p>
+        <strong> バギング(bagging) </strong> は非常に単純な集団学習アルゴリズムです.
+        </p>
+        <p class="fragment">
+        バギングでは，学習データセット $\mathbf{X}$ から $M$ 個のデータセット $\mathbf{X}_1,\ldots,\mathbf{X}_M$ を <strong> ブートストラップ (bootstrap) </strong> という方法で作ります.
+        </p>
+        <p class="fragment">
+        そしてそれぞれ適当なモデルで学習させて $M$ 個の弱学習器 $f_1(\mathbf{x}),\ldots,f_M(\mathbf{x})$ を作り識別の場合には多数決，回帰の場合にはそれらの平均を最終的な結果とします.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        同じデータセット $\mathbf{X}$ を学習させてしまったら、全ての弱学習器が全く同じものになってしまいます．ブートストラップとは元の学習データ $\mathbf{X}$ から異なる $M$ 個のデータセット $\mathbf{X}_1,\ldots,\mathbf{X}_M$ を作る方法の１つです.
+        </p>
+        <p class="fragment" data-fragment-index="1">
+        方法は簡単で，$m = 1,2,\ldots,M$ について $\mathbf{X}$ から重複を許して何個か($|\mathbf{X}|$個など)サンプリングしたものを $X_m$ とします.
+        </p>
+        <div align="center" class="fragment" data-fragment-index="1"> <img width="800px" src="fig/bootstrap.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        以下のようなデータセットに対してバギングの効果を見てみます. 青い点が訓練用，赤い点が検証用です.
+        </p>
+        <p>  弱学習器には単純な線形モデル $y=ax+b+\varepsilon$ を用いました. </p>
+        <div align="center"> <img width="600px" src="prog/prog23-2-1.png"> <a href="prog/prog23-2.py" style="font-size:60%">prog23-2.py</a> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        弱学習器の数 $M$ を変えながら，検証用セットに対する二乗誤差平均の期待値の推定値をプロットすると以下のようになります. 学習記の数を増やすと(平均的に)性能が向上していく事が分かります.
+        </p>
+        <div align="center"> <img width="600px" src="prog/prog23-2-2.png"> <a href="prog/prog23-2.py" style="font-size:60%">prog23-2.py</a> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        単純な線形モデル $M$ 個の平均を取っただけで何故精度が上がるのかを考えます．
+        </p>
+        <p class="fragment">
+        真の回帰方程式を $y=f(\mathbf{x})$ とします. $m$ 番目に学習されたモデルを
+        \[ f_m(\mathbf{x}) = f(\mathbf{x}) + \varepsilon_m(\mathbf{x}) \]
+        と表すと二乗誤差の期待値は
+        \[ \mathbb{E}[\{f_m(\mathbf{x}) - f(\mathbf{x})\}] = \mathbb{E}[\varepsilon_m(\mathbf{x})^2] \]
+        となります.
+        </p>
+        <p class="fragment">
+        すると，$M$ 個の弱学習器全体での二乗誤差の期待値の平均は
+        \[ E_{\mathrm{AV}} = \frac{1}{M}\sum_{m=1}^M\mathbb{E}[\varepsilon_m(\mathbf{x})^2] \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        ここで，バギングによるモデルは
+        \[ \hat{f}(\mathbf{x}) = \frac{1}{M}\sum_{m=1}^M f_m(\mathbf{x}) \]
+        なので，これと真のモデルの二乗誤差の期待値は以下のようになります.
+        \[\begin{aligned}
+        E_{\mathrm{COM}} &= \mathbb{E}\left[\left\{\hat{f}(\mathbf{x})-f(\mathbf{x})\right\}^2\right] \\
+        &=\mathbb{E}\left[\left\{\frac{1}{M}\sum_{m=1}^M\{f(\mathbf{x})+\varepsilon_m(\mathbf{x})\}-f(\mathbf{x})\right\}^2\right] \\
+        &= \mathbb{E}\left[\left\{\frac{1}{M}\sum_{m=1}^M\varepsilon_m(\mathbf{x})\right\}^2\right] \\
+        &= \frac{1}{M^2}\mathbb{E}\left[\left\{\sum_{m=1}^M\varepsilon_m(\mathbf{x})\right\}^2\right] \\
+        \end{aligned} \]
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        ここで<a href="http://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%BC%E3%82%B7%E3%83%BC%EF%BC%9D%E3%82%B7%E3%83%A5%E3%83%AF%E3%83%AB%E3%83%84%E3%81%AE%E4%B8%8D%E7%AD%89%E5%BC%8F">コーシー・シュワルツの不等式</a>から
+        \[ \left\{\sum_{m=1}^M\varepsilon_m(\mathbf{x})\right\}^2 \leq M\sum_{m=1}^M\varepsilon_m(\mathbf{x})^2 \]
+        が成り立つ事を使えば
+        \[ \color{red}{ E_{\mathrm{COM}} \leq E_{\mathrm{AV}} } \]
+        となります. つまり，平均を取って出来るモデルは個々の弱学習器の平均的な性能よりも優れているという事が分かります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        性能向上の目安ですが
+        \[ \mathbb{E}[\varepsilon_m(\mathbf{x})] = 0,\quad \mathrm{Cov}[\varepsilon_i(\mathbf{x}),\varepsilon_j(\mathbf{x})] = 0 \quad (i\neq j) \]
+        ならば
+        \[ E_{\mathrm{COM}} = \frac{1}{M^2}\mathbb{E}\left[\left\{\sum_{m=1}^M\varepsilon_m(\mathbf{x})\right\}^2\right] = \frac{1}{M^2}\sum_{m=1}^M\mathbb{E}\left[\varepsilon_m(\mathbf{x})^2\right] \]
+        が成り立つので，
+        \[ E_{\mathrm{COM}} = \frac{1}{M}E_{\mathrm{AV}} \]
+        となります. 実際には $\mathrm{Cov}[\varepsilon_i(\mathbf{x}),\varepsilon_j(\mathbf{x})] = 0$ という事はまずないのでこれよりも下がります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <h3> ブースティング </h3>
+        <p>
+        <strong> ブースティング (boosting) </strong> と呼ばれる手法は，$M$ 個の弱学習器を順番に学習し，前の弱学習器の学習結果を次の弱学習器の学習で利用する事で積極的に性能をあげようとするものです. <strong> Adaブースト (Adaptive Boosting) </strong> というアルゴリズムが有名です.
+        </p>
+        <p>
+        バギングと異なり個々の学習器は対等ではないので，重み付きでの多数決・平均値を取ります.
+        </p>
+        <div align="center"> <img width="400px" src="fig/boosting.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        Adaブーストでは，<strong> 重み付き誤差関数(weighted error function)</strong> を用いて学習セットに色を付けます.
+        </p>
+        <p>
+        つまり, モデル $\hat{f}$ の誤差を各データセット毎に重み $w_n$ を付与した
+        \[ \sum_{n=1}^N w_n E(\hat{f}(\mathbf{x}_n), t_n) \]
+        で計算します.
+        </p>
+        <p class="fragment">
+        識別の場合は $E(y,t) = (\text{正解なら $0$, そうでなければ $1$})$ とします. 
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $f_{m+1}$ を学習する際には，モデル $f_m$ が推定に失敗したデータにより大きな重みをつけるようにします.
+        </p>
+        <div align="center"> <img width="500px" src="fig/adaboost.png"> </div>
+        </section>
+
+        <section style="font-size:60%">
+        <div class="block" style="border-color:blue">
+        <h4 style="color:blue"> Adaブースト(識別問題) </h4>
+        <ol>
+            <li> 重みを $w_n = 1/N$ で初期化. </li>
+            <li> $m=1,\ldots,M$ について以下を繰り返す. 
+                <ol>
+                    <li> 以下を最小化する事により弱学習器 $f_m$ を構築
+                    \[ \sum_{n=1}^N w_n E(f_m(\mathbf{x}_n), t_n) \] </li>
+                    <li>
+                    重み付きの誤差平均
+                    \[ \varepsilon_m = \frac{\sum_{n=1}^Nw_n E(f_m(\mathbf{x}_n), t_n)}{\sum_{n=1}^N w_n} \]
+                    を元に
+                    \[ \alpha_m = \ln\left\{\frac{1-\varepsilon_m}{\varepsilon_m}\right\} \]
+                    とする.
+                    </li>
+                    <li>
+                    重みを更新
+                    \[ w_n \leftarrow w_n \exp\left\{\alpha_m E(f_m(\mathbf{x}_n),t_n)\right\} \]
+                    </li>
+                </ol>
+            </li>
+            <li>
+            重み付きで多数決を取る.
+            \[ \hat{f}(\mathbf{x}) = \mathrm{sign}\left(\sum_{m=1}^M\alpha_m f_m(\mathbf{x})\right) \]
+            </li>
+        </ol>
+        </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        Adaブーストによる回帰も同様に行う事が可能ですが，こちらは若干複雑です. 詳しくは以下の論文のアルゴリズムAdaBoost.Rを参照して下さい.
+        </p>
+        <ul>
+            <li> 
+            Freund, Yoav, and Robert E. Schapire. "A desicion-theoretic generalization of on-line learning and an application to boosting." Computational learning theory. Springer Berlin Heidelberg, 1995.
+            </li>
+        </ul>
+        </section>
+
+        <section>
+        <h2 class="chapter-title"> 決定木 </h2>
+        </section>
+
+        <section style="font-size:90%">
+        <h3> 決定木 </h3>
+        <p>
+        集団学習とは異なる学習器の組み合わせ方として <strong> 決定木 (decision tree) </strong> というものも使われます.
+        </p>
+        <p>
+        決定木とは2つの識別器 $f_1(\mathbf{x})$ と $f_2(\mathbf{x})$ のどちらを使うのかを他の識別器 $g(\mathbf{x})$ で選び，選ばれたもので識別を行うというものです.
+        </p>
+        <div align="center"> <img width="300px" src="fig/decision-tree1.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        $f_1,f_2$ に再び決定木を用いれば下図のような木構造の識別器となります. 
+        </p>
+        <div align="center"> <img width="50%" src="fig/decision-tree.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        決定木は特徴空間を再帰的に幾つかの領域に分割し，各領域毎に別々の学習で回帰や識別を行うというものです.
+        </p>
+        <div align="center"> <img width="800px" src="fig/decision-tree2.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        例えば下図の様に途中で不連続的にパターンが変化するようなデータに対しても
+        </p>
+        <div align="center"> <img width="600px" src="prog/prog23-3-1.png"> <a href="prog/prog23-3.py" style="font-size:60%">prog23-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        以下のような回帰を行う事が出来ます.
+        </p>
+        <div align="center"> <img width="600px" src="prog/prog23-3-2.png"> <a href="prog/prog23-3.py" style="font-size:60%">prog23-3.py</a> </div>
+        </section>
+
+        <section>
+        <p>
+        分割された個々の領域毎の学習はこれまでに紹介しましたいろいろな方法をそのまま使えば良いので，決定木の学習は木構造の学習が中心になります.
+        </p>
+        <p class="fragment">
+        決定木の構造は離散的なものなので解析的にその構造を学習する事は難しいです. 従いまして <strong> 貪欲法(greedy algorithm)</strong> などが用いられます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        貪欲法では特徴空間を再帰的に少しずつ切っていく際に，今ある領域内のデータを最も良く分割する切り方を探していきます.
+        </p>
+
+        <div align="center"> <img width="500px" src="fig/decision-tree3.png"> </div>
+        </section>
+
+        <section>
+        <p>
+        決定木を貪欲法などで構築していく場合には以下の２つの基準が必要です.
+        </p>
+        <ol>
+            <li> 領域を分割する基準 </li>
+            <li> 分割を停止する基準 </li>
+        </ol>
+        <p>
+        これらの選択によって様々なアルゴリズムを考える事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 分割基準 </h3>
+        <p>
+        「最も良く分割する」という基準も幾つか考え方がありますが，<strong> 平均情報量 (mutual information) </strong> などが使われます.
+        </p>
+        <p class="fragment">
+        領域 $\mathbf{X}$ を２つの組 $\mathbf{X}_1,\mathbf{X}_2$ に分割した場合の相互情報量は
+        \[ I(\mathbf{X}_1,\mathbf{X}_2) = \sum_{\mathbf{x}_1\in\mathbf{X}_1,\mathbf{x}_2\in\mathbf{X}_2}p(\mathbf{x}_1,\mathbf{x}_2)\log \frac{p(\mathbf{x}_1,\mathbf{x}_2)}{p(\mathbf{x}_1)p(\mathbf{x}_2)} \]
+        で定義されます. これが最大となるような識別面を選択して領域を切っていきます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        平均情報量は分布 $p(\mathbf{x}_1,\mathbf{x}_2)$ と $p(\mathbf{x}_1)p(\mathbf{x}_2)$ のカルバックライブラー情報量と等しいです.
+        </p>
+        <p>
+        従って領域を平均情報量が大きな面で切るという事は，分割によって得られる情報量が出来るだけ多いような面で分割する事だと解釈する事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        この際，特徴空間の全ての次元は使わずに幾つかの変数だけを選択します.
+        \[ \mathbf{x}=(x_1,x_2,\ldots,x_D) \rightarrow x_3, x_7, x_9 \]
+        選ぶ次元が低ければ全組み合わせを網羅する事が出来ますし，それが難しい場合にはランダムに幾つかの組み合わせを選択して最も良いものを選ぶという事になります.
+        </p>
+        </section>
+
+        <section>
+        <h3> 停止基準 </h3>
+        <p>
+        分割を停止する際に考慮すべき事は
+        </p>
+        <ol>
+            <li> 十分な識別精度を達成出来るほど細かいか？ </li>
+            <li> サンプル数が少なくなりすぎていないか？ </li>
+        </ol>
+        <p>
+        という２点です. これらはトレードオフの関係にあります.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        そこで，もともとの空間が $T$ 個の領域に分割されたとし， $Q_t(T)\quad (t=1,\ldots,T)$ を $t$ 番目の領域 $t$ における誤差の和とした際に
+        \[ C(T) = \sum_{t=1}^TQ_t(T) + \lambda T \quad (\lambda &gt; 0)\]
+        という量を停止基準のしきい値として用いる事が出来ます.
+        </p>
+        <p>
+        $\lambda T$ は分割が細かくなりすぎることに対するペナルティ項です.
+        </p>
+        </section>
+
+        <section>
+        <p>
+        回帰の場合には $Q_t(T)$ として残差平方和などを用いれば良いです.
+        </p>
+        <p>
+        一方，識別の場合にはノード $t$ がクラス $k$ に所属する確率を $p(k|t)$ とした場合に交差エントロピー
+        \[ Q_t(T) = \sum_{k=1}^Kp(k|t)\log p(k|t) \]
+        や <strong> Giniインデックス (Gini index) </strong> 
+        \[ Q_t(T) = \sum_{k=1}^K p(k|t)(1-p(k|t)) \]
+        を用います. これらは $p(k|t)=0$ は $p(k|t)=1$ となる $k$ が存在した場合に $0$ になります. ノード $t$ のデータが1つのクラスに対応する場合にはそれ以上分割する必要がないというわけです.
+        </p>
+        </section>
+
+        <section>
+        <h3> ランダムフォレスト </h3>
+        <p>
+        PRML本では解説がありませんが <strong> ランダムフォレスト (random forest) </strong> というアルゴリズムは非常に精度が高く有名です.
+        </p>
+        <p>
+        これは弱学習器として決定木を用いて集団学習を行うアルゴリズムです.
+        </p>
+        </section>
+
+        </div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+        rollingLinks: false,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        MathJax.Hub.Rerender(event.currentSlide);
+      });
+
+		</script>
+
+	</body>
+</html>

@@ -80,7 +80,7 @@ pi = zeros(K)      # 初期状態がkだった回数
 
 # 10人分を学習
 figure(figsize=(18, 6))
-for i in range(10):
+for i in range(1, 11):
     x, t = read_data(i)
 
     # ラベル毎に分ける
@@ -146,7 +146,7 @@ savefig('prog22-1-2.png')
 # 11人目のセンサーデータ
 clf()
 figure(figsize=(18, 6))
-x, t = read_data(10)
+x, t = read_data(0)
 plot(x)
 savefig('prog22-1-3.png')
 
@@ -162,11 +162,12 @@ for i in range(1, N):
         b = log(A[:, k]) + omega[i-1]
         pred[i, k] = argmax(b)
         omega[i, k] = a + max(b)
+print omega
 
 # バックトラッキング
 z = zeros(N, dtype=int)
 z[N-1] = argmax(omega[N-1])
 for i in reversed(range(N-1)):
     z[i] = pred[i+1, z[i+1]]
-print list(z+1)
+print list(z)
 print list(t)
