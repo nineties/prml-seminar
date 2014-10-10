@@ -249,7 +249,7 @@
         <section style="font-size:80%">
         <h3> ブースティング </h3>
         <p>
-        <strong> ブースティング (boosting) </strong> と呼ばれる手法は，$M$ 個の弱学習器を順番に学習し，前の弱学習器の学習結果を次の弱学習器の学習で利用する事で積極的に性能をあげようとするものです. <strong> Adaブースト (Adaptive Boosting) </strong> というアルゴリズムが有名です.
+        <strong> ブースティング (boosting) </strong> と呼ばれる手法は，$M$ 個の弱学習器を順番に学習し，前の弱学習器の学習結果を次の弱学習器の学習で利用する事で積極的に性能をあげようとするものです. <strong> AdaBoost (Adaptive Boosting) </strong> というアルゴリズムが有名です.
         </p>
         <p>
         バギングと異なり個々の学習器は対等ではないので，重み付きでの多数決・平均値を取ります.
@@ -259,7 +259,7 @@
 
         <section style="font-size:90%">
         <p>
-        Adaブーストでは，<strong> 重み付き誤差関数(weighted error function)</strong> を用いて学習セットに色を付けます.
+        AdaBoostでは，<strong> 重み付き誤差関数(weighted error function)</strong> を用いて学習セットに色を付けます.
         </p>
         <p>
         つまり, モデル $\hat{f}$ の誤差を各データ $(\mathbf{x}_n,t_n)$ 毎に重み $w_n$ を付与した
@@ -267,20 +267,20 @@
         で計算します.
         </p>
         <p class="fragment">
-        識別の場合は $E(y,t) = (\text{正解なら $0$, そうでなければ $1$})$ とします. 
+        識別の場合は単純損失関数などを用います. この場合 $E(y,t) = (\text{正解なら $0$, そうでなければ $1$})$ とします. 
         </p>
         </section>
 
         <section style="font-size:90%">
         <p>
-        基本的な考え方は $f_m$ が識別に失敗したデータには大きな重みを付与して次の $f_{m+1}$ を学習するというものです.
+        $f_m$ が識別に失敗したデータには大きな重みを付与して次の $f_{m+1}$ ではそれらをより良く識別しようというのがAdaBoostの考え方です.
         </p>
         <div align="center"> <img width="500px" src="fig/adaboost.png"> </div>
         </section>
 
         <section style="font-size:60%">
         <div class="block" style="border-color:blue">
-        <h4 style="color:blue"> Adaブースト(識別問題) </h4>
+        <h4 style="color:blue"> AdaBoost(単純損失を用いた識別問題の場合) </h4>
         <ol>
             <li> 重みを $w_n = 1/N$ で初期化. </li>
             <li> $m=1,\ldots,M$ について以下を繰り返す. 
@@ -290,8 +290,8 @@
                     <li>
                     重み付きの誤差平均
                     \[ \varepsilon_m = \frac{\sum_{n=1}^Nw_n E(f_m(\mathbf{x}_n), t_n)}{\sum_{n=1}^N w_n} \]
-                    を元に
-                    \[ \alpha_m = \ln\left\{\frac{1-\varepsilon_m}{\varepsilon_m}\right\} \]
+                    を元に，合議の際の重みを
+                    \[ \alpha_m = \log\left(\frac{1-\varepsilon_m}{\varepsilon_m}\right) \]
                     とする.
                     </li>
                     <li>
@@ -310,13 +310,126 @@
 
         <section style="font-size:90%">
         <p>
-        Adaブーストによる回帰も同様に行う事が可能ですが，こちらは若干複雑です. 詳しくは以下の論文のアルゴリズムAdaBoost.Rを参照して下さい.
+        AdaBoostは <strong> 指数損失関数 (exponential error function) </strong>
+        \[ E(y,t) = \exp(-ty) \]
+        を用いた経験損失
+        \[ J = \sum_{n=1}^N\exp\left\{-t_nf_m(\mathbf{x}_n)\right\} \]
+        を反復法を用いて最小化するアルゴリズムであると解釈する事が出来ます。
         </p>
-        <ul>
+        <div align="center"> <img width="400px" src="fig/exponential-error-function.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
+        <p>
+        ここで $f_m(\mathbf{x})$ のモデルとして弱学習器 $g_\ell(\mathbf{x})$ の線形結合
+        \[ f_m(\mathbf{x}) = \frac{1}{2}\sum_{\ell=1}^m \alpha_\ell g_\ell(\mathbf{x}) \]
+        で表される物を考えます. $1/2$ は計算を簡単にする為のものです.
+        </p>
+        <p>
+        弱学習器 $g_\ell(\mathbf{x})$ は $\{-1, 1\}$ のいずれかを返す二値の識別器とします.
+        従って $\mathrm{sign}(f_m(\mathbf{x}))$ は $g_\ell$ の結果の重み付きの多数決を表します.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        すると
+        \[ f_m(\mathbf{x}) = f_{m-1}(\mathbf{x}) + \frac{1}{2}\alpha_m g_m(\mathbf{x}) \]
+        より
+        \[ \begin{aligned}
+        J &= \sum_{n=1}^N\exp\left\{-t_nf_{m-1}(\mathbf{x}_n)-\frac{1}{2}t_n\alpha_m g_m(\mathbf{x}_n)\right\}\\
+        &= \sum_{n=1}^N w_n\exp\left\{-\frac{1}{2}t_n\alpha_m g_m(\mathbf{x}_n)\right\}
+        \end{aligned} \]
+        となります. 但し
+        \[ w^{(m)}_n \stackrel{\mathrm{def}}{=} \exp\left\{-t_nf_{m-1}(\mathbf{x}_n)\right\} \]
+        であり，$g_1,\ldots,g_{m-1},\alpha_1,\ldots,\alpha_{m-1}$ を固定して $g_m,\alpha_m$ だけを動かす場合にはこれは定数となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        ここで $g_m(\mathbf{x})$ が $\mathbf{x}_n$ を正しく識別したときは $t_ng_m(\mathbf{x}_n)=1$，そうでない時は $t_ng_m(\mathbf{x}_n)=-1$ となるので
+        \[ J= \left(e^{\alpha_m/2}-e^{-\alpha_m/2}\right)\sum_{n=1}^Nw_n^{(m)}E(g_m(\mathbf{x}_n), t_n) + e^{-\alpha_m/2}\sum_{n=1}^Nw_n^{(m)} \]
+        と書くことが出来ます。よってこれを最小化する $g_m$ は経験的単純損失
+        \[ \sum_{n=1}^Nw_n^{(m)}E(g_m(\mathbf{x}_n), t_n) \]
+        を最小化するものであり，
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        ここで
+        \[ \varepsilon_m = \frac{\sum_{n=1}^Nw^{(m)}_n E(g_m(\mathbf{x}_n), t_n)}{\sum_{n=1}^N w^{(m)}_n} \]
+        と置くと
+        \[ J = \left(e^{\alpha_m/2}-e^{-\alpha_m/2}\right)\varepsilon_m\sum_{n=1}^N w_n + e^{-\alpha_m/2}\sum_{n=1}^Nw_n^{(m)} \]
+        となるので，$J$ を最小化する $\alpha_m$ は
+        \[ (e^{\alpha_m/2}-e^{-\alpha_m/2})\varepsilon_m + e^{-\alpha_m/2} \]
+        を最小化する
+        \[ \alpha_m = \log\frac{1-\varepsilon_m}{\varepsilon_m} \]
+        となります.
+        </p>
+        </section>
+
+        <section style="font-size:80%">
+        <p>
+        最後に重み $w_n$ の更新規則は
+        \[ \begin{aligned}
+        w_n^{(m+1)} &= \exp\{-t_nf_m(\mathbf{x}_n)\}\\
+        &= \exp\{-t_n\left(f_{m-1}(\mathbf{x}_n)+\alpha_mg_m(\mathbf{x}_n)/2\right)\}\\
+        &= w_n^{(m)}\exp\{-t_n\alpha_mg_m(\mathbf{x}_n)/2\}
+        \end{aligned} \]
+        と
+        \[ t_ng_m(\mathbf{x}_n)= 1 - 2E(g_m(\mathbf{x}_n),t_n) \]
+        より
+        \[ \begin{aligned}
+        w_n^{(m+1)} &= w_n^{(m)}\exp\{\alpha_mE(g_m(\mathbf{x}_n),t_n)\}\exp(-\alpha_m/2)
+        \end{aligned} \]
+        となります. $\exp(-\alpha_m/2)$ の部分はデータ $(\mathbf{x}_n,t_n)$ によらない定数で，$f_m$ の符号には影響しないため除去しても良いです.
+
+        </p>
+        </section>
+
+        <section>
+        <p>
+        以上の「弱学習器の線形和モデルで指数損失を反復的に最小化する」というアイデアに基づけば、様々なブースティングアルゴリズムの拡張を導出する事が出来ます.
+        </p>
+        <p>
+        例えばAdaBoostを回帰に用いる例は以下の論文などで紹介されています.
+        </p>
+        <ul style="font-size:80%">
             <li> 
             Freund, Yoav, and Robert E. Schapire. "A desicion-theoretic generalization of on-line learning and an application to boosting." Computational learning theory. Springer Berlin Heidelberg, 1995.
             </li>
         </ul>
+        </section>
+
+        <section style="font-size:70%">
+        <p>
+        そもそも「指数損失の最小化」とは一体どういう事なのか補足します.
+        </p>
+        <p>
+        経験損失ではなく期待損失は
+        \[ \mathbb{E}[\exp(-tf(\mathbf{x}))] = \sum_{t=1,-1}\int \exp(-tf(\mathbf{x}))p(t|\mathbf{x})p(\mathbf{x})\mathrm{d}\mathbf{x} \]
+        となりますが，これを最小とする $f$ を変分法で求めると(次頁)
+        \[ f(\mathbf{x}) = \frac{1}{2}\log \frac{p(t=1|\mathbf{x})}{p(t=-1|\mathbf{x})} \]
+        となります. これは <strong> 対数オッズ(log odds) </strong> や <strong> ロジット (logit) </strong> と呼ばれる量(割る2)になっています.
+        </p>
+        </section>
+
+        <section style="font-size:60%">
+        <p>
+        【前頁の導出】<br>
+        $f$ に微小変化 $\varepsilon \eta(\mathbf{x})$ を加えると
+        \[\sum_{t=1,-1}\int \exp\{-t(f+\varepsilon \eta)\}p(t|\mathbf{x})p(\mathbf{x})\mathrm{d}\mathbf{x} \]
+        これを $\varepsilon$ で微分すると
+        \[\sum_{t=1,-1}\int \exp(-t\eta)\exp\{-t(f+\varepsilon \eta)\}p(t|\mathbf{x})p(\mathbf{x})\mathrm{d}\mathbf{x} \]
+        となりこれが $\varepsilon=0$ で $0$ となる条件を求めれば良い.
+        \[-\sum_{t=1,-1}\int t\eta\exp(-tf)p(t|\mathbf{x})p(\mathbf{x})\mathrm{d}\mathbf{x} = 0 \]
+        $\eta(\mathbf{x})$ は任意に取れるのでこれが $0$ になるためには
+        \[\sum_{t=1,-1}t \exp(-tf)p(t|\mathbf{x})p(\mathbf{x}) = 0 \]
+        が必要. これを解いて
+        \[ f(\mathbf{x}) = \frac{1}{2}\log \frac{p(t=1|\mathbf{x})}{p(t=-1|\mathbf{x})} \]
+        </p>
         </section>
 
         <section>
@@ -345,6 +458,9 @@
         <p>
         決定木は特徴空間を再帰的に幾つかの領域に分割し，各領域毎に別々の学習で回帰や識別を行うというものです.
         </p>
+        <p>
+        下図のようにある軸，もしくは数本の軸に平行な面で分割していく方法が一般的です.
+        </p>
         <div align="center"> <img width="800px" src="fig/decision-tree2.png"> </div>
         </section>
 
@@ -357,7 +473,7 @@
 
         <section>
         <p>
-        以下のような回帰を行う事が出来ます.
+        以下のように領域を分割して個別に回帰を行うという事が出来ます.
         </p>
         <div align="center"> <img width="600px" src="prog/prog23-3-2.png"> <a href="prog/prog23-3.py" style="font-size:60%">prog23-3.py</a> </div>
         </section>
@@ -366,58 +482,37 @@
         <p>
         分割された個々の領域毎の学習はこれまでに紹介しましたいろいろな方法をそのまま使えば良いので，決定木の学習は木構造の学習が中心になります.
         </p>
-        <p class="fragment">
-        決定木の構造は離散的なものなので解析的にその構造を学習する事は難しいです. 従いまして <strong> 貪欲法(greedy algorithm)</strong> などが用いられます.
-        </p>
-        </section>
-
-        <section>
         <p>
-        貪欲法では特徴空間を再帰的に少しずつ切っていく際に，今ある領域内のデータを最も良く分割する切り方を探していきます.
-        </p>
-
-        <div align="center"> <img width="500px" src="fig/decision-tree3.png"> </div>
-        </section>
-
-        <section>
-        <p>
-        決定木を貪欲法などで構築していく場合には以下の２つの基準が必要です.
+        決定木を構築する場合には領域を再帰的に分割する事を繰り返していきますので，
         </p>
         <ol>
             <li> 領域を分割する基準 </li>
             <li> 分割を停止する基準 </li>
         </ol>
         <p>
-        これらの選択によって様々なアルゴリズムを考える事が出来ます.
+        が必要です. これらの選択によって様々なアルゴリズムを考える事が出来ます.
         </p>
         </section>
 
         <section>
+        <p>
+        決定木の構造は離散的なものなので解析的にその構造を学習する事は難しいです. 従いまして <strong> 貪欲法(greedy algorithm)</strong> などが用いられます.
+        </p>
+        <div align="center"> <img width="500px" src="fig/decision-tree3.png"> </div>
+        </section>
+
+        <section style="font-size:90%">
         <h3> 分割基準 </h3>
         <p>
-        「最も良く分割する」という基準も幾つか考え方がありますが，<strong> 平均情報量 (mutual information) </strong> などが使われます.
+        「最も良く分割する」という基準も幾つか考え方がありますが，<strong> 相互情報量 (mutual information) </strong> などが使われます.
         </p>
         <p class="fragment">
-        領域 $\mathbf{X}$ を２つの組 $\mathbf{X}_1,\mathbf{X}_2$ に分割した場合の相互情報量は
+        二つの確率変数 $\mathbf{X}_1,\mathbf{X}_2$ に対する相互情報量は
         \[ I(\mathbf{X}_1,\mathbf{X}_2) = \sum_{\mathbf{x}_1\in\mathbf{X}_1,\mathbf{x}_2\in\mathbf{X}_2}p(\mathbf{x}_1,\mathbf{x}_2)\log \frac{p(\mathbf{x}_1,\mathbf{x}_2)}{p(\mathbf{x}_1)p(\mathbf{x}_2)} \]
-        で定義されます. これが最大となるような識別面を選択して領域を切っていきます.
+        で定義され，これは $\mathbf{X}_2$ を知ることで $\mathbf{X}_1$ に関して得る情報量と解釈する事が出来ます.
         </p>
-        </section>
-
-        <section>
-        <p>
-        平均情報量は分布 $p(\mathbf{x}_1,\mathbf{x}_2)$ と $p(\mathbf{x}_1)p(\mathbf{x}_2)$ のカルバックライブラー情報量と等しいです.
-        </p>
-        <p>
-        従って領域を平均情報量が大きな面で切るという事は，分割によって得られる情報量が出来るだけ多いような面で分割する事だと解釈する事が出来ます.
-        </p>
-        </section>
-
-        <section>
-        <p>
-        この際，特徴空間の全ての次元は使わずに幾つかの変数だけを選択します.
-        \[ \mathbf{x}=(x_1,x_2,\ldots,x_D) \rightarrow x_3, x_7, x_9 \]
-        選ぶ次元が低ければ全組み合わせを網羅する事が出来ますし，それが難しい場合にはランダムに幾つかの組み合わせを選択して最も良いものを選ぶという事になります.
+        <p class="fragment">
+        これを用いて，分割を行う事によってクラスの割り当てに関して得る情報量を測る事が出来ます. (授業当日ではこの点について誤った説明をしてしまいました.)
         </p>
         </section>
 
@@ -446,7 +541,7 @@
         </p>
         </section>
 
-        <section>
+        <section style="font-size:80%">
         <p>
         回帰の場合には $Q_t(T)$ として残差平方和などを用いれば良いです.
         </p>
@@ -462,17 +557,17 @@
         <section>
         <h3> ランダムフォレスト </h3>
         <p>
-        PRML本では解説がありませんが <strong> ランダムフォレスト (random forest) </strong> というアルゴリズムは非常に精度が高く有名です.
+        <strong> ランダムフォレスト (random forest) </strong> という手法は新しいのでPRML本では説明がないですが非常に精度が高く有名です.
         </p>
         <p>
-        これは弱学習器として決定木を用いて集団学習を行うアルゴリズムです.
+        これは弱学習器として決定木を用いて集団学習を行うアルゴリズムです. 弱学習器の学習にはブートストラップで生成したサンプルを利用する為，並列に学習を行わせる事が可能です.
         </p>
         </section>
 
         <section>
         <h3> まとめ </h3>
         <p>
-        PRML本の各章で学んだ事を振り返りましょう.
+        では最後にPRML本の各章で学んだ事を振り返りたいと思います.
         </p>
         </section>
 
@@ -494,7 +589,7 @@
         </p>
         <p>
         識別問題については特にロジスティックモデルが重要です.
-        \[ y = \frac{1}{1 + \exp(\mathbf{w}^T\Psi(\mathbf{x})} \]
+        \[ y = \frac{1}{1 + \exp(\mathbf{w}^T\Psi(\mathbf{x})}) \]
         </p>
         </section>
 
@@ -521,7 +616,9 @@
         カーネル法という手法の紹介を行いました.
         </p>
         <p>
-        カーネル法は元の二次計画問題をその双対問題に移すことによって、データ数 $N$ のみによって計算量が決まるようにしたものです。特に無限次元の特徴ベクトルを用いる事が出来ます.
+        カーネル法は特徴ベクトル $\Psi(\mathbf{x})$ を明示的に扱う代わりに，その内積 $\Psi(\mathbf{x}_i)^T\Psi(\mathbf{x}_j)$ やそれを一般化したカーネル関数
+        \[ k(\mathbf{x}_i,\mathbf{x}_j) \]
+        をプリミティブとして用いる手法です. カーネル法では複雑な特徴ベクトルを用いても計算量がデータ数 $N$ のみに依存するようにする事が出来ます. 特に無限次元の特徴ベクトルを用いる事が出来ます.
         </p>
         <p>
         一方で識別関数を構築する為には基本的に学習データを全て保持しておく必要があります。
@@ -533,26 +630,90 @@
         カーネル法を用いる最も重要な識別器はサポートベクターマシンです。
         </p>
         <p>
-        これはマージン最大化という考え方によって，汎化性能を高める仕組みがあらかじめ内包されたもので非常に使い勝手が良いです。
+        これはマージン最大化という考え方によって，汎化性能を高める仕組みがあらかじめ内包されたモデルで非常に使い勝手が良いです。
         </p>
         <p>
-        また，識別器の構築にサポートベクターしか必要ないという大きな特徴があります。
+        また，識別器の構築にサポートベクターしか必要ないという大きな特徴があり，保持すべき学習データ数を減らす事が可能になります.
         </p>
         </section>
 
         <section>
         <h3> 第8章 </h3>
         <p>
-        グラフィカルモデルという確率モデルの表現方法を紹介しました。
+        グラフィカルモデルという確率モデルの表現方法を紹介しました.確率変数間の因果関係をグラフ構造を用いて表現する事により，他のモデルも含む非常に広範なモデルを表現する事が出来ます.
         </p>
         <p>
-        確率変数間の因果関係をグラフ構造を用いて表現する事により，他のモデルも含む非常に広範なモデルを表現する事が出来ます。
+        有向グラフを用いるベイジアンネットワークや無向グラフを用いるマルコフ確率場などを紹介しました.
         </p>
+        <div align="center"> <img width="300px" src="fig/bayesian-network1.png"> </div>
         </section>
 
         <section>
         <p>
-        グラフィカルモデルの学習にはメッセージパッシングという方法を用います。これは根と葉の間でメッセージを一回伝播させるだけで，全てのクラスタに対する同時確率を求める事が出来てしまうというものです。
+        グラフィカルモデルの学習には変数消去法やメッセージパッシングなどの方法を用います. これは根と葉の間でメッセージを一回伝播させるだけで，全てのクラスタに対する同時確率を求める事が出来てしまうというものです.
+        </p>
+        <div align="center"> <img width="800px" src="fig/message-passing2.png"> </div>
+        </section>
+
+        <section>
+        <h3> 第9, 10章 </h3>
+        <p>
+        教師なし学習のタスクの１つであるクラスタリングやディリクレ配分問題のアルゴリズムを紹介しました.
+        </p>
+        <p>
+        これらの問題は隠れ変数を持つモデルを用いて解く事が出来，厳密な反復解法であるEM法や近似解法である変分ベイズ法，ギブスサンプリングなどの紹介をしました.
+        </p>
+        </section>
+
+        <section>
+        <h3> 第11章 </h3>
+        <p>
+        ランダムサンプリング，特にマルコフ連鎖モンテカルロ法の一種であるメトロポリスヘイスティングス法を紹介しました.
+        </p>
+        <p>
+        非常に高次元の変数に対する期待値の計算，積分の計算などを効率的に解く為にはサンプリングベースの方法が必要になります.
+        </p>
+        <div align="center"> <img width="500px" src="prog/fig3-9-1.png"> </div>
+        </section>
+
+        <section>
+        <h3> 第12章 </h3>
+        <p>
+        高次元の空間内でのデータが比較的低次元の多様体上にしか分布していないというケースは非常に良く有ります.
+        </p>
+        <p>
+        そういったデータに対しては次元削減や多様体学習などの手法を用いた変換が有効です. 具体的なアルゴリズムとしては主成分分析のみを紹介しました.
+        </p>
+        </section>
+
+        <section style="font-size:90%">
+        <h3> 第13章 </h3>
+        <p>
+        系列データの確率モデルの１つである隠れマルコフモデルを紹介しました. 観測データの系列の裏に隠れ変数の一次の系列を考える事によって，モデルの複雑さの増加を抑えつ，任意の離れた観測データ間の相関を表現出来るように工夫したものです.
+        </p>
+        <p>
+        パラメータの学習には前向き後ろ向きアルゴリズム，パラメータを既知とした隠れ変数の推定にはビタビアルゴリズムを用います.
+        </p>
+        <div align="center"> <img width="500px" src="fig/hmm.png"> </div>
+        </section>
+
+        <section>
+        <h3> 第14章 </h3>
+        <p>
+        弱学習器を組み合わせて１つでは達成出来ない性能を持つ学習器を作り上げる集団学習・決定木という手法を紹介しました.
+        </p>
+        <p>
+        １つの非常に複雑な学習器を用いると過学習や計算コストの増加の問題が生じます. 集団学習には多数の弱い学習器の結果を平均化する事によって過学習を抑制する効果があり，またバギングなどは並列化を容易に行う事が出来ます.
+        </p>
+        </section>
+
+        <section>
+        <h3> 以上でこの勉強会を終了します. </h3>
+        <p>
+        全23回お疲れ様でした. 数学的な部分の説明が殆どでしたが，実際のデータの分析では理論通りには上手くはいかない事が多数ありますので，まずは実際にやってみるという事が大事だと思います. 何か困難な問題にぶつかった時には，数学的な理解がその解決に役に立つと思います.
+        </p>
+        <p>
+        資料の不足や不備が多数あり大変申し訳ありませんでした. 資料は今後も随時更新していきます.
         </p>
         </section>
 
