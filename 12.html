@@ -279,7 +279,7 @@
         <section>
         <p>
         今回の場合は, $t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta) \geq 1$ も$||\mathbf{w}||^2/2$も凸である(凸最適化問題である)ので,
-        \[ L(\mathbf{w}, \theta, \boldsymbol{\mu})=\frac{1}{2}||\mathbf{w}||^2+\sum_i\mu_i\{t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)-1\} \]
+        \[ L(\mathbf{w}, \theta, \boldsymbol{\mu})=\frac{1}{2}||\mathbf{w}||^2-\sum_i\mu_i\{t_i(\mathbf{w}^T\Psi(\mathbf{x}_i)+\theta)-1\} \]
         が $\mathbf{w}, \theta$ に関して最小となるのは
         \[ \frac{\partial L}{\partial \mathbf{w}}=\mathbf{0},\quad\frac{\partial L}{\partial \theta}=0 \]
         の時です. これを用いて $\mathbf{w},\theta$ を消去すれば双対問題を得る事が出来ます.
